@@ -1,0 +1,11 @@
+# data and results live outside the repo (config paths)
+*.fastq
+*.fastq.gz
+*.rds
+*.RData
+results/
+work/
+# local scratch
+.DS_Store
+__pycache__/
+Rplots.pdf

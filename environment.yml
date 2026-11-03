@@ -1,0 +1,38 @@
+# conda env create -f environment.yml && conda activate amplicon-seq-workflow
+# (versions unpinned; the biochar M007649 analysis ran with R 4.4, dada2 1.3x, phyloseq 1.5x, vegan 2.6, betapart 1.6)
+name: amplicon-seq-workflow
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python>=3.9
+  - pyyaml
+  # reads -> ASVs
+  - cutadapt
+  - r-base>=4.3
+  - bioconductor-dada2
+  - bioconductor-shortread
+  - bioconductor-biostrings
+  - bioconductor-phyloseq
+  - r-jsonlite
+  - r-yaml
+  # tree (16S)
+  - mothur
+  - fasttree
+  - r-ape
+  # analysis
+  - r-vegan
+  - r-phangorn
+  - r-betapart
+  - r-ggplot2
+  - r-ggrepel
+  - r-ggh4x
+  - r-ggvenn
+  - r-patchwork
+  - r-gridextra
+  - r-rcolorbrewer
+  - r-dplyr
+  - r-tidyr
+  - r-tibble
+  - r-scales
+  - r-rlang

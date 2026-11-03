@@ -1,0 +1,163 @@
+# amplicon-seq-workflow config: biochar greenhouse experiment, iTag run M007649 (16S V4 + ITS1, 2x300 MiSeq)
+#
+# Strings may use {placeholders}: any key under `vars` (after the profile's vars are merged in), plus
+# {project}, {run}, {run_id} and {locus}. Placeholders are expanded repeatedly, so vars can refer to other vars.
+
+project: biochar
+run: M007649__260914_300PE_MS1
+run_id: M007649                    # short run name used in output file names
+loci: [16S, ITS]
+
+# file names of every output: <key>.<suffix>; R1-only runs (merge: false) get ".R1" appended to the key
+key: "{project}_{run_id}.itag.{locus}"
+
+# ---- where things are: one profile per machine; the first profile whose `detect` path exists is used,
+# unless --profile is given ----
+profiles:
+  nersc:
+    detect: /global/homes
+    vars:
+      base: /global/cfs/cdirs/m3523/biochar/itag/data
+      refdir: /global/homes/u/ukaraoz/m3260/refdata
+      results: "{base}/{locus}/results/{run}"
+      mothur_ref: "{refdir}/mothur/silva.nr_v138_2"
+  local:
+    detect: /Users/ukaraoz
+    vars:
+      base: /Users/ukaraoz/Work/biochar/itag/data
+      refdir: /Users/ukaraoz/Work/biochar/itag/refdata
+      results: /Users/ukaraoz/Work/biochar/itag/results/{run}/{locus}
+      mothur_ref: "{refdir}/mothur"
+
+paths:
+  metadata: "{base}/metadata-{run}.txt"   # tab-separated, one row per sample
+  raw: "{base}/{locus}/raw/{run}"         # demultiplexed fastq.gz
+  work: "{base}/{locus}/work/{run}"       # cutadapt + filtered reads
+  results: "{results}"                    # DADA2 outputs (tables, fasta, phyloseq)
+  analysis: "{results}/analysis"          # analyze-phyloseq.R outputs
+
+# ---- samples ----
+samples:
+  id_column: id                           # metadata column with the sample names
+  # metadata names are the 16S library names; the ITS libraries differ only in the locus token
+  rename: {pattern: "_16S_", replacement: "_{locus}_"}
+  r1: "{sample}_L001_R1_001.fastq.gz"
+  r2: "{sample}_L001_R2_001.fastq.gz"
+  label_strip: "_{locus}_S[0-9]+$"        # removed from sample names for plot labels
+
+# ---- DADA2 (dada2-asv.R); per-locus settings override `dada2` ----
+dada2:
+  mincount: 1000      # samples with fewer filtered reads are dropped before denoising
+  minfinal: 5000      # samples with fewer reads in the final table are reported as failed
+  minLen: 50
+  minOverlap: 12
+
+locus_settings:
+  16S:
+    # 515F/806R V4; primers already removed by the sequencing facility; 253-bp insert, so 2x300 reads run into
+    # the opposite primer + adapter: truncLen + trimOverhang (mergePairs) handle it, no cutadapt
+    fwd_primer: GTGYCAGCMGCCGCGGTAA
+    rev_primer: GGACTACNVGGGTWTCTAAT
+    run_cutadapt: false
+    merge: true
+    truncLen: [240, 180]
+    maxEE: [2, 2]
+    asv_lengths: [250, 256]             # V4 "cut a band" window
+    taxonomy:
+      # SILVA 144 DADA2 files (https://www.arb-silva.de/current-release/DADA2/1.36.0/SSU)
+      db: "{refdir}/dada2/SILVA/v144/silva_nr99_v144_toGenus_trainset.fa.gz"
+      species_db: "{refdir}/dada2/SILVA/v144/silva_v144_assignSpecies.fa.gz"
+      levels: [Domain, Kingdom, Phylum, Class, Order, Family, Genus]
+      try_rc: false
+    # removed from <key>.phyloseq.filtered.rds (kept in <key>.phyloseq.rds)
+    remove_taxa: {Order: [Chloroplast], Family: [Mitochondria]}
+    require_ranks: [Phylum]             # ASVs unassigned at these ranks are removed too
+    tree:
+      method: mothur-v4                 # align-asv-v4.sh: SILVA V4 reference alignment + FastTree
+      reference: "{mothur_ref}"   # folder with silva.nr_v138_2.tgz
+      v4_start: 13862
+      v4_end: 23444
+  ITS:
+    # ITS1F/ITS2; variable-length amplicon -> cutadapt, no truncLen; R1 only by default (--merge for pairs)
+    fwd_primer: CTTGGTCATTTAGAGGAAGTAA
+    rev_primer: GCTGCGTTCTTCATCGATGC
+    run_cutadapt: true
+    merge: false
+    truncLen: [0]
+    maxEE: [2, 5]                       # R2 value used only when merging
+    asv_lengths: null
+    taxonomy:
+      # UNITE 10.0 general release, all eukaryotes (get-unite.sh downloads it)
+      db: "{refdir}/dada2/UNITE_ITS/2025-02-19/sh_general_release_dynamic_all_19.02.2025_dev.fasta"
+      unite_doi: 10.15156/BIO/3301231
+      unite_dir: "{refdir}/dada2"
+      species_db: null
+      levels: [Kingdom, Phylum, Class, Order, Family, Genus, Species]
+      try_rc: true
+    remove_taxa: {}
+    require_ranks: []
+    tree: {method: none}
+
+# ---- community analysis (analyze-phyloseq.R) ----
+analysis:
+  # metadata columns, mapped to the names used in the analysis and its tables
+  columns: {habitat: habitat, treatment: treatment, replicate: pot, baseline: is_T0, source: is_pellet}
+  habitats: [bulk, rhizosphere, root]
+  # baseline samples (is_T0 = 1): starting soil, one per treatment, drawn with the habitat below
+  baseline: {label: T0, habitat: bulk}
+  # source sample (is_pellet = 1): the SMT inoculum; ordinated with the subset below
+  # (label: sample/treatment label; short: panel label; name: in file names; noun: in axis titles)
+  source: {label: SMT pellet, short: SMT, name: smt, noun: pellet, ordinate_with: bulk_rhizosphere}
+  treatments:
+    levels: [Conv_Ctrl, Org_Ctrl, Conv_BC, Conv_BC-SMT, Conv_BC-MPSS, Conv_BC-MPSS-SMT]
+    labels:
+      Conv_Ctrl: Conv. soil
+      Org_Ctrl: Organic soil
+      Conv_BC: Conv. soil + biochar
+      Conv_BC-SMT: Conv. soil + biochar + SMT
+      Conv_BC-MPSS: Conv. soil + biochar + MPSS      # MPSS: growth-promoting substrates, not an inoculum
+      Conv_BC-MPSS-SMT: Conv. soil + biochar + MPSS + SMT
+    # where long labels break on axes and legends
+    wrap: {pattern: " [+] biochar [+] ", replacement: " + biochar\n+ "}
+    colors: null                        # null: RColorBrewer Dark2
+  tree_root: {outgroup: Archaea}        # first taxonomic rank; falls back to the midpoint
+  taxa_barplots: {ntop: 15}
+  ordination:
+    subsets: {bulk_rhizosphere: [bulk, rhizosphere], root: [root]}
+    # PERMANOVA per subset (internal names: habitat, treatment)
+    formulas: {bulk_rhizosphere: "habitat * treatment", root: "treatment"}
+  venn:
+    name: biochar
+    reference: Conv_BC
+    sets: [Conv_BC, Conv_BC-SMT, Conv_BC-MPSS, Conv_BC-MPSS-SMT]
+    habitats: [bulk, rhizosphere]
+    title: "biochar vs biochar + amendments"
+    pairwise_title: "biochar vs each biochar + amendment"
+  source_sharing:
+    n_rare: 100
+    subset_figure: {habitats: [bulk, rhizosphere], name: noroot}   # extra figures without root
+  reference_distances:
+    reference: Conv_Ctrl
+    name: conv
+    label: conventional
+    plot_habitats: [bulk, rhizosphere]
+    selected: [Org_Ctrl, Conv_BC-MPSS-SMT]
+    selected_name: org_mpss_smt
+  betapart:
+    contrasts: [[Conv_BC-SMT, Conv_BC], [Conv_BC-MPSS-SMT, Conv_BC-MPSS]]
+    name: smt
+    label: SMT vs no SMT
+    pots_label: SMT vs no-SMT pots
+
+# ---- SLURM (workflow.py run --slurm) ----
+slurm:
+  account: m3523
+  constraint: cpu
+  qos: regular
+  nodes: 1
+  cpus: 64
+  time: "08:00:00"
+  # shell lines run before the workflow on the compute node
+  setup: |
+    module load conda
+    conda activate itag

@@ -1,0 +1,102 @@
+# amplicon-seq-workflow config template: copy, rename (<project>-<run>.yaml) and fill in.
+# A complete worked example: biochar-M007649.yaml.
+#
+# Strings may use {placeholders}: any key under `vars` or the selected profile's `vars`, plus {project}, {run},
+# {run_id} and {locus}.
+
+project: myproject
+run: RUNNAME
+run_id: RUNNAME
+loci: [16S, ITS]
+key: "{project}_{run_id}.{locus}"      # output file prefix; R1-only runs get ".R1"
+
+profiles:                               # first profile whose `detect` path exists is used (or --profile)
+  hpc:
+    detect: /global/homes
+    vars:
+      base: /path/on/hpc/data
+      refdir: /path/on/hpc/refdata
+      results: "{base}/{locus}/results/{run}"
+  laptop:
+    vars:
+      base: /path/on/laptop/data
+      refdir: /path/on/laptop/refdata
+      results: "{base}/{locus}/results/{run}"
+
+paths:
+  metadata: "{base}/metadata-{run}.txt"
+  raw: "{base}/{locus}/raw/{run}"
+  work: "{base}/{locus}/work/{run}"
+  results: "{results}"
+  analysis: "{results}/analysis"
+
+samples:
+  id_column: id
+  rename: null                          # e.g. {pattern: "_16S_", replacement: "_{locus}_"}
+  r1: "{sample}_L001_R1_001.fastq.gz"
+  r2: "{sample}_L001_R2_001.fastq.gz"
+  label_strip: "_{locus}_S[0-9]+$"
+
+dada2: {mincount: 1000, minfinal: 5000, minLen: 50, minOverlap: 12}
+
+locus_settings:
+  16S:
+    fwd_primer: GTGYCAGCMGCCGCGGTAA     # 515F
+    rev_primer: GGACTACNVGGGTWTCTAAT    # 806R
+    run_cutadapt: false                 # primers already removed
+    merge: true
+    truncLen: [240, 180]                # set from the quality profiles
+    maxEE: [2, 2]
+    asv_lengths: [250, 256]
+    taxonomy:
+      db: "{refdir}/dada2/SILVA/v144/silva_nr99_v144_toGenus_trainset.fa.gz"
+      species_db: "{refdir}/dada2/SILVA/v144/silva_v144_assignSpecies.fa.gz"
+      levels: [Domain, Kingdom, Phylum, Class, Order, Family, Genus]
+      try_rc: false
+    remove_taxa: {Order: [Chloroplast], Family: [Mitochondria]}
+    require_ranks: [Phylum]
+    tree: {method: mothur-v4, reference: "{refdir}/mothur/silva.nr_v138_2", v4_start: 13862, v4_end: 23444}
+  ITS:
+    fwd_primer: CTTGGTCATTTAGAGGAAGTAA  # ITS1F
+    rev_primer: GCTGCGTTCTTCATCGATGC    # ITS2
+    run_cutadapt: true
+    merge: false
+    truncLen: [0]
+    maxEE: [2, 5]
+    asv_lengths: null
+    taxonomy:
+      db: "{refdir}/dada2/UNITE_ITS/2025-02-19/sh_general_release_dynamic_all_19.02.2025_dev.fasta"
+      unite_doi: 10.15156/BIO/3301231
+      unite_dir: "{refdir}/dada2"
+      species_db: null
+      levels: [Kingdom, Phylum, Class, Order, Family, Genus, Species]
+      try_rc: true
+    remove_taxa: {}
+    require_ranks: []
+    tree: {method: none}
+
+analysis:
+  columns: {habitat: habitat, treatment: treatment, replicate: pot, baseline: null, source: null}
+  habitats: [soil]
+  treatments:
+    levels: [control, treated]
+    labels: {control: Control, treated: Treated}
+    wrap: null
+    colors: null
+  tree_root: {outgroup: Archaea}
+  taxa_barplots: {ntop: 15}
+  ordination:
+    subsets: {soil: [soil]}
+    formulas: {soil: "treatment"}
+  # optional sections (see biochar-M007649.yaml): baseline, source, venn, source_sharing, reference_distances, betapart
+
+slurm:
+  account: null
+  constraint: cpu
+  qos: regular
+  nodes: 1
+  cpus: 64
+  time: "08:00:00"
+  setup: |
+    module load conda
+    conda activate amplicon-seq-workflow
