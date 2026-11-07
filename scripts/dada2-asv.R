@@ -1,12 +1,12 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.0
+# version 2.3
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
 #   normally run by workflow.py (dada2 and phyloseq steps), which writes the resolved config
 #   --config=FILE      resolved per-locus config (workflow.py): paths, sample naming, locus parameters, references
-#   --threads=N        threads (default: $SLURM_CPUS_PER_TASK, else 4)
+#   --threads=N        threads (default: config params.threads, else $SLURM_CPUS_PER_TASK, else 4)
 #   --nsamples=N       test run on the first N samples; outputs go to <results>/test-nN and <work>/test-nN
 #   --no-taxonomy      stop after the seqtab checkpoint (before assignTaxonomy)
 #   --resume           load the seqtab checkpoint (<key>.dada2.seqtab.RData) and run only taxonomy + outputs
@@ -18,7 +18,8 @@
 #   before denoising), or < minfinal reads in the final table (after removing the config's remove_taxa /
 #   require_ranks ASVs). Failed samples are kept in <key>.phyloseq.rds but removed from <key>.phyloseq.filtered.rds
 #
-# inputs  : paths.metadata (tab-separated; samples.id_column = sample id), paths.raw/<samples.r1|r2>
+# inputs  : paths.metadata (tab-separated; samples.id_column = sample id); fastq from samples.manifest (R1, R2
+#           columns) or paths.raw/<samples.r1|r2>
 # outputs : paths.results (QC plots, read tracking, ASV table/fasta, taxonomy, RData, phyloseq rds)
 #           paths.work    (cutadapt + filtered reads)
 
@@ -39,7 +40,8 @@ run = cfg$run
 key = cfg$key
 
 cutadapt = Sys.which("cutadapt")
-nthreads = as.integer(optval("threads", Sys.getenv("SLURM_CPUS_PER_TASK", "4")))   # 4 for login-node runs
+# threads: --threads, else the config (dada2.threads / locus_settings.<locus>.threads), else the SLURM allocation, else 4
+nthreads = as.integer(optval("threads", if(!is.null(cfg$params$threads)) cfg$params$threads else Sys.getenv("SLURM_CPUS_PER_TASK", "4")))
 nsamples = as.integer(optval("nsamples", NA))
 run_taxonomy = !("--no-taxonomy" %in% opts)
 resume_mode = if("--resume" %in% opts) "taxonomy" else optval("resume", NA)
@@ -57,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.0"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.3"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -66,10 +68,12 @@ cat("dada2-asv.R version", script_version, "\n")
 #   into the opposite primer); otherwise primers must already be gone and truncLen handles read-through.
 # merge: denoise R1 and R2 and merge the pairs; FALSE = R1 only (maxEE[2] is used only when merging).
 # asv_lengths: c(min, max) ASV length window ("cut a band"); null keeps all lengths.
+# trimLeft: bases removed from the start of R1 (and R2) in filterAndTrim, after cutadapt (default 0), e.g. to drop
+#   early cycles with N calls that maxN = 0 would otherwise discard whole reads for.
 p = cfg$params
 params = list(fwd_primer = p$fwd_primer, rev_primer = p$rev_primer, run_cutadapt = isTRUE(p$run_cutadapt),
               merge = isTRUE(p$merge), truncLen = p$truncLen, maxEE = p$maxEE, minLen = p$minLen,
-              minOverlap = p$minOverlap,
+              minOverlap = p$minOverlap, trimLeft = rep_len(if(is.null(p$trimLeft)) 0 else p$trimLeft, 2),
               asv_lengths = if(length(p$asv_lengths) == 2) p$asv_lengths[1]:p$asv_lengths[2] else NULL,
               taxdb = p$taxonomy$db, taxLevels = p$taxonomy$levels, speciesdb = p$taxonomy$species_db,
               tryRC = isTRUE(p$taxonomy$try_rc))
@@ -103,12 +107,40 @@ sample_ids = function(md) {
   if(!is.null(cfg$samples$rename)) ids = sub(cfg$samples$rename$pattern, cfg$samples$rename$replacement, ids)
   ids
 }
-samplenames = sample_ids(metadata)
-if(!is.na(nsamples)) samplenames = head(samplenames, nsamples)
-
-fastq = function(pattern) file.path(rawdir, vapply(samplenames, function(s) gsub("{sample}", s, pattern, fixed = TRUE), ""))
-Ffiles = fastq(cfg$samples$r1)
-Rfiles = fastq(cfg$samples$r2)
+# fastq files, two ways:
+#   samples.manifest: tab-separated file with a header, one line per sample, columns R1 and R2 (paths; relative ones
+#     are relative to the manifest's folder) and optionally the sample name (column samples.id_column or "sample";
+#     without one, the R1 file name minus _L001_R1_001.fastq.gz). The manifest sets which samples are run; each must
+#     be in the metadata.
+#   otherwise: every metadata sample, paths.raw/<samples.r1|r2> with {sample} filled in
+fastq_suffix = "(_L[0-9]{3})?_R1(_[0-9]{3})?[.](fastq|fq)([.]gz)?$"
+read_manifest = function(path) {
+  m = read.table(path, sep = "\t", header = T, quote = "", comment.char = "", colClasses = "character",
+                 check.names = F, strip.white = T)
+  col = function(names) { hit = which(tolower(colnames(m)) %in% tolower(names)); if(length(hit)) colnames(m)[hit[1]] else NA }
+  r1 = col("R1"); r2 = col("R2"); id = col(c(cfg$samples$id_column, "sample"))
+  if(is.na(r1) || is.na(r2)) stop("manifest needs columns R1 and R2: ", path, " (columns: ", paste(colnames(m), collapse = ", "), ")")
+  m = m[m[[r1]] != "" | m[[r2]] != "", , drop = F]
+  if(any(m[[r1]] == "" | m[[r2]] == "")) stop("manifest lines with only one of R1 / R2: ", path)
+  abs_path = function(p) ifelse(grepl("^(/|~)", p), path.expand(p), file.path(dirname(path), p))
+  ids = if(!is.na(id)) m[[id]] else sub(fastq_suffix, "", basename(m[[r1]]))
+  if(anyDuplicated(ids)) stop("duplicated sample names in manifest ", path, ": ", paste(unique(ids[duplicated(ids)]), collapse = ", "))
+  list(samples = ids, r1 = abs_path(m[[r1]]), r2 = abs_path(m[[r2]]))
+}
+if(!is.null(cfg$samples$manifest)) {
+  man = read_manifest(cfg$samples$manifest)
+  nometa = setdiff(man$samples, sample_ids(metadata))
+  if(length(nometa) > 0) stop(length(nometa), " manifest samples not in the metadata (", cfg$samples$id_column, "): ",
+                              paste(head(nometa, 10), collapse = ", "))
+  samplenames = man$samples; Ffiles = man$r1; Rfiles = man$r2
+  cat("fastq manifest:", cfg$samples$manifest, "\n")
+} else {
+  samplenames = sample_ids(metadata)
+  fastq = function(pattern) file.path(rawdir, vapply(samplenames, function(s) gsub("{sample}", s, pattern, fixed = TRUE), ""))
+  Ffiles = fastq(cfg$samples$r1)
+  Rfiles = fastq(cfg$samples$r2)
+}
+if(!is.na(nsamples)) { samplenames = head(samplenames, nsamples); Ffiles = head(Ffiles, nsamples); Rfiles = head(Rfiles, nsamples) }
 missing = c(Ffiles, Rfiles)[!file.exists(c(Ffiles, Rfiles))]
 if(!resume && length(missing) > 0) stop("missing fastq files:\n", paste(missing, collapse = "\n"))
 names(Ffiles) = names(Rfiles) = samplenames
@@ -180,12 +212,13 @@ if(resume) {
   names(filtFfiles) = names(filtRfiles) = samplenames
   if(params$merge) {
     out = filterAndTrim(Ffiles, filtFfiles, Rfiles, filtRfiles,
-                        truncLen = params$truncLen, maxN = 0, maxEE = params$maxEE, truncQ = 2,
+                        truncLen = params$truncLen, trimLeft = params$trimLeft, maxN = 0, maxEE = params$maxEE, truncQ = 2,
                         minLen = params$minLen, rm.phix = TRUE, compress = TRUE,
                         multithread = nthreads, verbose = TRUE)
   } else {
     out = filterAndTrim(Ffiles, filtFfiles,
-                        truncLen = params$truncLen[1], maxN = 0, maxEE = params$maxEE[1], truncQ = 2,
+                        truncLen = params$truncLen[1], trimLeft = params$trimLeft[1], maxN = 0, maxEE = params$maxEE[1],
+                        truncQ = 2,
                         minLen = params$minLen, rm.phix = TRUE, compress = TRUE,
                         multithread = nthreads, verbose = TRUE)
   }

@@ -33,11 +33,22 @@ paths:
 samples:
   id_column: id
   rename: null                          # e.g. {pattern: "_16S_", replacement: "_{locus}_"}
+  # fastq files: either a manifest (tab-separated, header, one line per sample, columns R1 and R2 with the read
+  # paths, absolute or relative to the manifest's folder; an optional sample column (id_column or "sample") names
+  # the sample, else the R1 file name minus _L001_R1_001.fastq.gz does). Each sample must be in the metadata;
+  # metadata samples not in the manifest are not run. paths.raw, r1 and r2 are then not used.
+  manifest: null                        # e.g. "{base}/{locus}/reads-{run}.tsv"
+  # ... or paths.raw/<r1|r2> for every metadata sample, {sample} = the (renamed) metadata id
   r1: "{sample}_L001_R1_001.fastq.gz"
   r2: "{sample}_L001_R2_001.fastq.gz"
   label_strip: "_{locus}_S[0-9]+$"
 
-dada2: {mincount: 1000, minfinal: 5000, minLen: 50, minOverlap: 12}
+dada2:
+  mincount: 1000
+  minfinal: 5000
+  minLen: 50
+  minOverlap: 12
+  threads: null                         # dada2-asv.R threads; null: SLURM CPUs, else 4 (--threads overrides)
 
 locus_settings:
   16S:
@@ -62,6 +73,7 @@ locus_settings:
     run_cutadapt: true
     merge: false
     truncLen: [0]
+    trimLeft: [0]                       # bases cut from the read starts (R1, R2), e.g. early N cycles
     maxEE: [2, 5]
     asv_lengths: null
     taxonomy:

@@ -4,19 +4,20 @@
 One YAML config per project/run (see config/). The driver resolves it per locus (profile, {placeholders},
 locus settings) into <results>/<key>.config.json, which the R and shell steps read, and runs the steps:
 
+\b
   reference  ITS: download the UNITE release if missing (get-unite.sh); 16S: check the SILVA files
   dada2      dada2-asv.R: primer check, cutadapt (ITS), filtering, denoising, merging, chimeras, taxonomy
   tree       16S: align-asv-v4.sh (mothur V4 alignment + FastTree); skipped when tree.method is none
   phyloseq   dada2-asv.R --resume=outputs: rebuild the phyloseq objects with the tree
   analyze    analyze-phyloseq.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, distances, betapart
 
+\b
 usage:
   workflow.py resolve -c CONFIG [--locus 16S]          print the resolved config
   workflow.py check   -c CONFIG                        check inputs, references and tools
-  workflow.py run     -c CONFIG [--locus 16S ITS] [--steps dada2,tree,...] [--threads N] [--nsamples N]
+  workflow.py run     -c CONFIG [--locus 16S,ITS] [--steps dada2,tree,...] [--threads N] [--nsamples N]
                       [--merge | --no-merge] [--pdf] [--slurm] [--dry-run] [-- extra dada2-asv.R options]
 """
-import argparse
 import json
 import os
 import re
@@ -24,6 +25,9 @@ import shlex
 import shutil
 import subprocess
 import sys
+from types import SimpleNamespace
+
+import click
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.join(HERE, "scripts")
@@ -116,6 +120,56 @@ def write_resolved(res):
     return path
 
 
+FASTQ_SUFFIX = re.compile(r"(_L[0-9]{3})?_R1(_[0-9]{3})?\.(fastq|fq)(\.gz)?$")
+
+
+def read_manifest(path, id_column):
+    """samples.manifest: tab-separated with a header, one line per sample, columns R1 and R2 (relative paths are
+    relative to the manifest's folder) and optionally the sample name (column id_column or "sample"; without one,
+    the R1 file name minus _L001_R1_001.fastq.gz). Same rules as dada2-asv.R. Returns [(sample, r1, r2)]."""
+    with open(path) as fh:
+        header = [h.strip() for h in fh.readline().rstrip("\n").split("\t")]
+        rows = [[c.strip() for c in line.rstrip("\n").split("\t")] for line in fh if line.strip()]
+    lower = [h.lower() for h in header]
+    col = lambda *names: next((lower.index(n.lower()) for n in names if n.lower() in lower), None)
+    r1, r2, sid = col("R1"), col("R2"), col(id_column, "sample")
+    if r1 is None or r2 is None:
+        raise ValueError(f"manifest needs columns R1 and R2: {path} (columns: {', '.join(header)})")
+    base = os.path.dirname(os.path.abspath(path))
+    full = lambda f: os.path.join(base, os.path.expanduser(f))
+    out = []
+    for row in rows:
+        row += [""] * (len(header) - len(row))
+        if not (row[r1] or row[r2]):
+            continue
+        if not (row[r1] and row[r2]):
+            raise ValueError(f"manifest line with only one of R1 / R2: {path}: {row}")
+        name = row[sid] if sid is not None else FASTQ_SUFFIX.sub("", os.path.basename(row[r1]))
+        out.append((name, full(row[r1]), full(row[r2])))
+    return out
+
+
+def check_manifest(path, id_column, metadata_ids):
+    if not os.path.isfile(path):
+        return [f"fastq manifest not found: {path}"]
+    try:
+        rows = read_manifest(path, id_column)
+    except ValueError as e:
+        return [str(e)]
+    problems = []
+    names = [r[0] for r in rows]
+    dups = sorted({n for n in names if names.count(n) > 1})
+    if dups:
+        problems.append(f"duplicated sample names in manifest: {', '.join(dups[:10])}")
+    nometa = [n for n in names if n not in metadata_ids]
+    if nometa:
+        problems.append(f"{len(nometa)} manifest samples not in the metadata (first: {nometa[0]})")
+    missing = [f for r in rows for f in r[1:] if not os.path.isfile(f)]
+    if missing:
+        problems.append(f"{len(missing)} fastq files in the manifest missing (first: {missing[0]})")
+    return problems
+
+
 def check(res):
     """Problems that would stop a run, as a list of messages (empty = ready)."""
     problems = []
@@ -132,11 +186,14 @@ def check(res):
                 ids = [line.rstrip("\n").split("\t")[idcol] for line in fh if line.strip()]
                 rename = s.get("rename") or {}
                 names = [re.sub(rename["pattern"], rename["replacement"], i) if rename else i for i in ids]
-                missing = [f for n in names for f in (s["r1"], s["r2"])
-                           if not os.path.isfile(os.path.join(p["raw"], f.replace("{sample}", n)))]
-                if missing:
-                    problems.append(f"{len(missing)} fastq files missing in {p['raw']} (first: {missing[0].replace('{sample}', names[0])})"
-                                    if len(missing) < 2 * len(names) else f"no fastq files in {p['raw']}")
+                if s.get("manifest"):
+                    problems += check_manifest(s["manifest"], s["id_column"], set(names))
+                else:
+                    missing = [f for n in names for f in (s["r1"], s["r2"])
+                               if not os.path.isfile(os.path.join(p["raw"], f.replace("{sample}", n)))]
+                    if missing:
+                        problems.append(f"{len(missing)} fastq files missing in {p['raw']} (first: {missing[0].replace('{sample}', names[0])})"
+                                        if len(missing) < 2 * len(names) else f"no fastq files in {p['raw']}")
     tax = prm.get("taxonomy") or {}
     if tax.get("db") and not os.path.isfile(tax["db"]) and not tax.get("unite_doi"):
         problems.append(f"taxonomy reference not found: {tax['db']}")
@@ -167,7 +224,7 @@ def commands(res, conf_json, steps, args):
                 env = {"REFDIR": tree["reference"], "V4START": str(tree["v4_start"]), "V4END": str(tree["v4_end"])}
                 cmds.append((step, ["bash", os.path.join(SCRIPTS, "align-asv-v4.sh"),
                                     os.path.join(p["results"], key + ".ASV.fa"), os.path.join(p["results"], "v4align"),
-                                    str(args.threads or 8)], env))
+                                    str(args.threads or prm.get("threads") or 8)], env))
         elif step == "phyloseq":
             if (prm.get("tree") or {}).get("method", "none") != "none":
                 cmds.append((step, rscript + [os.path.join(SCRIPTS, "dada2-asv.R"), "--config=" + conf_json,
@@ -185,6 +242,10 @@ def slurm_script(cfg, args, locus):
     argv += (["--profile", args.profile] if args.profile else []) + (["--nsamples", str(args.nsamples)] if args.nsamples else [])
     argv += ["--merge"] if args.merge is True else ["--no-merge"] if args.merge is False else []
     argv += ["--pdf"] if args.pdf else []
+    # threads: --threads given here, else the config's dada2 threads, else the job's CPUs
+    params = merged(cfg.get("dada2") or {}, (cfg.get("locus_settings") or {}).get(locus))
+    if args.threads or not params.get("threads"):
+        argv += ["--threads", str(args.threads) if args.threads else "$THREADS"]
     argv += ["--"] + list(args.extra) if args.extra else []
     lines = ["#!/bin/bash"]
     for opt, k in [("-A", "account"), ("-C", "constraint"), ("-q", "qos"), ("-N", "nodes"), ("-c", "cpus"), ("-t", "time")]:
@@ -193,57 +254,87 @@ def slurm_script(cfg, args, locus):
     lines += [f"#SBATCH -J asw-{cfg['run_id'] if 'run_id' in cfg else cfg['run']}-{locus}",
               "#SBATCH -o %x.%j.log", "set -euo pipefail", (sl.get("setup") or "").rstrip(),
               "export THREADS=${SLURM_CPUS_PER_TASK:-4}",
-              " ".join(shlex.quote(a) for a in argv) + " --threads $THREADS"]
+              " ".join(a if a == "$THREADS" else shlex.quote(a) for a in argv)]
     return "\n".join(l for l in lines if l) + "\n"
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ["resolve", "check", "run"]:
-        sp = sub.add_parser(name)
-        sp.add_argument("-c", "--config", required=True)
-        sp.add_argument("--locus", nargs="+", help="default: loci in the config")
-        sp.add_argument("--profile", help="default: first profile whose detect path exists")
-        mg = sp.add_mutually_exclusive_group()
-        mg.add_argument("--merge", dest="merge", action="store_true", default=None, help="denoise R1 + R2 and merge")
-        mg.add_argument("--no-merge", dest="merge", action="store_false", help="R1 only")
-        if name == "run":
-            sp.add_argument("--steps", default=",".join(STEPS), type=lambda s: s.split(","),
-                            help="comma-separated, default: " + ",".join(STEPS))
-            sp.add_argument("--threads", type=int)
-            sp.add_argument("--nsamples", type=int, help="test run on the first N samples (dada2 step)")
-            sp.add_argument("--pdf", action="store_true", help="analysis figures also as PDF")
-            sp.add_argument("--slurm", action="store_true", help="submit one SLURM job per locus")
-            sp.add_argument("--dry-run", action="store_true", help="print the commands only")
-            sp.add_argument("extra", nargs="*", help="after --: extra dada2-asv.R options, e.g. --resume")
-    args = ap.parse_args()
+def common_options(f):
+    """Options shared by resolve, check and run."""
+    for deco in reversed([
+        click.option("-c", "--config", required=True, type=click.Path(exists=True, dir_okay=False), help="project YAML config"),
+        click.option("--locus", multiple=True, help="repeat or comma-separate (default: loci in the config)"),
+        click.option("--profile", help="default: first profile whose detect path exists"),
+        click.option("--merge/--no-merge", default=None, help="denoise R1 + R2 and merge / R1 only (default: config)"),
+    ]):
+        f = deco(f)
+    return f
 
-    cfg = load_yaml(args.config)
-    loci = args.locus or cfg.get("loci") or list(cfg["locus_settings"])
-    if args.cmd == "run":
-        bad = [s for s in args.steps if s not in STEPS]
-        if bad:
-            sys.exit(f"unknown steps: {', '.join(bad)} (steps: {', '.join(STEPS)})")
-        args.steps = [s for s in STEPS if s in args.steps]   # always in pipeline order
+
+def setup(config, locus):
+    cfg = load_yaml(config)
+    loci = [l for item in locus for l in item.split(",") if l] or cfg.get("loci") or list(cfg["locus_settings"])
+    return cfg, loci
+
+
+def parse_steps(ctx, param, value):
+    steps = [s for s in value.split(",") if s]
+    bad = [s for s in steps if s not in STEPS]
+    if bad:
+        raise click.BadParameter(f"unknown steps: {', '.join(bad)} (steps: {', '.join(STEPS)})")
+    return [s for s in STEPS if s in steps]   # always in pipeline order
+
+
+@click.group(help=__doc__, context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
+def cli():
+    pass
+
+
+@cli.command("resolve")
+@common_options
+def resolve_cmd(config, locus, profile, merge):
+    """Print the resolved per-locus config."""
+    cfg, loci = setup(config, locus)
+    for l in loci:
+        click.echo(json.dumps(resolve(cfg, l, profile, merge), indent=2))
+
+
+@cli.command("check")
+@common_options
+def check_cmd(config, locus, profile, merge):
+    """Check inputs, references and tools."""
+    cfg, loci = setup(config, locus)
     status = 0
-    for locus in loci:
-        res = resolve(cfg, locus, args.profile, args.merge)
-        if args.cmd == "resolve":
-            print(json.dumps(res, indent=2))
-            continue
-        if args.cmd == "check":
-            problems = check(res)
-            print(f"{locus} ({res['key']}, profile {res['profile']}): " + ("ok" if not problems else ""))
-            for msg in problems:
-                print("  " + msg)
-            status |= bool(problems)
-            continue
-        if args.slurm:
-            script = slurm_script(cfg, args, locus)
+    for l in loci:
+        res = resolve(cfg, l, profile, merge)
+        problems = check(res)
+        click.echo(f"{l} ({res['key']}, profile {res['profile']}): " + ("ok" if not problems else ""))
+        for msg in problems:
+            click.echo("  " + msg)
+        status |= bool(problems)
+    sys.exit(status)
+
+
+@cli.command("run")
+@common_options
+@click.option("--steps", default=",".join(STEPS), show_default=True, callback=parse_steps, help="comma-separated steps")
+@click.option("--threads", type=int, help="overrides the config's dada2 threads (default there: SLURM CPUs, else 4)")
+@click.option("--nsamples", type=int, help="test run on the first N samples (dada2 step)")
+@click.option("--pdf", is_flag=True, help="analysis figures also as PDF")
+@click.option("--slurm", is_flag=True, help="submit one SLURM job per locus")
+@click.option("--dry-run", is_flag=True, help="print the commands only")
+@click.argument("extra", nargs=-1, type=click.UNPROCESSED)
+def run_cmd(config, locus, profile, merge, steps, threads, nsamples, pdf, slurm, dry_run, extra):
+    """Run the workflow steps. After --: extra dada2-asv.R options, e.g. -- --resume"""
+    cfg, loci = setup(config, locus)
+    args = SimpleNamespace(config=config, profile=profile, merge=merge, steps=steps, threads=threads,
+                           nsamples=nsamples, pdf=pdf, extra=extra)
+    for l in loci:
+        res = resolve(cfg, l, profile, merge)
+        if slurm:
+            script = slurm_script(cfg, args, l)
             path = os.path.join(res["paths"]["work"], f"{res['key']}.sbatch")
-            if args.dry_run:
-                print(f"# {path}\n{script}")
+            if dry_run:
+                click.echo(f"# {path}\n{script}")
                 continue
             os.makedirs(res["paths"]["work"], exist_ok=True)
             with open(path, "w") as fh:
@@ -251,17 +342,16 @@ def main():
             subprocess.run(["sbatch", path], check=True, cwd=res["paths"]["work"])
             continue
         conf_json = os.path.join(res["paths"]["results"], res["key"] + ".config.json")
-        if not args.dry_run:
+        if not dry_run:
             conf_json = write_resolved(res)
-        for step, argv, env in commands(res, conf_json, args.steps, args):
-            print(f"[{locus}] {step}: " + " ".join(f"{k}={shlex.quote(v)}" for k, v in env.items())
-                  + (" " if env else "") + " ".join(shlex.quote(a) for a in argv), flush=True)
-            if not args.dry_run:
+        for step, argv, env in commands(res, conf_json, steps, args):
+            click.echo(f"[{l}] {step}: " + " ".join(f"{k}={shlex.quote(v)}" for k, v in env.items())
+                       + (" " if env else "") + " ".join(shlex.quote(a) for a in argv))
+            if not dry_run:
                 rc = subprocess.run(argv, env={**os.environ, **env}).returncode
                 if rc != 0:
-                    sys.exit(f"[{locus}] step {step} failed (exit {rc})")
-    sys.exit(status)
+                    sys.exit(f"[{l}] step {step} failed (exit {rc})")
 
 
 if __name__ == "__main__":
-    main()
+    cli()

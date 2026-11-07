@@ -1,0 +1,114 @@
+# amplicon-seq-workflow config: East River NEON-style soil survey, 16S V4 + ITS1, 2018 (ER18) + 2022 (ER22)
+# sampling, analyzed together per locus (2x300 MiSeq M02248 runs: 16S JL579 / LHM22 / Reyes redos,
+# ITS JL4PT / LHT2N / LL6BT).
+#
+# fastq files come from per-locus manifests (samples.manifest) built from NEON_ER_amplicon_fastq_lookup.tsv:
+# one line per sample, absolute Perlmutter paths, usable libraries only. Sample names: NNN-ER18 (2018),
+# NNN-ER22 (2022), A/B technical replicates as NNN-ER18_A / _B (same site and covariates).
+# The metadata (NEON_ER_amplicon_metadata.tsv) has one row per sample of either locus:
+# sample, SampleSiteCode (NNN-ER18 for both years: the site key for joining soil chemistry), year, replicate,
+# run_16S, run_ITS.
+#
+# No community analysis yet (no `analysis` section): run the steps up to phyloseq, e.g.
+#   ./workflow.py run -c config/neon-ER18-ER22.yaml --steps reference,dada2,tree,phyloseq --slurm
+#
+# Strings may use {placeholders}: any key under `vars` (after the profile's vars are merged in), plus
+# {project}, {run}, {run_id} and {locus}.
+
+project: neon_er
+run: ER18_ER22
+run_id: ER18_ER22
+loci: [16S, ITS]
+
+key: "{project}_{run_id}.{locus}"      # R1-only runs (merge: false) get ".R1" appended
+
+# ---- where things are: the data are on Perlmutter only ----
+profiles:
+  nersc:
+    detect: /global/homes
+    vars:
+      base: /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag
+      refdir: /global/homes/u/ukaraoz/m3260/refdata
+      scratch: /pscratch/sd/u/ukaraoz/neon_itag
+      results: "{base}/{locus}/results/{run}"
+      mothur_ref: "{refdir}/mothur/silva.nr_v138_2"
+
+paths:
+  metadata: "{base}/NEON_ER_amplicon_metadata.tsv"
+  work: "{scratch}/{locus}/work/{run}"   # cutadapt + filtered reads (regenerable; pscratch is purged)
+  results: "{results}"                  # DADA2 outputs (tables, fasta, phyloseq)
+  analysis: "{results}/analysis"
+
+# ---- samples ----
+samples:
+  id_column: sample
+  manifest: "{base}/NEON_ER_{locus}_manifest.tsv"   # columns sample, R1, R2 (+ SampleSiteCode, year, replicate, run_folder)
+  label_strip: null
+
+# ---- DADA2 (dada2-asv.R); per-locus settings override `dada2` ----
+dada2:
+  mincount: 1000      # samples with fewer filtered reads are dropped before denoising
+  minfinal: 5000      # samples with fewer reads in the final table are reported as failed
+  minLen: 50
+  minOverlap: 12
+  threads: 8          # dada2-asv.R threads (also the tree step's); --threads overrides; null: SLURM CPUs, else 4
+
+locus_settings:
+  16S:
+    # 515F/806R V4; primers already removed by the sequencing facility in all three runs; 253-bp insert, so 2x300
+    # reads run into the opposite primer (R1 hits 806R-rc at ~245): truncLen + trimOverhang (mergePairs), no cutadapt
+    fwd_primer: GTGYCAGCMGCCGCGGTAA
+    rev_primer: GGACTACNVGGGTWTCTAAT
+    run_cutadapt: false
+    merge: true
+    truncLen: [240, 180]                # check against the quality profiles of both years
+    maxEE: [2, 2]
+    asv_lengths: [250, 256]             # V4 "cut a band" window
+    taxonomy:
+      db: "{refdir}/dada2/SILVA/v144/silva_nr99_v144_toGenus_trainset.fa.gz"
+      species_db: "{refdir}/dada2/SILVA/v144/silva_v144_assignSpecies.fa.gz"
+      levels: [Domain, Kingdom, Phylum, Class, Order, Family, Genus]
+      try_rc: false
+    remove_taxa: {Order: [Chloroplast], Family: [Mitochondria]}
+    require_ranks: [Phylum]
+    tree:
+      method: mothur-v4                 # align-asv-v4.sh: SILVA V4 reference alignment + FastTree
+      reference: "{mothur_ref}"         # holds silva.nr_v138_2.tgz (+ the V4 alignment, already built)
+      v4_start: 13862
+      v4_end: 23444
+  ITS:
+    # ITS1F/ITS2; the 5' primers are already removed, but reads run into the opposite primer (R1 hits ITS2-rc),
+    # so cutadapt trims the read-through. R1 only: 2018 R2 (JL4PT) has N calls at many early cycles.
+    fwd_primer: CTTGGTCATTTAGAGGAAGTAA
+    rev_primer: GCTGCGTTCTTCATCGATGC
+    run_cutadapt: true
+    merge: false
+    truncLen: [0]
+    # 2018 R1 has an N at cycle 10 in ~58% of reads (and cycle 14 in ~4%); maxN = 0 would drop them. Trim the
+    # first 14 bases in all samples, so 2018 and 2022 ASVs start at the same position
+    trimLeft: [14]
+    maxEE: [2, 5]                       # R2 value used only when merging
+    asv_lengths: null
+    taxonomy:
+      # UNITE 10.0 general release, all eukaryotes
+      db: "{refdir}/dada2/UNITE_ITS/2025-02-19/sh_general_release_dynamic_all_19.02.2025_dev.fasta"
+      unite_doi: 10.15156/BIO/3301231
+      unite_dir: "{refdir}/dada2"
+      species_db: null
+      levels: [Kingdom, Phylum, Class, Order, Family, Genus, Species]
+      try_rc: true
+    remove_taxa: {}
+    require_ranks: []
+    tree: {method: none}
+
+# ---- SLURM (workflow.py run --slurm) ----
+slurm:
+  account: m3523
+  constraint: cpu
+  qos: regular
+  nodes: 1
+  cpus: 128
+  time: "12:00:00"                      # ~490 samples per locus
+  setup: |
+    module load conda
+    conda activate itag
