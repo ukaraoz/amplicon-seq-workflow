@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.7
+# version 2.8
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -59,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.7"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.8"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -120,7 +120,11 @@ if(needs_taxonomy && !is.null(params$speciesdb) && !file.exists(params$speciesdb
 
 # ---- samples ----
 # sample names: the metadata id column, optionally renamed (samples.rename: e.g. 16S library names -> ITS names)
-metadata = read.table(cfg$paths$metadata, sep = "\t", header = T, check.names = F)
+# read as text, then convert columns to numbers / logicals, except codes with leading zeros (e.g. SamplingCode 058),
+# which stay text; no quote or comment characters, so values may contain ' and #
+metadata = read.table(cfg$paths$metadata, sep = "\t", header = T, check.names = F, colClasses = "character",
+                      quote = "", comment.char = "", na.strings = "")
+metadata[] = lapply(metadata, function(x) if(any(grepl("^0[0-9]", x))) x else type.convert(x, as.is = TRUE))
 sample_ids = function(md) {
   ids = as.character(md[[cfg$samples$id_column]])
   if(!is.null(cfg$samples$rename)) ids = sub(cfg$samples$rename$pattern, cfg$samples$rename$replacement, ids)

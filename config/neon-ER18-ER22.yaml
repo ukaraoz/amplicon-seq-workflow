@@ -5,9 +5,11 @@
 # fastq files come from per-locus manifests (samples.manifest) built from NEON_ER_amplicon_fastq_lookup.tsv:
 # one line per sample, absolute Perlmutter paths, usable libraries only. Sample names: NNN-ER18 (2018),
 # NNN-ER22 (2022), A/B technical replicates as NNN-ER18_A / _B (same site and covariates).
-# The metadata (NEON_ER_amplicon_metadata.tsv) has one row per sample of either locus:
-# sample, SampleSiteCode (NNN-ER18 for both years: the site key for joining soil chemistry), year, replicate,
-# run_16S, run_ITS.
+# The metadata (NEON_ER_amplicon_metadata_soil.tsv) has one row per sample of either locus:
+# sample, SampleSiteCode (NNN-ER18 for both years), SamplingCode (NNN, the site number), year, replicate, run_16S,
+# run_ITS, then the 2018 soil physical/chemical measurements of the site (IGSN, Sampling Area, Site Name, Latitude,
+# Longitude, Soil ...; see paths.metadata). Made by merging NEON_ER_amplicon_metadata.tsv with
+# ER_2018_NEON_soil-physical-chemical-measurements.csv on SamplingCode.
 #
 # No community analysis yet (no `analysis` section): run the steps up to phyloseq, e.g.
 #   ./workflow.py run -c config/neon-ER18-ER22.yaml --steps reference,dada2,tree,phyloseq --slurm
@@ -33,7 +35,11 @@ profiles:
       mothur_ref: "{refdir}/mothur/silva.nr_v138_2"
 
 paths:
-  metadata: "{base}/NEON_ER_amplicon_metadata.tsv"
+  # NEON_ER_amplicon_metadata.tsv + the 2018 soil physical/chemical measurements
+  # (ER_2018_NEON_soil-physical-chemical-measurements.csv), joined by SamplingCode = the 3-digit site number:
+  # NNN-ER18, NNN-ER22 and NNN-ER18_A/_B all get the site's row. The soil columns are 2018 measurements, also on the
+  # 2022 samples; their names are unchanged.
+  metadata: "{base}/NEON_ER_amplicon_metadata_soil.tsv"
   work: "{scratch}/{locus}/work/{run}"   # cutadapt + filtered reads (regenerable; pscratch is purged)
   results: "{repo}/results/{key}"        # DADA2 outputs (tables, fasta, phyloseq), one folder per key in the repo
   analysis: "{repo}/results/{key}/analysis"
