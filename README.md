@@ -50,7 +50,13 @@ References (paths set in the config):
 ./workflow.py run -c config/biochar-M007649.yaml --locus ITS --merge
 # SLURM: one job per locus (settings under `slurm` in the config)
 ./workflow.py run -c config/biochar-M007649.yaml --slurm
+# on another machine: copy results/<key>/ from the clone the workflow ran in (config `remote`)
+./workflow.py pull -c config/neon-ER18-ER22.yaml --locus 16S
 ```
+
+Results go to `results/<key>/` in the clone the workflow runs from. The small text outputs there (`config.json`,
+read tracking, failed samples, run log) are committed and reach other clones with `git pull`; `workflow.py pull`
+copies the phyloseq objects, tables, fasta, tree and plots; checkpoints stay where the workflow ran.
 
 Extra options after `--` go to `dada2-asv.R` (`--no-taxonomy`, `--resume`, `--resume=outputs`).
 

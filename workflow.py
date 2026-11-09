@@ -17,6 +17,7 @@ usage:
   workflow.py check   -c CONFIG                        check inputs, references and tools
   workflow.py run     -c CONFIG [--locus 16S,ITS] [--steps dada2,tree,...] [--threads N] [--nsamples N]
                       [--merge | --no-merge] [--pdf] [--slurm] [--dry-run] [-- extra dada2-asv.R options]
+  workflow.py pull    -c CONFIG [--locus 16S] [--dry-run]    copy results/<key>/ from the remote clone
 """
 import json
 import os
@@ -87,14 +88,15 @@ def pick_profile(cfg, name):
     return None, {}
 
 
-def resolve(cfg, locus, profile=None, merge=None):
-    """Per-locus settings with every placeholder filled in; this is what the R/shell steps read."""
+def resolve(cfg, locus, profile=None, merge=None, repo=None):
+    """Per-locus settings with every placeholder filled in; this is what the R/shell steps read.
+    repo: the repository folder for {repo} (default: this one; `pull` passes the remote clone's)."""
     if locus not in (cfg.get("locus_settings") or {}):
         sys.exit(f"locus {locus} has no locus_settings in the config")
     pname, prof = pick_profile(cfg, profile)
     # {repo}: this repository (results go to {repo}/results/{key} by default); {key} is added once it is known
     variables = {"project": cfg["project"], "run": cfg["run"], "run_id": cfg.get("run_id", cfg["run"]), "locus": locus,
-                 "repo": HERE}
+                 "repo": repo or HERE}
     variables.update(cfg.get("vars") or {})
     variables.update(prof.get("vars") or {})
     variables = {k: expand(v, variables) for k, v in variables.items()}   # vars may refer to vars
@@ -367,6 +369,62 @@ def run_cmd(config, locus, profile, merge, steps, threads, nsamples, pdf, slurm,
                 rc = subprocess.run(argv, env={**os.environ, **env}).returncode
                 if rc != 0:
                     sys.exit(f"[{l}] step {step} failed (exit {rc})")
+
+
+# Result files that `pull` copies (rsync filter rules, relative to results/<key>/). They stay git-ignored; the small
+# text outputs (<key>.config.json, readtracking, failed_samples, run.log) are committed in the remote clone instead
+# (see .gitignore), and checkpoints (*.RData), the full alignment and earlier-run subfolders stay on the remote.
+PULL_INCLUDE = ["{key}.phyloseq.rds", "{key}.phyloseq.filtered.rds", "{key}.ASVtable.txt", "{key}.ASV.fa",
+                "{key}.taxonomy.txt", "*.pdf", "v4align/", "v4align/*.ASV.tree", "analysis/", "analysis/**"]
+
+
+def ssh_out(host, command):
+    """stdout of a command on host ('' if it fails)."""
+    r = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "LogLevel=ERROR", host, command],
+                       capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else ""
+
+
+@cli.command("pull")
+@click.option("-c", "--config", required=True, type=click.Path(exists=True, dir_okay=False), help="project YAML config")
+@click.option("--locus", multiple=True, help="repeat or comma-separate (default: loci in the config)")
+@click.option("--merge/--no-merge", default=None, help="as for run: selects the key (R1-only runs end in .R1)")
+@click.option("--dry-run", is_flag=True, help="list what would be copied")
+def pull_cmd(config, locus, merge, dry_run):
+    """Copy results from the remote clone (config `remote`) into results/<key>/ here.
+
+    \b
+    Copies the analysis files (phyloseq objects, ASV table, fasta, taxonomy, tree, PDFs, analysis/); the small text
+    outputs come with `git pull`, and checkpoints stay on the remote. Warns when the remote clone has uncommitted
+    results or is at a different commit than this one."""
+    cfg, loci = setup(config, locus)
+    rem = cfg.get("remote") or {}
+    if not rem.get("host") or not rem.get("repo"):
+        sys.exit("config has no remote.host / remote.repo (the clone the workflow runs from)")
+    host, rrepo = rem["host"], rem["repo"].rstrip("/")
+    here_head = subprocess.run(["git", "-C", HERE, "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
+    there_head = ssh_out(host, f"git -C {shlex.quote(rrepo)} rev-parse --short HEAD")
+    if not there_head:
+        sys.exit(f"cannot reach the clone {host}:{rrepo}")
+    if there_head != here_head:
+        click.echo(f"note: remote clone is at {there_head}, this repository at {here_head} "
+                   "(git pull here, or commit/push results there)")
+    for l in loci:
+        res = resolve(cfg, l, rem.get("profile"), merge, repo=rrepo)
+        key, src = res["key"], res["paths"]["results"].rstrip("/")
+        dest = os.path.join(HERE, "results", key)
+        dirty = ssh_out(host, f"git -C {shlex.quote(rrepo)} status --porcelain -- {shlex.quote(src)}")
+        if dirty:
+            click.echo(f"[{l}] note: uncommitted result changes in the remote clone ({len(dirty.splitlines())} files): "
+                       "commit and push them there, then git pull here")
+        rules = [f"--include={p.replace('{key}', key)}" for p in PULL_INCLUDE] + ["--exclude=*"]
+        # options that also work with the old rsync 2.6.9 shipped with macOS
+        argv = ["rsync", "-a", "-v", "--prune-empty-dirs", "-e", "ssh -o LogLevel=ERROR"] + rules \
+            + (["--dry-run"] if dry_run else []) + [f"{host}:{src}/", dest + "/"]
+        click.echo(f"[{l}] {key}: {host}:{src} -> {dest}")
+        os.makedirs(dest, exist_ok=True)
+        if subprocess.run(argv).returncode != 0:
+            sys.exit(f"[{l}] rsync failed")
 
 
 if __name__ == "__main__":

@@ -28,6 +28,11 @@ paths:
   results: "{repo}/results/{key}"      # one folder per key in the repo's results/ (git-ignored)
   analysis: "{repo}/results/{key}/analysis"
 
+remote:                                 # the clone the workflow runs from (`workflow.py pull` copies its results here)
+  host: hpc.example.org
+  repo: /path/on/hpc/amplicon-seq-workflow
+  profile: hpc
+
 samples:
   id_column: id
   rename: null                          # e.g. {pattern: "_16S_", replacement: "_{locus}_"}

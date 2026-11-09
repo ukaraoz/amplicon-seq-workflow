@@ -38,6 +38,12 @@ paths:
   results: "{repo}/results/{key}"        # DADA2 outputs (tables, fasta, phyloseq), one folder per key in the repo
   analysis: "{repo}/results/{key}/analysis"
 
+# ---- where the workflow runs: `workflow.py pull` copies results/<key>/ from this clone ----
+remote:
+  host: perlmutter.nersc.gov
+  repo: /global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow
+  profile: nersc
+
 # ---- samples ----
 samples:
   id_column: sample
