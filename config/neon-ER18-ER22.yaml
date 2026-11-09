@@ -97,6 +97,12 @@ locus_settings:
     # 2018 R1 has an N at cycle 10 in ~58% of reads (and cycle 14 in ~4%); maxN = 0 would drop them. Trim the
     # first 14 bases in all samples, so 2018 and 2022 ASVs start at the same position
     trimLeft: [14]
+    # Reads with no read-through (ITS1 longer than the read; ~19% of 2018 and ~27% of 2022 R1) keep every cycle:
+    # 301 in the 2018 and 2024 runs, 300 in 2022. After trimLeft 14 the same long-ITS1 sequence then becomes a 287-bp
+    # ASV in 2018 and a 286-bp ASV in 2022, so those taxa never match across years (first run: 2,902 287-bp ASVs only
+    # in 2018, 9,322 286-bp ASVs only in 2022; 1,491 of the 287-bp ASVs equal a 286-bp ASV plus one base).
+    # cutadapt --length 300 cuts every read to at most 300 after read-through removal; shorter reads are unchanged.
+    max_read_length: 300
     maxEE: [2, 5]                       # R2 value used only when merging
     asv_lengths: null
     taxonomy:

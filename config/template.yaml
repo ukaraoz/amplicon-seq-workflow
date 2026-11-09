@@ -77,6 +77,8 @@ locus_settings:
     merge: false
     truncLen: [0]
     trimLeft: [0]                       # bases cut from the read starts (R1, R2), e.g. early N cycles
+    # max_read_length: 300              # cutadapt --length: same maximum read length in every run (2x300 vs 2x301),
+                                        # so ASVs of reads without read-through match across runs
     maxEE: [2, 5]
     asv_lengths: null
     taxonomy:

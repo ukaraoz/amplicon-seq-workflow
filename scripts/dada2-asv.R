@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.5
+# version 2.6
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -59,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.5"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.6"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -67,6 +67,11 @@ cat("dada2-asv.R version", script_version, "\n")
 # run_cutadapt: remove primers / read-through with cutadapt (variable-length amplicons such as ITS1, where reads run
 #   into the opposite primer); otherwise primers must already be gone and truncLen handles read-through.
 #   A primer at the read start is removed only when complete (anchored); read-through at the 3' end is removed.
+# max_read_length: with cutadapt, shorten every read to at most this many bases after the read-through is removed
+#   (cutadapt --length; default: no limit). Reads without read-through (amplicon longer than the read) keep the full
+#   cycle count, which can differ between runs (2 x 300 vs 2 x 301), so the same long-ITS1 sequence would give
+#   ASVs of different lengths (286 vs 287 bp after trimLeft 14) that never match across runs. A common maximum makes
+#   them identical; reads already shorter (trimmed read-through) are unchanged.
 # merge: denoise R1 and R2 and merge the pairs; FALSE = R1 only (maxEE[2] is used only when merging).
 # asv_lengths: c(min, max) ASV length window ("cut a band"); null keeps all lengths.
 # trimLeft: bases removed from the start of R1 (and R2) in filterAndTrim, after cutadapt (default 0), e.g. to drop
@@ -79,6 +84,7 @@ cat("dada2-asv.R version", script_version, "\n")
 p = cfg$params
 params = list(fwd_primer = p$fwd_primer, rev_primer = p$rev_primer, run_cutadapt = isTRUE(p$run_cutadapt),
               merge = isTRUE(p$merge), truncLen = p$truncLen, maxEE = p$maxEE, minLen = p$minLen,
+              max_read_length = p$max_read_length,
               minOverlap = p$minOverlap, trimLeft = rep_len(if(is.null(p$trimLeft)) 0 else p$trimLeft, 2),
               asv_lengths = if(length(p$asv_lengths) == 2) p$asv_lengths[1]:p$asv_lengths[2] else NULL,
               taxdb = p$taxonomy$db, taxLevels = p$taxonomy$levels, speciesdb = p$taxonomy$species_db,
@@ -233,6 +239,9 @@ if(resume) {
       system2(cutadapt, args = c("-g", paste0("^", params$fwd_primer), "-a", rev.rc,
                                  "-G", paste0("^", params$rev_primer), "-A", fwd.rc,
                                  "-n", 2, "--minimum-length", params$minLen, "--cores", threads,
+                                 # same maximum read length in every run (see max_read_length above); applied after
+                                 # adapter trimming, to R1 and R2
+                                 if(!is.null(params$max_read_length)) c("--length", params$max_read_length),
                                  "-o", cutFfiles[i], "-p", cutRfiles[i], Ffiles[i], Rfiles[i]),
               stdout = file.path(cutdir, paste0(samplenames[i], ".cutadapt.log")))
     }))
