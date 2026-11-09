@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.4
+# version 2.5
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -59,13 +59,14 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.4"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.5"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
 # parameters follow the DADA2 tutorial (https://benjjneb.github.io/dada2/tutorial.html) unless noted in the config.
 # run_cutadapt: remove primers / read-through with cutadapt (variable-length amplicons such as ITS1, where reads run
 #   into the opposite primer); otherwise primers must already be gone and truncLen handles read-through.
+#   A primer at the read start is removed only when complete (anchored); read-through at the 3' end is removed.
 # merge: denoise R1 and R2 and merge the pairs; FALSE = R1 only (maxEE[2] is used only when merging).
 # asv_lengths: c(min, max) ASV length window ("cut a band"); null keeps all lengths.
 # trimLeft: bases removed from the start of R1 (and R2) in filterAndTrim, after cutadapt (default 0), e.g. to drop
@@ -225,9 +226,12 @@ if(resume) {
     fwd.rc = dada2:::rc(params$fwd_primer)
     rev.rc = dada2:::rc(params$rev_primer)
     invisible(mcrun(setNames(seq_along(samplenames), samplenames), function(i, threads) {
-      # R1: fwd primer at 5' (if still present), rc(rev) at 3'; R2: rev primer at 5', rc(fwd) at 3'
-      system2(cutadapt, args = c("-g", params$fwd_primer, "-a", rev.rc,
-                                 "-G", params$rev_primer, "-A", fwd.rc,
+      # R1: fwd primer anchored at the 5' end, rc(rev) read-through at 3'; R2: rev primer anchored at 5', rc(fwd) at 3'.
+      # Anchored (^primer): only a complete primer at the read start is removed. Unanchored, cutadapt also took 3-6
+      # bases off the start of 0.1-0.3% of NEON ITS reads by chance (their primers are never sequenced). The 3'
+      # read-through keeps cutadapt's default minimum overlap (3): short matches there are mostly real read-through.
+      system2(cutadapt, args = c("-g", paste0("^", params$fwd_primer), "-a", rev.rc,
+                                 "-G", paste0("^", params$rev_primer), "-A", fwd.rc,
                                  "-n", 2, "--minimum-length", params$minLen, "--cores", threads,
                                  "-o", cutFfiles[i], "-p", cutRfiles[i], Ffiles[i], Rfiles[i]),
               stdout = file.path(cutdir, paste0(samplenames[i], ".cutadapt.log")))
