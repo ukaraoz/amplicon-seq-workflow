@@ -55,6 +55,11 @@
       ],
       "try_rc": true
     },
+    "keep_taxa": {
+      "Kingdom": [
+        "Fungi"
+      ]
+    },
     "remove_taxa": {},
     "require_ranks": [],
     "tree": {

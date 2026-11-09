@@ -1,12 +1,15 @@
-sample	stage	reads_input	reads_at_failure	reason
-005-ER18	final read count	6684	4161	low number of reads: 4161 reads in the final table (< 5000), 30.0% of the median (13889); lowest passing sample 410-ER18 has 5011; input 6684 reads vs median 23483
-051-ER18	final read count	7136	4104	low number of reads: 4104 reads in the final table (< 5000), 29.5% of the median (13889); lowest passing sample 410-ER18 has 5011; input 7136 reads vs median 23483
-053-ER18	final read count	9161	4676	low number of reads: 4676 reads in the final table (< 5000), 33.7% of the median (13889); lowest passing sample 410-ER18 has 5011; input 9161 reads vs median 23483
-172-ER18	final read count	5418	3019	low number of reads: 3019 reads in the final table (< 5000), 21.7% of the median (13889); lowest passing sample 410-ER18 has 5011; input 5418 reads vs median 23483
-231-ER18	final read count	8390	4806	low number of reads: 4806 reads in the final table (< 5000), 34.6% of the median (13889); lowest passing sample 410-ER18 has 5011; input 8390 reads vs median 23483
-234-ER18	final read count	7758	4082	low number of reads: 4082 reads in the final table (< 5000), 29.4% of the median (13889); lowest passing sample 410-ER18 has 5011; input 7758 reads vs median 23483
-285-ER18	final read count	6447	3979	low number of reads: 3979 reads in the final table (< 5000), 28.6% of the median (13889); lowest passing sample 410-ER18 has 5011; input 6447 reads vs median 23483
-336-ER18	final read count	8644	4692	low number of reads: 4692 reads in the final table (< 5000), 33.8% of the median (13889); lowest passing sample 410-ER18 has 5011; input 8644 reads vs median 23483
-386-ER18	final read count	3267	1733	low number of reads: 1733 reads in the final table (< 5000), 12.5% of the median (13889); lowest passing sample 410-ER18 has 5011; input 3267 reads vs median 23483
-387-ER18	final read count	6054	3352	low number of reads: 3352 reads in the final table (< 5000), 24.1% of the median (13889); lowest passing sample 410-ER18 has 5011; input 6054 reads vs median 23483
-428-ER18	final read count	7286	4419	low number of reads: 4419 reads in the final table (< 5000), 31.8% of the median (13889); lowest passing sample 410-ER18 has 5011; input 7286 reads vs median 23483
+sample	stage	reads_input	reads_at_failure	reason	reads_before_taxa_filter
+005-ER18	final read count	6684	4101	low number of reads: 4101 reads in the final table (< 5000), 30.5% of the median (13461); lowest passing sample 058-ER18 has 5038; input 6684 reads vs median 23483	4161
+051-ER18	final read count	7136	3877	low number of reads: 3877 reads in the final table (< 5000), 28.8% of the median (13461); lowest passing sample 058-ER18 has 5038; input 7136 reads vs median 23483	4104
+053-ER18	final read count	9161	4530	low number of reads: 4530 reads in the final table (< 5000), 33.7% of the median (13461); lowest passing sample 058-ER18 has 5038; input 9161 reads vs median 23483	4676
+131-ER18	final read count	16748	3694	low number of reads: 3694 reads in the final table (< 5000), 27.4% of the median (13461); lowest passing sample 058-ER18 has 5038; input 16748 reads vs median 23483	9587
+156-ER18	final read count	9517	4972	low number of reads: 4972 reads in the final table (< 5000), 36.9% of the median (13461); lowest passing sample 058-ER18 has 5038; input 9517 reads vs median 23483	5354
+172-ER18	final read count	5418	2923	low number of reads: 2923 reads in the final table (< 5000), 21.7% of the median (13461); lowest passing sample 058-ER18 has 5038; input 5418 reads vs median 23483	3019
+231-ER18	final read count	8390	4690	low number of reads: 4690 reads in the final table (< 5000), 34.8% of the median (13461); lowest passing sample 058-ER18 has 5038; input 8390 reads vs median 23483	4806
+234-ER18	final read count	7758	3977	low number of reads: 3977 reads in the final table (< 5000), 29.5% of the median (13461); lowest passing sample 058-ER18 has 5038; input 7758 reads vs median 23483	4082
+285-ER18	final read count	6447	3716	low number of reads: 3716 reads in the final table (< 5000), 27.6% of the median (13461); lowest passing sample 058-ER18 has 5038; input 6447 reads vs median 23483	3979
+336-ER18	final read count	8644	4354	low number of reads: 4354 reads in the final table (< 5000), 32.3% of the median (13461); lowest passing sample 058-ER18 has 5038; input 8644 reads vs median 23483	4692
+386-ER18	final read count	3267	1714	low number of reads: 1714 reads in the final table (< 5000), 12.7% of the median (13461); lowest passing sample 058-ER18 has 5038; input 3267 reads vs median 23483	1733
+387-ER18	final read count	6054	3235	low number of reads: 3235 reads in the final table (< 5000), 24.0% of the median (13461); lowest passing sample 058-ER18 has 5038; input 6054 reads vs median 23483	3352
+410-ER18	final read count	8316	4761	low number of reads: 4761 reads in the final table (< 5000), 35.4% of the median (13461); lowest passing sample 058-ER18 has 5038; input 8316 reads vs median 23483	5011
+428-ER18	final read count	7286	4086	low number of reads: 4086 reads in the final table (< 5000), 30.4% of the median (13461); lowest passing sample 058-ER18 has 5038; input 7286 reads vs median 23483	4419
