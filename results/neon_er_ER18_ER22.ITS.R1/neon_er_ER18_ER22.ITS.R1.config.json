@@ -1,0 +1,65 @@
+{
+  "project": "neon_er",
+  "run": "ER18_ER22",
+  "run_id": "ER18_ER22",
+  "locus": "ITS",
+  "key": "neon_er_ER18_ER22.ITS.R1",
+  "profile": "nersc",
+  "paths": {
+    "metadata": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_amplicon_metadata.tsv",
+    "work": "/pscratch/sd/u/ukaraoz/neon_itag/ITS/work/ER18_ER22",
+    "results": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.ITS.R1",
+    "analysis": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.ITS.R1/analysis"
+  },
+  "samples": {
+    "id_column": "sample",
+    "manifest": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_ITS_manifest.tsv",
+    "run_column": "run_folder",
+    "label_strip": null
+  },
+  "params": {
+    "mincount": 1000,
+    "minfinal": 5000,
+    "minLen": 50,
+    "minOverlap": 12,
+    "threads": 8,
+    "fwd_primer": "CTTGGTCATTTAGAGGAAGTAA",
+    "rev_primer": "GCTGCGTTCTTCATCGATGC",
+    "run_cutadapt": true,
+    "merge": false,
+    "truncLen": [
+      0
+    ],
+    "trimLeft": [
+      14
+    ],
+    "max_read_length": 300,
+    "maxEE": [
+      2,
+      5
+    ],
+    "asv_lengths": null,
+    "taxonomy": {
+      "db": "/global/homes/u/ukaraoz/m3260/refdata/dada2/UNITE_ITS/2025-02-19/sh_general_release_dynamic_all_19.02.2025_dev.fasta",
+      "unite_doi": "10.15156/BIO/3301231",
+      "unite_dir": "/global/homes/u/ukaraoz/m3260/refdata/dada2",
+      "species_db": null,
+      "levels": [
+        "Kingdom",
+        "Phylum",
+        "Class",
+        "Order",
+        "Family",
+        "Genus",
+        "Species"
+      ],
+      "try_rc": true
+    },
+    "remove_taxa": {},
+    "require_ranks": [],
+    "tree": {
+      "method": "none"
+    }
+  },
+  "analysis": {}
+}

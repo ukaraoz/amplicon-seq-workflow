@@ -1,0 +1,376 @@
+salloc: Granted job allocation 61051525
+salloc: Waiting for resource configuration
+salloc: Nodes nid200056 are ready for job
+== Mon Nov  9 12:52:50 PM PST 2026 node nid200056; cutadapt /global/homes/u/ukaraoz/bin/miniconda3/envs/itag/bin/cutadapt 5.2; Rscript /global/homes/u/ukaraoz/bin/miniconda3/envs/R/bin/Rscript
+== Mon Nov  9 12:52:52 PM PST 2026 test: 3 samples per run, no taxonomy
+Loading required package: Rcpp
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: BiocParallel
+Loading required package: Biostrings
+Loading required package: S4Vectors
+Loading required package: stats4
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: GenomeInfoDb
+
+Attaching package: ‘Biostrings’
+
+The following object is masked from ‘package:base’:
+
+    strsplit
+
+Loading required package: Rsamtools
+Loading required package: GenomicRanges
+Loading required package: GenomicAlignments
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘phyloseq’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    distance
+
+The following object is masked from ‘package:Biobase’:
+
+    sampleNames
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    distance
+
+The following object is masked from ‘package:IRanges’:
+
+    distance
+
+dada2-asv.R version 2.6 
+threads: 128  nsamples: 3  taxonomy: FALSE  resume: FALSE  reads: R1 only 
+fastq manifest: /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_ITS_manifest.tsv 
+ITS ER18_ER22 : 7 samples in 3 run(s)
+  batch1_2018_M02248_JL4PT            3 samples  truncLen 0  maxEE 2/5  trimLeft 14/14
+  batch2_2022_M02248_LHT2N            3 samples  truncLen 0  maxEE 2/5  trimLeft 14/14
+  batch3_2024_M02248_LL6BT            1 samples  truncLen 0  maxEE 2/5  trimLeft 14/14
+Creating output directory: /pscratch/sd/u/ukaraoz/neon_itag/ITS/work/ER18_ER22/test-n3/prefilt
+primer hits before trimming ( 003-ER18 ):
+       Forward Complement Reverse RevComp
+FWD.R1       0          0       0       0
+FWD.R2       0          0       0     171
+REV.R1       0          0       0    1536
+REV.R2       0          0       0       0
+primer hits after cutadapt ( 003-ER18 ):
+       Forward Complement Reverse RevComp
+FWD.R1       0          0       0       0
+FWD.R2    2955       2957    2956    2991
+REV.R1       0          0       0       0
+REV.R2    2963       2967    2976    2973
+Creating output directory: /pscratch/sd/u/ukaraoz/neon_itag/ITS/work/ER18_ER22/test-n3/filtered
+9164094 total bases in 42507 reads from 3 samples will be used for learning the error rates.
+21206495 total bases in 91291 reads from 1 samples will be used for learning the error rates.
+70752633 total bases in 328476 reads from 3 samples will be used for learning the error rates.
+batch1_2018_M02248_JL4PT : 43 pseudo-pooling priors
+batch2_2022_M02248_LHT2N : 522 pseudo-pooling priors
+batch3_2024_M02248_LL6BT : 0 pseudo-pooling priors
+ASV length distribution:
+
+  68   92  104  105  109  113  114  117  118  123  125  127  128  129  130  131 
+   1    1    1    1    2    2    1    1    1    1    1    1    1    1    2    1 
+ 132  133  134  135  137  138  139  140  141  142  143  144  145  146  147  148 
+   1    3    4    1    2    1    2    4    1    5    2    2    7    5    8    3 
+ 149  150  151  152  153  154  155  156  157  158  159  160  161  162  163  164 
+   3    5    5    4    6    2   12    6    3    3    1   12   17    9    8    7 
+ 165  166  167  168  169  170  171  172  173  174  175  176  177  178  179  180 
+  10    9   12    3    3    5    7    4    4   11    9   20    9   17   16   12 
+ 181  182  183  184  185  186  187  188  189  190  191  192  193  194  195  196 
+  11   22   24   19   23   17   22   17   21   23   18   21   23   29   18   30 
+ 197  198  199  200  201  202  203  204  205  206  207  208  209  210  211  212 
+  20   32   27   38   48   57   45   36   34   48   31   32   28   49   41   30 
+ 213  214  215  216  217  218  219  220  221  222  223  224  225  226  227  228 
+  32   39   57   46   30   31   34   27   27   29   26   24   15   17   15   18 
+ 229  230  231  232  233  234  235  236  237  238  239  240  241  242  243  244 
+  19   22   21   25   23   25   28   19    8   19   10   13   26   23   37   17 
+ 245  246  247  248  249  250  251  252  253  254  255  256  257  258  259  260 
+  20   17   17   15    8    9   13   12   10   15    9   18   20   10    8   13 
+ 261  262  263  264  265  266  267  268  269  270  271  272  273  274  275  276 
+  15   12   11    7    9    9   13   10   12   11   11    6   11   13    8   23 
+ 277  278  279  280  281  282  283  284  286 
+  14   14    7   14   17   12   24    5 1360 
+Identified 23 bimeras out of 3922 input sequences.
+fraction of reads kept after chimera removal: 0.9980317 
+stopping before taxonomy (--no-taxonomy): 3899 ASVs in 7 samples -> /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/ITS/results/ER18_ER22/test-n3 
+Warning messages:
+1: In scale_y_log10() : log-10 transformation introduced infinite values.
+2: In scale_y_log10() : log-10 transformation introduced infinite values.
+3: In scale_y_log10() : log-10 transformation introduced infinite values.
+4: In scale_y_log10() : log-10 transformation introduced infinite values.
+5: In scale_y_log10() : log-10 transformation introduced infinite values.
+6: In scale_y_log10() : log-10 transformation introduced infinite values.
+== Mon Nov  9 12:57:11 PM PST 2026 full dada2
+Loading required package: Rcpp
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: BiocParallel
+Loading required package: Biostrings
+Loading required package: S4Vectors
+Loading required package: stats4
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: GenomeInfoDb
+
+Attaching package: ‘Biostrings’
+
+The following object is masked from ‘package:base’:
+
+    strsplit
+
+Loading required package: Rsamtools
+Loading required package: GenomicRanges
+Loading required package: GenomicAlignments
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘phyloseq’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    distance
+
+The following object is masked from ‘package:Biobase’:
+
+    sampleNames
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    distance
+
+The following object is masked from ‘package:IRanges’:
+
+    distance
+
+dada2-asv.R version 2.6 
+threads: 128  nsamples: all  taxonomy: TRUE  resume: FALSE  reads: R1 only 
+fastq manifest: /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_ITS_manifest.tsv 
+ITS ER18_ER22 : 481 samples in 3 run(s)
+  batch1_2018_M02248_JL4PT          406 samples  truncLen 0  maxEE 2/5  trimLeft 14/14
+  batch2_2022_M02248_LHT2N           74 samples  truncLen 0  maxEE 2/5  trimLeft 14/14
+  batch3_2024_M02248_LL6BT            1 samples  truncLen 0  maxEE 2/5  trimLeft 14/14
+primer hits before trimming ( 159-ER18 ):
+       Forward Complement Reverse RevComp
+FWD.R1       0          0       0       0
+FWD.R2       0          0       0     184
+REV.R1       0          0       0    1668
+REV.R2       0          0       0       0
+primer hits after cutadapt ( 159-ER18 ):
+       Forward Complement Reverse RevComp
+FWD.R1       0          0       0       0
+FWD.R2    3591       3586    3576    3640
+REV.R1       0          0       0       0
+REV.R2    3601       3595    3620    3602
+21206495 total bases in 91291 reads from 1 samples will be used for learning the error rates.
+101015223 total bases in 483334 reads from 27 samples will be used for learning the error rates.
+115847950 total bases in 517632 reads from 5 samples will be used for learning the error rates.
+batch1_2018_M02248_JL4PT : 8488 pseudo-pooling priors
+batch2_2022_M02248_LHT2N : 9685 pseudo-pooling priors
+batch3_2024_M02248_LL6BT : 0 pseudo-pooling priors
+ASV length distribution:
+
+   68    80    81    82    83    84    85    86    87    88    89    90    91 
+    1     1     9     1     3     6     2     1     4     7     4     5     3 
+   92    93    94    96    97    98   100   101   102   104   105   106   107 
+   10     3     2     2     3     1     3     1     1     2     4     3    10 
+  108   109   110   111   112   113   114   115   116   117   118   119   120 
+    3     8     8    12    15    21    19    21    30    25    22    19    15 
+  121   122   123   124   125   126   127   128   129   130   131   132   133 
+   12    16    18    14    12    13    17    20    12    23    15    25    26 
+  134   135   136   137   138   139   140   141   142   143   144   145   146 
+   31    45    27    26    18    33    46    39    55    60    62    86    97 
+  147   148   149   150   151   152   153   154   155   156   157   158   159 
+   85    68    77   100    95    84   103    73    76    63    51    62    89 
+  160   161   162   163   164   165   166   167   168   169   170   171   172 
+  126   220   139   105   120   109   104    91    85    87    94    85    81 
+  173   174   175   176   177   178   179   180   181   182   183   184   185 
+   67    95   124   196   124   179   136   154   160   191   173   143   152 
+  186   187   188   189   190   191   192   193   194   195   196   197   198 
+  179   223   180   222   156   149   165   222   225   175   220   255   253 
+  199   200   201   202   203   204   205   206   207   208   209   210   211 
+  267   423   541   535   507   372   425   407   308   308   293   357   325 
+  212   213   214   215   216   217   218   219   220   221   222   223   224 
+  279   288   340   511   371   346   301   345   236   250   279   267   237 
+  225   226   227   228   229   230   231   232   233   234   235   236   237 
+  259   205   213   242   245   260   262   238   236   284   245   204   187 
+  238   239   240   241   242   243   244   245   246   247   248   249   250 
+  225   180   166   259   244   341   251   247   167   185   134   141   170 
+  251   252   253   254   255   256   257   258   259   260   261   262   263 
+  119   132   130   144   137   140   125   102   107   112   105   131   106 
+  264   265   266   267   268   269   270   271   272   273   274   275   276 
+  116   137    92   114   102   109    98   107   106   131   137   173   194 
+  277   278   279   280   281   282   283   284   286 
+  151   118   140   148   190   165   255    91 11116 
+Identified 1354 bimeras out of 38636 input sequences.
+fraction of reads kept after chimera removal: 0.9921332 
+Warning messages:
+1: In scale_y_log10() : log-10 transformation introduced infinite values.
+2: In scale_y_log10() : log-10 transformation introduced infinite values.
+3: In scale_y_log10() : log-10 transformation introduced infinite values.
+4: In scale_y_log10() : log-10 transformation introduced infinite values.
+5: In scale_y_log10() : log-10 transformation introduced infinite values.
+6: In scale_y_log10() : log-10 transformation introduced infinite values.
+UNITE fungal taxonomic reference detected.
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 37282 taxa and 481 samples ]
+sample_data() Sample Data:       [ 481 samples by 10 sample variables ]
+tax_table()   Taxonomy Table:    [ 37282 taxa by 7 taxonomic ranks ]
+refseq()      DNAStringSet:      [ 37282 reference sequences ]
+11 failed samples -> /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/ITS/results/ER18_ER22/neon_er_ER18_ER22.ITS.R1.failed_samples.txt 
+   sample            stage reads_input reads_at_failure
+ 005-ER18 final read count        6684             4161
+ 051-ER18 final read count        7136             4104
+ 053-ER18 final read count        9161             4676
+ 172-ER18 final read count        5418             3019
+ 231-ER18 final read count        8390             4806
+ 234-ER18 final read count        7758             4082
+ 285-ER18 final read count        6447             3979
+ 336-ER18 final read count        8644             4692
+ 386-ER18 final read count        3267             1733
+ 387-ER18 final read count        6054             3352
+ 428-ER18 final read count        7286             4419
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 37282 taxa and 470 samples ]
+sample_data() Sample Data:       [ 470 samples by 11 sample variables ]
+tax_table()   Taxonomy Table:    [ 37282 taxa by 7 taxonomic ranks ]
+refseq()      DNAStringSet:      [ 37282 reference sequences ]
+done: 37282 ASVs in 481 samples -> /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/ITS/results/ER18_ER22 
+== Mon Nov  9 02:32:19 PM PST 2026 done
+salloc: Relinquishing job allocation 61051525
