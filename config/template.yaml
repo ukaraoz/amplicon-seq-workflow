@@ -38,6 +38,8 @@ samples:
   # the sample, else the R1 file name minus _L001_R1_001.fastq.gz does). Each sample must be in the metadata;
   # metadata samples not in the manifest are not run. paths.raw, r1 and r2 are then not used.
   manifest: null                        # e.g. "{base}/{locus}/reads-{run}.tsv"
+  run_column: null                      # manifest column with the sequencing run: runs are filtered (locus_settings
+                                        # .<locus>.runs overrides), error-modelled and denoised separately
   # ... or paths.raw/<r1|r2> for every metadata sample, {sample} = the (renamed) metadata id
   r1: "{sample}_L001_R1_001.fastq.gz"
   r2: "{sample}_L001_R2_001.fastq.gz"
@@ -58,6 +60,7 @@ locus_settings:
     merge: true
     truncLen: [240, 180]                # set from the quality profiles
     maxEE: [2, 2]
+    runs: {}                            # per-run overrides, e.g. {RUN_A: {truncLen: [240, 150]}} (needs samples.run_column)
     asv_lengths: [250, 256]
     taxonomy:
       db: "{refdir}/dada2/SILVA/v144/silva_nr99_v144_toGenus_trainset.fa.gz"

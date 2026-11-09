@@ -23,6 +23,11 @@ procs=${3:-8}
 
 mothur=${MOTHUR:-mothur}
 fasttree=${FASTTREE:-FastTreeMP}
+# Rscript for the tip relabelling (needs ape): workflow.py passes the one it uses for dada2-asv.R, so a different
+# R earlier on PATH (e.g. from the mothur/FastTree environment) is not picked up
+rscript=${RSCRIPT:-Rscript}
+"$rscript" -e 'suppressMessages(library(ape))' > /dev/null 2>&1 \
+  || { echo "error: $rscript cannot load the R package ape (needed to relabel the tree tips); set RSCRIPT" >&2; exit 1; }
 # reference folder (set by workflow.py from the config's tree.reference): holds silva.nr_v138_2.tgz
 # (https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v138_2.tgz); the V4 alignment is built there once
 refdir=${REFDIR:?set REFDIR to the folder with silva.nr_v138_2.tgz}
@@ -70,7 +75,7 @@ awk -F'\t' 'NR>1 && $16 < 80 {n++} END{print "  " n+0}' "$key.ids.align_report"
 echo "tree: $outdir/$key.ids.good.filter.tree (tip labels = asv_id; map: $key.ids.txt)"
 
 # same tree with tip labels = ASV sequence, matching the ASV table / phyloseq taxa names
-Rscript -e "map = read.table('$key.ids.txt', sep = '\t', header = T, stringsAsFactors = F);
+"$rscript" -e "map = read.table('$key.ids.txt', sep = '\t', header = T, stringsAsFactors = F);
   tr = ape::read.tree('$key.ids.good.filter.tree');
   tr\$tip.label = map\$asv_seq[match(tr\$tip.label, map\$asv_id)];
   ape::write.tree(tr, '$key.tree')"

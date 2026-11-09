@@ -43,6 +43,9 @@ paths:
 samples:
   id_column: sample
   manifest: "{base}/NEON_ER_{locus}_manifest.tsv"   # columns sample, R1, R2 (+ SampleSiteCode, year, replicate, run_folder)
+  # sequencing run of each sample (manifest column): each run gets its own filtering settings (locus_settings.<locus>.runs),
+  # error models and denoising; the run tables are combined before chimera removal and taxonomy
+  run_column: run_folder
   label_strip: null
 
 # ---- DADA2 (dada2-asv.R); per-locus settings override `dada2` ----
@@ -61,8 +64,15 @@ locus_settings:
     rev_primer: GGACTACNVGGGTWTCTAAT
     run_cutadapt: false
     merge: true
-    truncLen: [240, 180]                # check against the quality profiles of both years
+    truncLen: [240, 180]                # default for runs not listed under runs
     maxEE: [2, 2]
+    # per-run truncLen from the quality profiles (16S/qc/NEON_16S_quality_by_run.pdf, 5 samples per run): R1 is good to
+    # ~240 in all runs; R2 drops much earlier in 2018 (mean < Q30 from cycle 119) than in 2022 LHM22 (198). The overlap
+    # on the 253-bp amplicon stays >= 137 bp, and merged pairs span the whole amplicon, so ASVs stay comparable.
+    runs:
+      batch1_2018_M02248_JL579: {truncLen: [240, 150]}
+      batch2_2022_M02248_LHM22: {truncLen: [240, 190]}
+      Reyesmixed16SITS_run_redos: {truncLen: [240, 160]}
     asv_lengths: [250, 256]             # V4 "cut a band" window
     taxonomy:
       db: "{refdir}/dada2/SILVA/v144/silva_nr99_v144_toGenus_trainset.fa.gz"
@@ -103,7 +113,7 @@ locus_settings:
 
 # ---- SLURM (workflow.py run --slurm) ----
 slurm:
-  account: m3523
+  account: m5259
   constraint: cpu
   qos: regular
   nodes: 1

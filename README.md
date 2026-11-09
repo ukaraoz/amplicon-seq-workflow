@@ -61,6 +61,8 @@ One YAML file per project/run (`config/template.yaml`; worked example `config/bi
 - `profiles`: per-machine paths (`vars`); the first profile whose `detect` path exists is used, or `--profile`.
 - `samples.manifest` (optional): tab-separated file with one line per sample and columns `R1`, `R2` (read paths)
   plus an optional sample name column; otherwise fastq files are `paths.raw/<samples.r1|r2>` per metadata sample.
+- `samples.run_column` (optional, with a manifest): the sequencing run of each sample. Runs get their own error
+  models and denoising, and `locus_settings.<locus>.runs.<run>` can override `truncLen` / `maxEE` / `trimLeft`.
 - `paths`, `samples`: metadata, fastq naming, output folders; `{project}`, `{run}`, `{run_id}`, `{locus}` and any
   `vars` can be used in strings.
 - `dada2` + `locus_settings.<locus>`: primers, cutadapt, merge / R1 only, truncLen, trimLeft, maxEE, ASV length window,

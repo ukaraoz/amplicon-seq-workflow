@@ -149,7 +149,7 @@ def read_manifest(path, id_column):
     return out
 
 
-def check_manifest(path, id_column, metadata_ids):
+def check_manifest(path, id_column, metadata_ids, run_column=None, run_settings=None):
     if not os.path.isfile(path):
         return [f"fastq manifest not found: {path}"]
     try:
@@ -157,6 +157,17 @@ def check_manifest(path, id_column, metadata_ids):
     except ValueError as e:
         return [str(e)]
     problems = []
+    if run_column:
+        with open(path) as fh:
+            header = [h.strip() for h in fh.readline().rstrip("\n").split("\t")]
+            if run_column not in header:
+                problems.append(f"manifest has no run column {run_column}")
+            else:
+                i = header.index(run_column)
+                runs = {line.rstrip("\n").split("\t")[i].strip() for line in fh if line.strip()}
+                unknown = sorted(set(run_settings or {}) - runs)
+                if unknown:
+                    problems.append(f"run settings for runs not in the manifest: {', '.join(unknown)}")
     names = [r[0] for r in rows]
     dups = sorted({n for n in names if names.count(n) > 1})
     if dups:
@@ -187,7 +198,8 @@ def check(res):
                 rename = s.get("rename") or {}
                 names = [re.sub(rename["pattern"], rename["replacement"], i) if rename else i for i in ids]
                 if s.get("manifest"):
-                    problems += check_manifest(s["manifest"], s["id_column"], set(names))
+                    problems += check_manifest(s["manifest"], s["id_column"], set(names), s.get("run_column"),
+                                               res["params"].get("runs"))
                 else:
                     missing = [f for n in names for f in (s["r1"], s["r2"])
                                if not os.path.isfile(os.path.join(p["raw"], f.replace("{sample}", n)))]
@@ -207,7 +219,7 @@ def check(res):
 def commands(res, conf_json, steps, args):
     """(step, argv, env) for each step to run."""
     p, prm, key = res["paths"], res["params"], res["key"]
-    rscript = ["Rscript"]
+    rscript = [shutil.which("Rscript") or "Rscript"]   # the same R for every step (tree relabelling too)
     threads = ["--threads=" + str(args.threads)] if args.threads else []
     cmds = []
     for step in steps:
@@ -221,7 +233,8 @@ def commands(res, conf_json, steps, args):
         elif step == "tree":
             tree = prm.get("tree") or {}
             if tree.get("method") == "mothur-v4":
-                env = {"REFDIR": tree["reference"], "V4START": str(tree["v4_start"]), "V4END": str(tree["v4_end"])}
+                env = {"REFDIR": tree["reference"], "V4START": str(tree["v4_start"]), "V4END": str(tree["v4_end"]),
+                       "RSCRIPT": rscript[0]}
                 cmds.append((step, ["bash", os.path.join(SCRIPTS, "align-asv-v4.sh"),
                                     os.path.join(p["results"], key + ".ASV.fa"), os.path.join(p["results"], "v4align"),
                                     str(args.threads or prm.get("threads") or 8)], env))

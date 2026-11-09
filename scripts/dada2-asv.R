@@ -1,13 +1,13 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.3
+# version 2.4
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
 #   normally run by workflow.py (dada2 and phyloseq steps), which writes the resolved config
 #   --config=FILE      resolved per-locus config (workflow.py): paths, sample naming, locus parameters, references
 #   --threads=N        threads (default: config params.threads, else $SLURM_CPUS_PER_TASK, else 4)
-#   --nsamples=N       test run on the first N samples; outputs go to <results>/test-nN and <work>/test-nN
+#   --nsamples=N       test run on the first N samples (of each run); outputs go to <results>/test-nN and <work>/test-nN
 #   --no-taxonomy      stop after the seqtab checkpoint (before assignTaxonomy)
 #   --resume           load the seqtab checkpoint (<key>.dada2.seqtab.RData) and run only taxonomy + outputs
 #   --resume=outputs   load the final <key>.dada2.RData (with taxonomy) and only rewrite the outputs
@@ -59,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.3"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.4"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -70,13 +70,25 @@ cat("dada2-asv.R version", script_version, "\n")
 # asv_lengths: c(min, max) ASV length window ("cut a band"); null keeps all lengths.
 # trimLeft: bases removed from the start of R1 (and R2) in filterAndTrim, after cutadapt (default 0), e.g. to drop
 #   early cycles with N calls that maxN = 0 would otherwise discard whole reads for.
+# runs: per-sequencing-run overrides of truncLen / maxEE / trimLeft, keyed by the run names in the manifest's
+#   samples.run_column (see "samples"). With a run column, each run is filtered, error-modelled, denoised and merged
+#   on its own; the per-run tables are combined before the length window, chimera removal and taxonomy.
+#   Merged pairs span the whole amplicon whatever the truncation, so per-run truncLen keeps ASVs comparable; in R1-only
+#   mode the ASV ends at truncLen, so all runs must then share it.
 p = cfg$params
 params = list(fwd_primer = p$fwd_primer, rev_primer = p$rev_primer, run_cutadapt = isTRUE(p$run_cutadapt),
               merge = isTRUE(p$merge), truncLen = p$truncLen, maxEE = p$maxEE, minLen = p$minLen,
               minOverlap = p$minOverlap, trimLeft = rep_len(if(is.null(p$trimLeft)) 0 else p$trimLeft, 2),
               asv_lengths = if(length(p$asv_lengths) == 2) p$asv_lengths[1]:p$asv_lengths[2] else NULL,
               taxdb = p$taxonomy$db, taxLevels = p$taxonomy$levels, speciesdb = p$taxonomy$species_db,
-              tryRC = isTRUE(p$taxonomy$try_rc))
+              tryRC = isTRUE(p$taxonomy$try_rc), runs = p$runs)
+# filtering settings of one run: the locus settings with that run's overrides
+run_params = function(r) {
+  o = params$runs[[r]]
+  list(truncLen = if(!is.null(o$truncLen)) o$truncLen else params$truncLen,
+       maxEE = if(!is.null(o$maxEE)) o$maxEE else params$maxEE,
+       trimLeft = rep_len(if(!is.null(o$trimLeft)) o$trimLeft else params$trimLeft, 2))
+}
 cat("threads:", nthreads, " nsamples:", ifelse(is.na(nsamples), "all", nsamples), " taxonomy:", run_taxonomy,
     " resume:", ifelse(resume, resume_mode, FALSE), " reads:", ifelse(params$merge, "R1+R2 merged", "R1 only"), "\n")
 
@@ -111,8 +123,9 @@ sample_ids = function(md) {
 #   samples.manifest: tab-separated file with a header, one line per sample, columns R1 and R2 (paths; relative ones
 #     are relative to the manifest's folder) and optionally the sample name (column samples.id_column or "sample";
 #     without one, the R1 file name minus _L001_R1_001.fastq.gz). The manifest sets which samples are run; each must
-#     be in the metadata.
-#   otherwise: every metadata sample, paths.raw/<samples.r1|r2> with {sample} filled in
+#     be in the metadata. samples.run_column (optional) names a manifest column with the sequencing run of each
+#     sample: runs are then processed separately (see "runs" above).
+#   otherwise: every metadata sample, paths.raw/<samples.r1|r2> with {sample} filled in (one run)
 fastq_suffix = "(_L[0-9]{3})?_R1(_[0-9]{3})?[.](fastq|fq)([.]gz)?$"
 read_manifest = function(path) {
   m = read.table(path, sep = "\t", header = T, quote = "", comment.char = "", colClasses = "character",
@@ -125,26 +138,45 @@ read_manifest = function(path) {
   abs_path = function(p) ifelse(grepl("^(/|~)", p), path.expand(p), file.path(dirname(path), p))
   ids = if(!is.na(id)) m[[id]] else sub(fastq_suffix, "", basename(m[[r1]]))
   if(anyDuplicated(ids)) stop("duplicated sample names in manifest ", path, ": ", paste(unique(ids[duplicated(ids)]), collapse = ", "))
-  list(samples = ids, r1 = abs_path(m[[r1]]), r2 = abs_path(m[[r2]]))
+  runcol = cfg$samples$run_column
+  if(!is.null(runcol) && !(runcol %in% colnames(m))) stop("manifest has no run column ", runcol, ": ", path)
+  runs = if(!is.null(runcol)) m[[runcol]] else rep("all", nrow(m))
+  if(any(runs == "")) stop("manifest lines with an empty ", runcol, ": ", path)
+  list(samples = ids, r1 = abs_path(m[[r1]]), r2 = abs_path(m[[r2]]), runs = runs)
 }
 if(!is.null(cfg$samples$manifest)) {
   man = read_manifest(cfg$samples$manifest)
   nometa = setdiff(man$samples, sample_ids(metadata))
   if(length(nometa) > 0) stop(length(nometa), " manifest samples not in the metadata (", cfg$samples$id_column, "): ",
                               paste(head(nometa, 10), collapse = ", "))
-  samplenames = man$samples; Ffiles = man$r1; Rfiles = man$r2
+  samplenames = man$samples; Ffiles = man$r1; Rfiles = man$r2; sampleruns = man$runs
   cat("fastq manifest:", cfg$samples$manifest, "\n")
 } else {
   samplenames = sample_ids(metadata)
   fastq = function(pattern) file.path(rawdir, vapply(samplenames, function(s) gsub("{sample}", s, pattern, fixed = TRUE), ""))
   Ffiles = fastq(cfg$samples$r1)
   Rfiles = fastq(cfg$samples$r2)
+  sampleruns = rep("all", length(samplenames))
 }
-if(!is.na(nsamples)) { samplenames = head(samplenames, nsamples); Ffiles = head(Ffiles, nsamples); Rfiles = head(Rfiles, nsamples) }
+if(!is.na(nsamples)) {
+  # test runs: the first N samples of each run, so every run (and its settings) is exercised
+  pick = unlist(lapply(split(seq_along(samplenames), factor(sampleruns, unique(sampleruns))), head, nsamples))
+  samplenames = samplenames[pick]; Ffiles = Ffiles[pick]; Rfiles = Rfiles[pick]; sampleruns = sampleruns[pick]
+}
 missing = c(Ffiles, Rfiles)[!file.exists(c(Ffiles, Rfiles))]
 if(!resume && length(missing) > 0) stop("missing fastq files:\n", paste(missing, collapse = "\n"))
-names(Ffiles) = names(Rfiles) = samplenames
-cat(locus, run, ":", length(samplenames), "samples\n")
+names(Ffiles) = names(Rfiles) = names(sampleruns) = samplenames
+runnames = unique(sampleruns)
+unknown = setdiff(names(params$runs), runnames)
+if(length(unknown) > 0) cat("note: run settings for runs not in this sample set:", unknown, "\n")
+if(!params$merge && length(unique(lapply(runnames, function(r) run_params(r)$truncLen[1]))) > 1)
+  stop("R1-only mode (merge: false) needs the same truncLen in all runs (the ASVs end at truncLen)")
+cat(locus, run, ":", length(samplenames), "samples in", length(runnames), "run(s)\n")
+for(r in runnames) {
+  rp = run_params(r)
+  cat(sprintf("  %-32s %4d samples  truncLen %s  maxEE %s  trimLeft %s\n", r, sum(sampleruns == r),
+              paste(rp$truncLen, collapse = "/"), paste(rp$maxEE, collapse = "/"), paste(rp$trimLeft, collapse = "/")))
+}
 
 checkpoint = file.path(outdir, paste0(key, ".dada2.seqtab.RData"))
 if(resume) {
@@ -210,35 +242,48 @@ if(resume) {
   filtFfiles = file.path(workdir, "filtered", paste0(samplenames, "_R1.filt.fastq.gz"))
   filtRfiles = file.path(workdir, "filtered", paste0(samplenames, "_R2.filt.fastq.gz"))
   names(filtFfiles) = names(filtRfiles) = samplenames
-  if(params$merge) {
-    out = filterAndTrim(Ffiles, filtFfiles, Rfiles, filtRfiles,
-                        truncLen = params$truncLen, trimLeft = params$trimLeft, maxN = 0, maxEE = params$maxEE, truncQ = 2,
-                        minLen = params$minLen, rm.phix = TRUE, compress = TRUE,
-                        multithread = nthreads, verbose = TRUE)
-  } else {
-    out = filterAndTrim(Ffiles, filtFfiles,
-                        truncLen = params$truncLen[1], trimLeft = params$trimLeft[1], maxN = 0, maxEE = params$maxEE[1],
-                        truncQ = 2,
-                        minLen = params$minLen, rm.phix = TRUE, compress = TRUE,
-                        multithread = nthreads, verbose = TRUE)
-  }
-  rownames(out) = samplenames
+  # per run: its own truncLen / maxEE / trimLeft (run_params)
+  out = do.call(rbind, lapply(runnames, function(r) {
+    s = samplenames[sampleruns == r]; rp = run_params(r)
+    o = if(params$merge) {
+      filterAndTrim(Ffiles[s], filtFfiles[s], Rfiles[s], filtRfiles[s],
+                    truncLen = rp$truncLen, trimLeft = rp$trimLeft, maxN = 0, maxEE = rp$maxEE, truncQ = 2,
+                    minLen = params$minLen, rm.phix = TRUE, compress = TRUE, multithread = nthreads, verbose = TRUE)
+    } else {
+      filterAndTrim(Ffiles[s], filtFfiles[s],
+                    truncLen = rp$truncLen[1], trimLeft = rp$trimLeft[1], maxN = 0, maxEE = rp$maxEE[1], truncQ = 2,
+                    minLen = params$minLen, rm.phix = TRUE, compress = TRUE, multithread = nthreads, verbose = TRUE)
+    }
+    rownames(o) = s
+    o
+  }))
+  out = out[samplenames, , drop = F]
 
   lowcount = rownames(out)[out[, "reads.out"] < mincount]
   if(length(lowcount) > 0) cat("dropping", length(lowcount), "low-count samples:", lowcount, "\n")
   keep = samplenames[!(samplenames %in% lowcount)]
   filtFfiles = filtFfiles[keep]
   filtRfiles = filtRfiles[keep]
+  keepruns = runnames[runnames %in% sampleruns[keep]]
 
-  # ---- error models ----
-  # R1 and R2 models are independent: learn them concurrently, half the threads each
-  errs = mcrun(if(params$merge) list(R1 = filtFfiles, R2 = filtRfiles) else list(R1 = filtFfiles),
-               function(fns, threads) { set.seed(100); learnErrors(fns, multithread = threads, randomize = TRUE) })
-  errF = errs$R1
-  errR = errs$R2   # NULL in R1-only mode
-  ggsave(file.path(outdir, paste0(key, ".errors.R1.pdf")), plotErrors(errF, nominalQ = TRUE), width = 10, height = 8)
-  if(params$merge) ggsave(file.path(outdir, paste0(key, ".errors.R2.pdf")), plotErrors(errR, nominalQ = TRUE), width = 10, height = 8)
-  save(out, keep, errF, errR, params, file = file.path(outdir, paste0(key, ".dada2.errors.RData")))
+  # ---- error models: one per run (and read) ----
+  # all run x read models are independent: learn them concurrently, splitting the threads
+  jobs = list()
+  for(r in keepruns) {
+    s = keep[sampleruns[keep] == r]
+    jobs[[paste(r, "R1", sep = "\t")]] = filtFfiles[s]
+    if(params$merge) jobs[[paste(r, "R2", sep = "\t")]] = filtRfiles[s]
+  }
+  errs = mcrun(jobs, function(fns, threads) { set.seed(100); learnErrors(fns, multithread = threads, randomize = TRUE) })
+  errF = setNames(lapply(keepruns, function(r) errs[[paste(r, "R1", sep = "\t")]]), keepruns)
+  errR = if(params$merge) setNames(lapply(keepruns, function(r) errs[[paste(r, "R2", sep = "\t")]]), keepruns) else NULL
+  for(r in keepruns) {
+    tag = if(length(runnames) > 1) paste0(".", r) else ""
+    ggsave(file.path(outdir, paste0(key, tag, ".errors.R1.pdf")), plotErrors(errF[[r]], nominalQ = TRUE), width = 10, height = 8)
+    if(params$merge) ggsave(file.path(outdir, paste0(key, tag, ".errors.R2.pdf")), plotErrors(errR[[r]], nominalQ = TRUE),
+                            width = 10, height = 8)
+  }
+  save(out, keep, sampleruns, errF, errR, params, file = file.path(outdir, paste0(key, ".dada2.errors.RData")))
 
   # ---- denoise, merge, chimeras ----
   # pool = "pseudo" done by hand so that samples (R1 and R2) run in parallel; same algorithm as dada():
@@ -253,9 +298,14 @@ if(resume) {
     cat(length(priors), "pseudo-pooling priors\n")
     pass(priors)
   }
-  dadaFs = dadaPseudo(filtFfiles, errF)
+  # each run with its own error model, pseudo-pooled within the run
+  dadaRuns = function(fns, errs) {
+    d = do.call(c, lapply(keepruns, function(r) { cat(r, ": "); dadaPseudo(fns[sampleruns[names(fns)] == r], errs[[r]]) }))
+    d[names(fns)]
+  }
+  dadaFs = dadaRuns(filtFfiles, errF)
   if(params$merge) {
-    dadaRs = dadaPseudo(filtRfiles, errR)
+    dadaRs = dadaRuns(filtRfiles, errR)
     # trimOverhang: drop any bases where one read extends past the start of the other (primer read-through
     # in amplicons shorter than truncLen). mergePairs has no multithread option -> one sample per worker
     mergers = mcrun(setNames(as.list(keep), keep), function(s, threads)
@@ -284,10 +334,11 @@ if(resume) {
   track = cbind(track, nonchim = rowSums(seqtab.nochim))
   colnames(track)[1:2] = c("input", "filtered")
   track.towrite = tibble::rownames_to_column(as.data.frame(track), "sample")
+  if(length(runnames) > 1) track.towrite = cbind(track.towrite[1], run = sampleruns[track.towrite$sample], track.towrite[-1])
   write.table(track.towrite, file = file.path(outdir, paste0(key, ".readtracking.txt")),
               sep = "\t", row.names = F, col.names = T, quote = F)
   # checkpoint before taxonomy: assignTaxonomy against SILVA is memory hungry and can get the job killed
-  save(out, keep, errF, errR, dadaFs, dadaRs, mergers, seqtab, seqtab.nochim, track, params,
+  save(out, keep, sampleruns, errF, errR, dadaFs, dadaRs, mergers, seqtab, seqtab.nochim, track, params,
        file = checkpoint)
   if(!run_taxonomy) {
     cat("stopping before taxonomy (--no-taxonomy):", ncol(seqtab.nochim), "ASVs in", nrow(seqtab.nochim), "samples ->", outdir, "\n")
