@@ -92,7 +92,9 @@ def resolve(cfg, locus, profile=None, merge=None):
     if locus not in (cfg.get("locus_settings") or {}):
         sys.exit(f"locus {locus} has no locus_settings in the config")
     pname, prof = pick_profile(cfg, profile)
-    variables = {"project": cfg["project"], "run": cfg["run"], "run_id": cfg.get("run_id", cfg["run"]), "locus": locus}
+    # {repo}: this repository (results go to {repo}/results/{key} by default); {key} is added once it is known
+    variables = {"project": cfg["project"], "run": cfg["run"], "run_id": cfg.get("run_id", cfg["run"]), "locus": locus,
+                 "repo": HERE}
     variables.update(cfg.get("vars") or {})
     variables.update(prof.get("vars") or {})
     variables = {k: expand(v, variables) for k, v in variables.items()}   # vars may refer to vars
@@ -100,6 +102,7 @@ def resolve(cfg, locus, profile=None, merge=None):
     if merge is not None:
         params["merge"] = merge
     key = expand(cfg["key"], variables) + ("" if params.get("merge", True) else ".R1")
+    variables["key"] = key
     res = {
         "project": cfg["project"], "run": cfg["run"], "run_id": variables["run_id"], "locus": locus,
         "key": key, "profile": pname,

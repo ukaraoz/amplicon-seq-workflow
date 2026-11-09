@@ -13,7 +13,7 @@
 #   ./workflow.py run -c config/neon-ER18-ER22.yaml --steps reference,dada2,tree,phyloseq --slurm
 #
 # Strings may use {placeholders}: any key under `vars` (after the profile's vars are merged in), plus
-# {project}, {run}, {run_id} and {locus}.
+# {project}, {run}, {run_id}, {locus}, {key} and {repo} (this repository's folder).
 
 project: neon_er
 run: ER18_ER22
@@ -30,14 +30,13 @@ profiles:
       base: /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag
       refdir: /global/homes/u/ukaraoz/m3260/refdata
       scratch: /pscratch/sd/u/ukaraoz/neon_itag
-      results: "{base}/{locus}/results/{run}"
       mothur_ref: "{refdir}/mothur/silva.nr_v138_2"
 
 paths:
   metadata: "{base}/NEON_ER_amplicon_metadata.tsv"
   work: "{scratch}/{locus}/work/{run}"   # cutadapt + filtered reads (regenerable; pscratch is purged)
-  results: "{results}"                  # DADA2 outputs (tables, fasta, phyloseq)
-  analysis: "{results}/analysis"
+  results: "{repo}/results/{key}"        # DADA2 outputs (tables, fasta, phyloseq), one folder per key in the repo
+  analysis: "{repo}/results/{key}/analysis"
 
 # ---- samples ----
 samples:

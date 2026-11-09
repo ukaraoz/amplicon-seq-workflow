@@ -1,9 +1,10 @@
-# data and results live outside the repo (config paths)
+# data live outside the repo (config paths); results go to results/<key>/ (contents not tracked)
 *.fastq
 *.fastq.gz
 *.rds
 *.RData
-results/
+results/*
+!results/README.md
 work/
 # local scratch
 .DS_Store

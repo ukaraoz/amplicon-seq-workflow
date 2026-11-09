@@ -14,7 +14,7 @@ YAML config per project/run, locally or as SLURM jobs (NERSC Perlmutter).
 | `phyloseq` | `scripts/dada2-asv.R --resume=outputs` | rebuild the phyloseq objects with the tree |
 | `analyze` | `scripts/analyze-phyloseq.R` | taxa bar plots, alpha diversity, Venn, NMDS + PERMANOVA (UniFrac or Bray-Curtis/Jaccard), pairwise PERMANOVA, source sharing, distances to a reference treatment, betapart turnover/nestedness |
 
-Main outputs (in `paths.results`, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,
+Main outputs (in `paths.results`, by default `results/<key>/` in this repository, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,
 `failed_samples.txt`, `phyloseq.rds` (all ASVs and samples), `phyloseq.filtered.rds` (`remove_taxa` /
 `require_ranks` ASVs and failed samples removed; input of the analysis). Analysis figures and tables go to
 `paths.analysis`.
