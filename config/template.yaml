@@ -92,6 +92,10 @@ locus_settings:
       levels: [Kingdom, Phylum, Class, Order, Family, Genus, Species]
       try_rc: true
     keep_taxa: {Kingdom: [Fungi]}       # filtered phyloseq: keep only these (unassigned at the rank is dropped too)
+    guilds:                             # guilds step (FungalTraits + FUNGuild); omit to skip
+      dir: "{refdir}/guilds/YYYY-MM-DD"   # get-guild-dbs.py downloads the tables here (reference step)
+      fungaltraits: "{refdir}/guilds/YYYY-MM-DD/FungalTraits_1.2.tsv"
+      funguild: "{refdir}/guilds/YYYY-MM-DD/FUNGuild.tsv"
     remove_taxa: {}
     require_ranks: []
     tree: {method: none}

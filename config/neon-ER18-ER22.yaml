@@ -122,6 +122,12 @@ locus_settings:
     # plants, animals, other protists and kingdom-unassigned ASVs, ~5.9% of reads in total. The full set stays in
     # phyloseq.rds / ASVtable / taxonomy; what was removed is listed in <key>.taxa_filter.txt
     keep_taxa: {Kingdom: [Fungi]}
+    # guilds step: FungalTraits 1.2 (genus lifestyles and traits) and FUNGuild (guilds with confidence), matched to
+    # the UNITE taxonomy; tables made by get-guild-dbs.py (the reference step downloads them into dir if missing)
+    guilds:
+      dir: "{refdir}/guilds/2026-11-09"
+      fungaltraits: "{refdir}/guilds/2026-11-09/FungalTraits_1.2.tsv"
+      funguild: "{refdir}/guilds/2026-11-09/FUNGuild.tsv"
     remove_taxa: {}
     require_ranks: []
     tree: {method: none}

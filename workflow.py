@@ -5,10 +5,12 @@ One YAML config per project/run (see config/). The driver resolves it per locus 
 locus settings) into <results>/<key>.config.json, which the R and shell steps read, and runs the steps:
 
 \b
-  reference  ITS: download the UNITE release if missing (get-unite.sh); 16S: check the SILVA files
+  reference  ITS: download the UNITE release and the guild databases if missing (get-unite.sh, get-guild-dbs.py);
+             16S: check the SILVA files
   dada2      dada2-asv.R: primer check, cutadapt (ITS), filtering, denoising, merging, chimeras, taxonomy
   tree       16S: align-asv-v4.sh (mothur V4 alignment + FastTree); skipped when tree.method is none
   phyloseq   dada2-asv.R --resume=outputs: rebuild the phyloseq objects with the tree
+  guilds     ITS: fungal-guilds.R: FungalTraits lifestyles and FUNGuild guilds per ASV; skipped without `guilds`
   analyze    analyze-phyloseq.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, distances, betapart
 
 \b
@@ -32,7 +34,7 @@ import click
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.join(HERE, "scripts")
-STEPS = ["reference", "dada2", "tree", "phyloseq", "analyze"]
+STEPS = ["reference", "dada2", "tree", "phyloseq", "guilds", "analyze"]
 PLACEHOLDER = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 
@@ -214,6 +216,10 @@ def check(res):
     tax = prm.get("taxonomy") or {}
     if tax.get("db") and not os.path.isfile(tax["db"]) and not tax.get("unite_doi"):
         problems.append(f"taxonomy reference not found: {tax['db']}")
+    gu = prm.get("guilds") or {}
+    for k in ("fungaltraits", "funguild"):
+        if gu and not os.path.isfile(gu.get(k, "")):
+            problems.append(f"guild table missing: {gu.get(k)} (the reference step downloads it into guilds.dir)")
     tools = ["Rscript"] + (["cutadapt"] if prm.get("run_cutadapt") else [])
     if (prm.get("tree") or {}).get("method") == "mothur-v4":
         tools += [os.environ.get("MOTHUR", "mothur"), os.environ.get("FASTTREE", "FastTreeMP")]
@@ -232,6 +238,9 @@ def commands(res, conf_json, steps, args):
             tax = prm.get("taxonomy") or {}
             if tax.get("unite_doi") and not os.path.isfile(tax["db"]):
                 cmds.append((step, ["bash", os.path.join(SCRIPTS, "get-unite.sh"), tax["unite_dir"], str(tax["unite_doi"])], {}))
+            gu = prm.get("guilds") or {}
+            if gu and not all(os.path.isfile(gu[k]) for k in ("fungaltraits", "funguild")):
+                cmds.append((step, [sys.executable, os.path.join(SCRIPTS, "get-guild-dbs.py"), gu["dir"]], {}))
         elif step == "dada2":
             extra = (["--nsamples=" + str(args.nsamples)] if args.nsamples else []) + list(args.extra)
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "dada2-asv.R"), "--config=" + conf_json] + threads + extra, {}))
@@ -247,6 +256,9 @@ def commands(res, conf_json, steps, args):
             if (prm.get("tree") or {}).get("method", "none") != "none":
                 cmds.append((step, rscript + [os.path.join(SCRIPTS, "dada2-asv.R"), "--config=" + conf_json,
                                               "--resume=outputs"] + threads, {}))
+        elif step == "guilds":
+            if prm.get("guilds"):
+                cmds.append((step, rscript + [os.path.join(SCRIPTS, "fungal-guilds.R"), "--config=" + conf_json], {}))
         elif step == "analyze":
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "analyze-phyloseq.R"), "--config=" + conf_json]
                          + (["--pdf"] if args.pdf else []), {}))
@@ -375,7 +387,8 @@ def run_cmd(config, locus, profile, merge, steps, threads, nsamples, pdf, slurm,
 # text outputs (<key>.config.json, readtracking, failed_samples, run.log) are committed in the remote clone instead
 # (see .gitignore), and checkpoints (*.RData), the full alignment and earlier-run subfolders stay on the remote.
 PULL_INCLUDE = ["{key}.phyloseq.rds", "{key}.phyloseq.filtered.rds", "{key}.ASVtable.txt", "{key}.ASV.fa",
-                "{key}.taxonomy.txt", "*.pdf", "v4align/", "v4align/*.ASV.tree", "analysis/", "analysis/**"]
+                "{key}.taxonomy.txt", "{key}.guilds.txt", "{key}.guild_abundance.txt",
+                "{key}.phyloseq.filtered.guilds.rds", "*.pdf", "v4align/", "v4align/*.ASV.tree", "analysis/", "analysis/**"]
 
 
 def ssh_out(host, command):

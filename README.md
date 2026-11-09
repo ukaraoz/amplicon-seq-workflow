@@ -8,16 +8,19 @@ YAML config per project/run, locally or as SLURM jobs (NERSC Perlmutter).
 
 | step | script | what it does |
 |---|---|---|
-| `reference` | `scripts/get-unite.sh` | ITS: download the UNITE release if missing; 16S: SILVA DADA2 files must be in place |
+| `reference` | `scripts/get-unite.sh`, `scripts/get-guild-dbs.py` | ITS: download the UNITE release and the FungalTraits / FUNGuild tables if missing; 16S: SILVA DADA2 files must be in place |
 | `dada2` | `scripts/dada2-asv.R` | primer check, cutadapt (ITS), filterAndTrim, error models, pseudo-pooled denoising, merging (or R1 only), ASV length window, chimeras, read tracking, taxonomy (assignTaxonomy/addSpecies), ASV table/fasta, phyloseq, failed samples |
 | `tree` | `scripts/align-asv-v4.sh` | 16S: mothur alignment to the SILVA V4 reference (MiSeq SOP), screen/filter, FastTree GTR |
 | `phyloseq` | `scripts/dada2-asv.R --resume=outputs` | rebuild the phyloseq objects with the tree |
+| `guilds` | `scripts/fungal-guilds.R` | ITS: FungalTraits lifestyles and traits (genus) and FUNGuild guilds (most specific rank, with confidence) per ASV; summaries over the filtered fungal reads; per-sample guild abundances; skipped without `guilds` in the config |
 | `analyze` | `scripts/analyze-phyloseq.R` | taxa bar plots, alpha diversity, Venn, NMDS + PERMANOVA (UniFrac or Bray-Curtis/Jaccard), pairwise PERMANOVA, source sharing, distances to a reference treatment, betapart turnover/nestedness |
 
 Main outputs (in `paths.results`, by default `results/<key>/` in this repository, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,
 `failed_samples.txt`, `phyloseq.rds` (all ASVs and samples), `phyloseq.filtered.rds` (`remove_taxa` /
-`require_ranks` ASVs and failed samples removed; input of the analysis). Analysis figures and tables go to
-`paths.analysis`.
+`require_ranks` ASVs and failed samples removed; input of the analysis), `taxa_filter.txt` (what the filter removed).
+ITS with `guilds`: `guilds.txt` (per ASV), `guild_summary.txt` (per guild: ASVs, % of fungal reads, samples, and the
+unassigned share), `guild_abundance.txt` (per sample), `phyloseq.filtered.guilds.rds`. Analysis figures and tables
+go to `paths.analysis`.
 
 ## Setup
 
