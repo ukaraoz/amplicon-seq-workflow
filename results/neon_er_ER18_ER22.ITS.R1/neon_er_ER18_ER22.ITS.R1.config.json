@@ -60,6 +60,11 @@
         "Fungi"
       ]
     },
+    "guilds": {
+      "dir": "/global/homes/u/ukaraoz/m3260/refdata/guilds/2026-11-09",
+      "fungaltraits": "/global/homes/u/ukaraoz/m3260/refdata/guilds/2026-11-09/FungalTraits_1.2.tsv",
+      "funguild": "/global/homes/u/ukaraoz/m3260/refdata/guilds/2026-11-09/FUNGuild.tsv"
+    },
     "remove_taxa": {},
     "require_ranks": [],
     "tree": {
