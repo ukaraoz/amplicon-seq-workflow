@@ -1,0 +1,95 @@
+{
+  "project": "neon_er",
+  "run": "ER18_ER22",
+  "run_id": "ER18_ER22",
+  "locus": "16S",
+  "key": "neon_er_ER18_ER22.16S",
+  "profile": "nersc",
+  "paths": {
+    "metadata": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_amplicon_metadata.tsv",
+    "work": "/pscratch/sd/u/ukaraoz/neon_itag/16S/work/ER18_ER22",
+    "results": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.16S",
+    "analysis": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.16S/analysis"
+  },
+  "samples": {
+    "id_column": "sample",
+    "manifest": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_16S_manifest.tsv",
+    "run_column": "run_folder",
+    "label_strip": null
+  },
+  "params": {
+    "mincount": 1000,
+    "minfinal": 5000,
+    "minLen": 50,
+    "minOverlap": 12,
+    "threads": 8,
+    "fwd_primer": "GTGYCAGCMGCCGCGGTAA",
+    "rev_primer": "GGACTACNVGGGTWTCTAAT",
+    "run_cutadapt": false,
+    "merge": true,
+    "truncLen": [
+      240,
+      180
+    ],
+    "maxEE": [
+      2,
+      2
+    ],
+    "runs": {
+      "batch1_2018_M02248_JL579": {
+        "truncLen": [
+          240,
+          150
+        ]
+      },
+      "batch2_2022_M02248_LHM22": {
+        "truncLen": [
+          240,
+          190
+        ]
+      },
+      "Reyesmixed16SITS_run_redos": {
+        "truncLen": [
+          240,
+          160
+        ]
+      }
+    },
+    "asv_lengths": [
+      250,
+      256
+    ],
+    "taxonomy": {
+      "db": "/global/homes/u/ukaraoz/m3260/refdata/dada2/SILVA/v144/silva_nr99_v144_toGenus_trainset.fa.gz",
+      "species_db": "/global/homes/u/ukaraoz/m3260/refdata/dada2/SILVA/v144/silva_v144_assignSpecies.fa.gz",
+      "levels": [
+        "Domain",
+        "Kingdom",
+        "Phylum",
+        "Class",
+        "Order",
+        "Family",
+        "Genus"
+      ],
+      "try_rc": false
+    },
+    "remove_taxa": {
+      "Order": [
+        "Chloroplast"
+      ],
+      "Family": [
+        "Mitochondria"
+      ]
+    },
+    "require_ranks": [
+      "Phylum"
+    ],
+    "tree": {
+      "method": "mothur-v4",
+      "reference": "/global/homes/u/ukaraoz/m3260/refdata/mothur/silva.nr_v138_2",
+      "v4_start": 13862,
+      "v4_end": 23444
+    }
+  },
+  "analysis": {}
+}

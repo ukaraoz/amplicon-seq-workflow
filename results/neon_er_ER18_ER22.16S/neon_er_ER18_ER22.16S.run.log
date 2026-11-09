@@ -1,0 +1,2013 @@
+salloc: Granted job allocation 61016813
+salloc: Waiting for resource configuration
+salloc: Nodes nid200021 are ready for job
+== Sun Nov  8 05:32:42 PM PST 2026 node nid200021
+== Sun Nov  8 05:32:42 PM PST 2026 test: 3 samples per run, no taxonomy
+Loading required package: Rcpp
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: BiocParallel
+Loading required package: Biostrings
+Loading required package: S4Vectors
+Loading required package: stats4
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: GenomeInfoDb
+
+Attaching package: ‘Biostrings’
+
+The following object is masked from ‘package:base’:
+
+    strsplit
+
+Loading required package: Rsamtools
+Loading required package: GenomicRanges
+Loading required package: GenomicAlignments
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘phyloseq’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    distance
+
+The following object is masked from ‘package:Biobase’:
+
+    sampleNames
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    distance
+
+The following object is masked from ‘package:IRanges’:
+
+    distance
+
+dada2-asv.R version 2.4 
+threads: 128  nsamples: 3  taxonomy: FALSE  resume: FALSE  reads: R1+R2 merged 
+fastq manifest: /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_16S_manifest.tsv 
+16S ER18_ER22 : 9 samples in 3 run(s)
+  batch1_2018_M02248_JL579            3 samples  truncLen 240/150  maxEE 2/2  trimLeft 0/0
+  batch2_2022_M02248_LHM22            3 samples  truncLen 240/190  maxEE 2/2  trimLeft 0/0
+  Reyesmixed16SITS_run_redos          3 samples  truncLen 240/160  maxEE 2/2  trimLeft 0/0
+Creating output directory: /pscratch/sd/u/ukaraoz/neon_itag/16S/work/ER18_ER22/test-n3/prefilt
+primer hits before trimming ( 012-ER22 ):
+       Forward Complement Reverse RevComp
+FWD.R1       0          0       0       0
+FWD.R2       0          0       0   22634
+REV.R1       0          0       0   71274
+REV.R2       0          0       0       0
+Creating output directory: /pscratch/sd/u/ukaraoz/neon_itag/16S/work/ER18_ER22/test-n3/filtered
+15700950 total bases in 104673 reads from 3 samples will be used for learning the error rates.
+25121520 total bases in 104673 reads from 3 samples will be used for learning the error rates.
+45700960 total bases in 285631 reads from 3 samples will be used for learning the error rates.
+68551440 total bases in 285631 reads from 3 samples will be used for learning the error rates.
+70794950 total bases in 372605 reads from 3 samples will be used for learning the error rates.
+89425200 total bases in 372605 reads from 3 samples will be used for learning the error rates.
+batch1_2018_M02248_JL579 : 388 pseudo-pooling priors
+batch2_2022_M02248_LHM22 : 1484 pseudo-pooling priors
+Reyesmixed16SITS_run_redos : 1207 pseudo-pooling priors
+batch1_2018_M02248_JL579 : 253 pseudo-pooling priors
+batch2_2022_M02248_LHM22 : 1229 pseudo-pooling priors
+Reyesmixed16SITS_run_redos : 919 pseudo-pooling priors
+16077 paired-reads (in 415 unique pairings) successfully merged out of 23512 (in 2095 pairings) input.
+20891 paired-reads (in 516 unique pairings) successfully merged out of 29007 (in 2739 pairings) input.
+31806 paired-reads (in 565 unique pairings) successfully merged out of 42544 (in 3108 pairings) input.
+Duplicate sequences in merged output.
+60732 paired-reads (in 1039 unique pairings) successfully merged out of 70342 (in 4564 pairings) input.
+85976 paired-reads (in 1664 unique pairings) successfully merged out of 96919 (in 4111 pairings) input.
+85607 paired-reads (in 1313 unique pairings) successfully merged out of 100118 (in 5823 pairings) input.
+84754 paired-reads (in 1311 unique pairings) successfully merged out of 99955 (in 6125 pairings) input.
+105667 paired-reads (in 1629 unique pairings) successfully merged out of 117454 (in 4559 pairings) input.
+123801 paired-reads (in 2015 unique pairings) successfully merged out of 138254 (in 5516 pairings) input.
+Duplicate sequences detected and merged.
+ASV length distribution:
+
+ 203  220  221  222  223  224  227  228  230  235  240  242  243  244  245  249 
+   1    4    8    6    9    1    2    1    1    1    2    1    1    1    1    1 
+ 250  251  252  253  254  255  256  257  258  259  260  261  262  263  265  271 
+   1    4   38 3822  325   14    4    7    1    1    1    1    1    1    2    5 
+ 272  273  279  285  287  288  295  348  418 
+   1    4    1    1    2    1    1    1    2 
+keeping 4208 of 4283 ASVs ( 99.7 % of reads ) with length in 250 256 
+Identified 156 bimeras out of 4208 input sequences.
+fraction of reads kept after chimera removal: 0.9739175 
+Duplicate sequences detected and merged.
+stopping before taxonomy (--no-taxonomy): 4052 ASVs in 9 samples -> /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/16S/results/ER18_ER22/test-n3 
+There were 11 warnings (use warnings() to see them)
+== Sun Nov  8 05:52:12 PM PST 2026 full dada2
+Loading required package: Rcpp
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: BiocParallel
+Loading required package: Biostrings
+Loading required package: S4Vectors
+Loading required package: stats4
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: GenomeInfoDb
+
+Attaching package: ‘Biostrings’
+
+The following object is masked from ‘package:base’:
+
+    strsplit
+
+Loading required package: Rsamtools
+Loading required package: GenomicRanges
+Loading required package: GenomicAlignments
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘phyloseq’
+
+The following object is masked from ‘package:SummarizedExperiment’:
+
+    distance
+
+The following object is masked from ‘package:Biobase’:
+
+    sampleNames
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    distance
+
+The following object is masked from ‘package:IRanges’:
+
+    distance
+
+dada2-asv.R version 2.4 
+threads: 128  nsamples: all  taxonomy: TRUE  resume: FALSE  reads: R1+R2 merged 
+fastq manifest: /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_16S_manifest.tsv 
+16S ER18_ER22 : 490 samples in 3 run(s)
+  batch1_2018_M02248_JL579          411 samples  truncLen 240/150  maxEE 2/2  trimLeft 0/0
+  batch2_2022_M02248_LHM22           73 samples  truncLen 240/190  maxEE 2/2  trimLeft 0/0
+  Reyesmixed16SITS_run_redos          6 samples  truncLen 240/160  maxEE 2/2  trimLeft 0/0
+primer hits before trimming ( 156-ER18 ):
+       Forward Complement Reverse RevComp
+FWD.R1       1          0       0       0
+FWD.R2       0          0       0    4356
+REV.R1       0          0       0   19641
+REV.R2       0          0       0       0
+102252000 total bases in 426050 reads from 15 samples will be used for learning the error rates.
+100420960 total bases in 627631 reads from 6 samples will be used for learning the error rates.
+128920080 total bases in 537167 reads from 5 samples will be used for learning the error rates.
+105920630 total bases in 557477 reads from 4 samples will be used for learning the error rates.
+133794480 total bases in 557477 reads from 4 samples will be used for learning the error rates.
+101492850 total bases in 676619 reads from 25 samples will be used for learning the error rates.
+batch1_2018_M02248_JL579 : 18184 pseudo-pooling priors
+batch2_2022_M02248_LHM22 : 15754 pseudo-pooling priors
+Reyesmixed16SITS_run_redos : 2092 pseudo-pooling priors
+batch1_2018_M02248_JL579 : 8912 pseudo-pooling priors
+batch2_2022_M02248_LHM22 : 12301 pseudo-pooling priors
+Reyesmixed16SITS_run_redos : 1596 pseudo-pooling priors
+18803 paired-reads (in 1195 unique pairings) successfully merged out of 22074 (in 3047 pairings) input.
+Duplicate sequences in merged output.
+19926 paired-reads (in 1953 unique pairings) successfully merged out of 25573 (in 5098 pairings) input.
+Duplicate sequences in merged output.
+24912 paired-reads (in 2046 unique pairings) successfully merged out of 30998 (in 5630 pairings) input.
+Duplicate sequences in merged output.
+17417 paired-reads (in 1504 unique pairings) successfully merged out of 21315 (in 3651 pairings) input.
+Duplicate sequences in merged output.
+16103 paired-reads (in 1826 unique pairings) successfully merged out of 20700 (in 4240 pairings) input.
+Duplicate sequences in merged output.
+23276 paired-reads (in 2465 unique pairings) successfully merged out of 29433 (in 5872 pairings) input.
+25555 paired-reads (in 1836 unique pairings) successfully merged out of 31362 (in 5215 pairings) input.
+Duplicate sequences in merged output.
+26814 paired-reads (in 2351 unique pairings) successfully merged out of 33625 (in 6339 pairings) input.
+Duplicate sequences in merged output.
+36933 paired-reads (in 2352 unique pairings) successfully merged out of 44919 (in 6547 pairings) input.
+Duplicate sequences in merged output.
+14604 paired-reads (in 1301 unique pairings) successfully merged out of 17942 (in 3198 pairings) input.
+Duplicate sequences in merged output.
+31565 paired-reads (in 2497 unique pairings) successfully merged out of 39636 (in 7170 pairings) input.
+27715 paired-reads (in 2000 unique pairings) successfully merged out of 34786 (in 5553 pairings) input.
+17434 paired-reads (in 1676 unique pairings) successfully merged out of 23290 (in 4737 pairings) input.
+18875 paired-reads (in 1643 unique pairings) successfully merged out of 26532 (in 5763 pairings) input.
+61397 paired-reads (in 1286 unique pairings) successfully merged out of 70660 (in 5005 pairings) input.
+14631 paired-reads (in 1906 unique pairings) successfully merged out of 19418 (in 4645 pairings) input.
+Duplicate sequences in merged output.
+15866 paired-reads (in 1390 unique pairings) successfully merged out of 22700 (in 5482 pairings) input.
+Duplicate sequences in merged output.
+30460 paired-reads (in 1741 unique pairings) successfully merged out of 37006 (in 4810 pairings) input.
+16283 paired-reads (in 1500 unique pairings) successfully merged out of 20954 (in 3970 pairings) input.
+Duplicate sequences in merged output.
+93015 paired-reads (in 4428 unique pairings) successfully merged out of 100505 (in 7849 pairings) input.
+Duplicate sequences in merged output.
+32830 paired-reads (in 2500 unique pairings) successfully merged out of 40714 (in 6886 pairings) input.
+Duplicate sequences in merged output.
+32313 paired-reads (in 2542 unique pairings) successfully merged out of 40414 (in 6888 pairings) input.
+Duplicate sequences in merged output.
+32364 paired-reads (in 2196 unique pairings) successfully merged out of 38353 (in 5640 pairings) input.
+Duplicate sequences in merged output.
+27012 paired-reads (in 2091 unique pairings) successfully merged out of 32845 (in 5359 pairings) input.
+Duplicate sequences in merged output.
+15309 paired-reads (in 1765 unique pairings) successfully merged out of 19778 (in 4218 pairings) input.
+Duplicate sequences in merged output.
+12870 paired-reads (in 1561 unique pairings) successfully merged out of 16551 (in 3685 pairings) input.
+Duplicate sequences in merged output.
+28986 paired-reads (in 2316 unique pairings) successfully merged out of 34951 (in 5656 pairings) input.
+Duplicate sequences in merged output.
+61276 paired-reads (in 3329 unique pairings) successfully merged out of 66765 (in 6094 pairings) input.
+111970 paired-reads (in 4251 unique pairings) successfully merged out of 121062 (in 8429 pairings) input.
+20957 paired-reads (in 2101 unique pairings) successfully merged out of 27712 (in 6051 pairings) input.
+Duplicate sequences in merged output.
+35373 paired-reads (in 2495 unique pairings) successfully merged out of 42806 (in 6081 pairings) input.
+Duplicate sequences in merged output.
+48430 paired-reads (in 2291 unique pairings) successfully merged out of 58110 (in 6854 pairings) input.
+18925 paired-reads (in 1736 unique pairings) successfully merged out of 23354 (in 4108 pairings) input.
+51180 paired-reads (in 3284 unique pairings) successfully merged out of 55604 (in 5552 pairings) input.
+Duplicate sequences in merged output.
+14612 paired-reads (in 1450 unique pairings) successfully merged out of 19446 (in 4314 pairings) input.
+Duplicate sequences in merged output.
+15319 paired-reads (in 1650 unique pairings) successfully merged out of 19580 (in 4044 pairings) input.
+15241 paired-reads (in 1503 unique pairings) successfully merged out of 20787 (in 4675 pairings) input.
+Duplicate sequences in merged output.
+16707 paired-reads (in 1565 unique pairings) successfully merged out of 21004 (in 3702 pairings) input.
+Duplicate sequences in merged output.
+20474 paired-reads (in 2270 unique pairings) successfully merged out of 22879 (in 3561 pairings) input.
+Duplicate sequences in merged output.
+130795 paired-reads (in 5046 unique pairings) successfully merged out of 142486 (in 10118 pairings) input.
+Duplicate sequences in merged output.
+24786 paired-reads (in 2053 unique pairings) successfully merged out of 32122 (in 5934 pairings) input.
+Duplicate sequences in merged output.
+16514 paired-reads (in 1748 unique pairings) successfully merged out of 20388 (in 3899 pairings) input.
+12468 paired-reads (in 1459 unique pairings) successfully merged out of 16819 (in 4239 pairings) input.
+Duplicate sequences in merged output.
+79494 paired-reads (in 3046 unique pairings) successfully merged out of 87291 (in 6096 pairings) input.
+Duplicate sequences in merged output.
+88630 paired-reads (in 3374 unique pairings) successfully merged out of 106828 (in 11922 pairings) input.
+Duplicate sequences in merged output.
+129312 paired-reads (in 4772 unique pairings) successfully merged out of 140614 (in 9555 pairings) input.
+Duplicate sequences in merged output.
+9719 paired-reads (in 1313 unique pairings) successfully merged out of 12738 (in 2931 pairings) input.
+18454 paired-reads (in 1819 unique pairings) successfully merged out of 23903 (in 4955 pairings) input.
+37481 paired-reads (in 2639 unique pairings) successfully merged out of 48443 (in 8039 pairings) input.
+Duplicate sequences in merged output.
+12891 paired-reads (in 1596 unique pairings) successfully merged out of 16726 (in 3742 pairings) input.
+Duplicate sequences in merged output.
+7470 paired-reads (in 1366 unique pairings) successfully merged out of 8667 (in 2098 pairings) input.
+139851 paired-reads (in 5097 unique pairings) successfully merged out of 151997 (in 10627 pairings) input.
+Duplicate sequences in merged output.
+147625 paired-reads (in 3988 unique pairings) successfully merged out of 158734 (in 8367 pairings) input.
+Duplicate sequences in merged output.
+43090 paired-reads (in 2659 unique pairings) successfully merged out of 46959 (in 4780 pairings) input.
+135756 paired-reads (in 4159 unique pairings) successfully merged out of 145177 (in 8658 pairings) input.
+Duplicate sequences in merged output.
+12678 paired-reads (in 1053 unique pairings) successfully merged out of 15020 (in 2151 pairings) input.
+14116 paired-reads (in 1743 unique pairings) successfully merged out of 18022 (in 3907 pairings) input.
+Duplicate sequences in merged output.
+15830 paired-reads (in 1568 unique pairings) successfully merged out of 21723 (in 4978 pairings) input.
+Duplicate sequences in merged output.
+19269 paired-reads (in 1685 unique pairings) successfully merged out of 25299 (in 5337 pairings) input.
+Duplicate sequences in merged output.
+16668 paired-reads (in 1327 unique pairings) successfully merged out of 20674 (in 3196 pairings) input.
+136802 paired-reads (in 4291 unique pairings) successfully merged out of 145492 (in 8349 pairings) input.
+Duplicate sequences in merged output.
+115126 paired-reads (in 4389 unique pairings) successfully merged out of 123198 (in 8115 pairings) input.
+Duplicate sequences in merged output.
+19824 paired-reads (in 1913 unique pairings) successfully merged out of 24710 (in 4536 pairings) input.
+Duplicate sequences in merged output.
+17905 paired-reads (in 1435 unique pairings) successfully merged out of 20747 (in 2985 pairings) input.
+15813 paired-reads (in 1736 unique pairings) successfully merged out of 20813 (in 4686 pairings) input.
+129069 paired-reads (in 5134 unique pairings) successfully merged out of 142117 (in 10623 pairings) input.
+Duplicate sequences in merged output.
+99658 paired-reads (in 3453 unique pairings) successfully merged out of 107585 (in 6468 pairings) input.
+Duplicate sequences in merged output.
+21135 paired-reads (in 1505 unique pairings) successfully merged out of 25168 (in 3628 pairings) input.
+Duplicate sequences in merged output.
+11507 paired-reads (in 1371 unique pairings) successfully merged out of 14505 (in 3104 pairings) input.
+Duplicate sequences in merged output.
+131757 paired-reads (in 5172 unique pairings) successfully merged out of 146658 (in 11249 pairings) input.
+Duplicate sequences in merged output.
+15244 paired-reads (in 1698 unique pairings) successfully merged out of 18445 (in 3505 pairings) input.
+Duplicate sequences in merged output.
+123521 paired-reads (in 4388 unique pairings) successfully merged out of 136033 (in 9382 pairings) input.
+Duplicate sequences in merged output.
+18510 paired-reads (in 1828 unique pairings) successfully merged out of 23239 (in 4705 pairings) input.
+Duplicate sequences in merged output.
+11055 paired-reads (in 1403 unique pairings) successfully merged out of 15102 (in 3408 pairings) input.
+27363 paired-reads (in 2411 unique pairings) successfully merged out of 30146 (in 3981 pairings) input.
+19400 paired-reads (in 1679 unique pairings) successfully merged out of 24050 (in 4157 pairings) input.
+Duplicate sequences in merged output.
+134349 paired-reads (in 4702 unique pairings) successfully merged out of 148339 (in 10565 pairings) input.
+Duplicate sequences in merged output.
+4684 paired-reads (in 840 unique pairings) successfully merged out of 7179 (in 2344 pairings) input.
+20613 paired-reads (in 1640 unique pairings) successfully merged out of 25832 (in 4529 pairings) input.
+15168 paired-reads (in 1824 unique pairings) successfully merged out of 19810 (in 4695 pairings) input.
+Duplicate sequences in merged output.
+97475 paired-reads (in 4409 unique pairings) successfully merged out of 106542 (in 8493 pairings) input.
+Duplicate sequences in merged output.
+7616 paired-reads (in 1269 unique pairings) successfully merged out of 10431 (in 2846 pairings) input.
+Duplicate sequences in merged output.
+14505 paired-reads (in 1712 unique pairings) successfully merged out of 19434 (in 4543 pairings) input.
+Duplicate sequences in merged output.
+8907 paired-reads (in 1232 unique pairings) successfully merged out of 12700 (in 3505 pairings) input.
+Duplicate sequences in merged output.
+134948 paired-reads (in 4824 unique pairings) successfully merged out of 145178 (in 9467 pairings) input.
+Duplicate sequences in merged output.
+16283 paired-reads (in 1861 unique pairings) successfully merged out of 21930 (in 5198 pairings) input.
+103494 paired-reads (in 4184 unique pairings) successfully merged out of 110576 (in 7402 pairings) input.
+Duplicate sequences in merged output.
+13575 paired-reads (in 1577 unique pairings) successfully merged out of 18372 (in 4568 pairings) input.
+14638 paired-reads (in 1788 unique pairings) successfully merged out of 19662 (in 4843 pairings) input.
+16433 paired-reads (in 1843 unique pairings) successfully merged out of 21958 (in 5256 pairings) input.
+Duplicate sequences in merged output.
+15494 paired-reads (in 2012 unique pairings) successfully merged out of 19915 (in 4720 pairings) input.
+Duplicate sequences in merged output.
+101676 paired-reads (in 3437 unique pairings) successfully merged out of 108416 (in 6502 pairings) input.
+Duplicate sequences in merged output.
+12060 paired-reads (in 1501 unique pairings) successfully merged out of 15745 (in 3455 pairings) input.
+Duplicate sequences in merged output.
+88017 paired-reads (in 1691 unique pairings) successfully merged out of 101169 (in 6469 pairings) input.
+147208 paired-reads (in 4787 unique pairings) successfully merged out of 159371 (in 9710 pairings) input.
+Duplicate sequences in merged output.
+119604 paired-reads (in 4440 unique pairings) successfully merged out of 131242 (in 9174 pairings) input.
+Duplicate sequences in merged output.
+56513 paired-reads (in 3792 unique pairings) successfully merged out of 61658 (in 6402 pairings) input.
+Duplicate sequences in merged output.
+6847 paired-reads (in 1082 unique pairings) successfully merged out of 9103 (in 2325 pairings) input.
+Duplicate sequences in merged output.
+127714 paired-reads (in 3348 unique pairings) successfully merged out of 136528 (in 6824 pairings) input.
+15406 paired-reads (in 1793 unique pairings) successfully merged out of 20415 (in 4771 pairings) input.
+Duplicate sequences in merged output.
+86309 paired-reads (in 1667 unique pairings) successfully merged out of 100957 (in 6847 pairings) input.
+18134 paired-reads (in 1840 unique pairings) successfully merged out of 23384 (in 4957 pairings) input.
+Duplicate sequences in merged output.
+16838 paired-reads (in 1871 unique pairings) successfully merged out of 21832 (in 5079 pairings) input.
+Duplicate sequences in merged output.
+13754 paired-reads (in 1239 unique pairings) successfully merged out of 16828 (in 2944 pairings) input.
+Duplicate sequences in merged output.
+220193 paired-reads (in 5912 unique pairings) successfully merged out of 238152 (in 12991 pairings) input.
+Duplicate sequences in merged output.
+16165 paired-reads (in 1748 unique pairings) successfully merged out of 21241 (in 4783 pairings) input.
+Duplicate sequences in merged output.
+15974 paired-reads (in 1777 unique pairings) successfully merged out of 20884 (in 4799 pairings) input.
+Duplicate sequences in merged output.
+19511 paired-reads (in 1995 unique pairings) successfully merged out of 25497 (in 5552 pairings) input.
+Duplicate sequences in merged output.
+16262 paired-reads (in 1855 unique pairings) successfully merged out of 21513 (in 4974 pairings) input.
+Duplicate sequences in merged output.
+9061 paired-reads (in 1197 unique pairings) successfully merged out of 12440 (in 3206 pairings) input.
+107514 paired-reads (in 3824 unique pairings) successfully merged out of 114446 (in 6935 pairings) input.
+Duplicate sequences in merged output.
+18256 paired-reads (in 1433 unique pairings) successfully merged out of 22229 (in 3756 pairings) input.
+Duplicate sequences in merged output.
+8808 paired-reads (in 1118 unique pairings) successfully merged out of 11491 (in 2495 pairings) input.
+16406 paired-reads (in 1694 unique pairings) successfully merged out of 20991 (in 4483 pairings) input.
+18167 paired-reads (in 1737 unique pairings) successfully merged out of 22959 (in 4518 pairings) input.
+Duplicate sequences in merged output.
+19794 paired-reads (in 1566 unique pairings) successfully merged out of 24150 (in 4065 pairings) input.
+Duplicate sequences in merged output.
+16562 paired-reads (in 1567 unique pairings) successfully merged out of 21270 (in 4375 pairings) input.
+Duplicate sequences in merged output.
+17130 paired-reads (in 2016 unique pairings) successfully merged out of 22904 (in 5469 pairings) input.
+Duplicate sequences in merged output.
+17877 paired-reads (in 1350 unique pairings) successfully merged out of 21982 (in 3811 pairings) input.
+17940 paired-reads (in 1398 unique pairings) successfully merged out of 22423 (in 3802 pairings) input.
+Duplicate sequences in merged output.
+17313 paired-reads (in 1336 unique pairings) successfully merged out of 21332 (in 3634 pairings) input.
+Duplicate sequences in merged output.
+154856 paired-reads (in 4933 unique pairings) successfully merged out of 168708 (in 11140 pairings) input.
+Duplicate sequences in merged output.
+12433 paired-reads (in 772 unique pairings) successfully merged out of 15635 (in 2326 pairings) input.
+Duplicate sequences in merged output.
+12931 paired-reads (in 1471 unique pairings) successfully merged out of 16986 (in 3884 pairings) input.
+Duplicate sequences in merged output.
+14169 paired-reads (in 1156 unique pairings) successfully merged out of 18006 (in 3256 pairings) input.
+Duplicate sequences in merged output.
+106022 paired-reads (in 4312 unique pairings) successfully merged out of 117522 (in 8888 pairings) input.
+Duplicate sequences in merged output.
+13165 paired-reads (in 1528 unique pairings) successfully merged out of 18143 (in 4438 pairings) input.
+Duplicate sequences in merged output.
+15159 paired-reads (in 970 unique pairings) successfully merged out of 18879 (in 2790 pairings) input.
+Duplicate sequences in merged output.
+78017 paired-reads (in 1401 unique pairings) successfully merged out of 86435 (in 4492 pairings) input.
+119764 paired-reads (in 4871 unique pairings) successfully merged out of 131985 (in 9663 pairings) input.
+Duplicate sequences in merged output.
+18061 paired-reads (in 1774 unique pairings) successfully merged out of 23115 (in 4854 pairings) input.
+Duplicate sequences in merged output.
+17668 paired-reads (in 1640 unique pairings) successfully merged out of 22039 (in 4227 pairings) input.
+10388 paired-reads (in 1097 unique pairings) successfully merged out of 14197 (in 2754 pairings) input.
+16688 paired-reads (in 1739 unique pairings) successfully merged out of 19870 (in 3505 pairings) input.
+Duplicate sequences in merged output.
+20161 paired-reads (in 2250 unique pairings) successfully merged out of 25765 (in 5755 pairings) input.
+Duplicate sequences in merged output.
+135435 paired-reads (in 4491 unique pairings) successfully merged out of 146706 (in 9031 pairings) input.
+Duplicate sequences in merged output.
+133788 paired-reads (in 5131 unique pairings) successfully merged out of 146296 (in 10386 pairings) input.
+Duplicate sequences in merged output.
+25987 paired-reads (in 1986 unique pairings) successfully merged out of 30823 (in 4477 pairings) input.
+Duplicate sequences in merged output.
+17864 paired-reads (in 1573 unique pairings) successfully merged out of 22237 (in 3988 pairings) input.
+31156 paired-reads (in 2642 unique pairings) successfully merged out of 38364 (in 6838 pairings) input.
+Duplicate sequences in merged output.
+16511 paired-reads (in 1881 unique pairings) successfully merged out of 21507 (in 4895 pairings) input.
+Duplicate sequences in merged output.
+20842 paired-reads (in 1767 unique pairings) successfully merged out of 25857 (in 4752 pairings) input.
+Duplicate sequences in merged output.
+22316 paired-reads (in 1568 unique pairings) successfully merged out of 27356 (in 4591 pairings) input.
+Duplicate sequences in merged output.
+7529 paired-reads (in 948 unique pairings) successfully merged out of 10933 (in 2971 pairings) input.
+15677 paired-reads (in 617 unique pairings) successfully merged out of 17445 (in 1353 pairings) input.
+Duplicate sequences in merged output.
+119711 paired-reads (in 2728 unique pairings) successfully merged out of 127045 (in 5352 pairings) input.
+Duplicate sequences in merged output.
+16720 paired-reads (in 1674 unique pairings) successfully merged out of 22317 (in 4800 pairings) input.
+21272 paired-reads (in 1305 unique pairings) successfully merged out of 27983 (in 5008 pairings) input.
+16932 paired-reads (in 1729 unique pairings) successfully merged out of 21703 (in 4416 pairings) input.
+Duplicate sequences in merged output.
+22621 paired-reads (in 1167 unique pairings) successfully merged out of 29608 (in 4511 pairings) input.
+12418 paired-reads (in 1162 unique pairings) successfully merged out of 15332 (in 2691 pairings) input.
+Duplicate sequences in merged output.
+21523 paired-reads (in 1781 unique pairings) successfully merged out of 26443 (in 4457 pairings) input.
+Duplicate sequences in merged output.
+17160 paired-reads (in 1183 unique pairings) successfully merged out of 23217 (in 4768 pairings) input.
+Duplicate sequences in merged output.
+97465 paired-reads (in 4103 unique pairings) successfully merged out of 107674 (in 8642 pairings) input.
+Duplicate sequences in merged output.
+21732 paired-reads (in 1496 unique pairings) successfully merged out of 26175 (in 4008 pairings) input.
+Duplicate sequences in merged output.
+18465 paired-reads (in 1122 unique pairings) successfully merged out of 23799 (in 4193 pairings) input.
+Duplicate sequences in merged output.
+138135 paired-reads (in 3385 unique pairings) successfully merged out of 149099 (in 7571 pairings) input.
+Duplicate sequences in merged output.
+139332 paired-reads (in 4607 unique pairings) successfully merged out of 151388 (in 9364 pairings) input.
+Duplicate sequences in merged output.
+62550 paired-reads (in 3111 unique pairings) successfully merged out of 79486 (in 12360 pairings) input.
+Duplicate sequences in merged output.
+18513 paired-reads (in 1225 unique pairings) successfully merged out of 22425 (in 3586 pairings) input.
+Duplicate sequences in merged output.
+16544 paired-reads (in 1856 unique pairings) successfully merged out of 21265 (in 4572 pairings) input.
+Duplicate sequences in merged output.
+18560 paired-reads (in 1862 unique pairings) successfully merged out of 22967 (in 4593 pairings) input.
+Duplicate sequences in merged output.
+100443 paired-reads (in 2559 unique pairings) successfully merged out of 108146 (in 5455 pairings) input.
+16758 paired-reads (in 1918 unique pairings) successfully merged out of 21347 (in 4376 pairings) input.
+Duplicate sequences in merged output.
+19842 paired-reads (in 1578 unique pairings) successfully merged out of 24976 (in 4073 pairings) input.
+Duplicate sequences in merged output.
+18248 paired-reads (in 1580 unique pairings) successfully merged out of 22254 (in 3702 pairings) input.
+Duplicate sequences in merged output.
+115149 paired-reads (in 4147 unique pairings) successfully merged out of 125292 (in 8269 pairings) input.
+Duplicate sequences in merged output.
+20899 paired-reads (in 2087 unique pairings) successfully merged out of 26216 (in 5326 pairings) input.
+Duplicate sequences in merged output.
+83615 paired-reads (in 3378 unique pairings) successfully merged out of 94572 (in 7965 pairings) input.
+93342 paired-reads (in 3859 unique pairings) successfully merged out of 105843 (in 7887 pairings) input.
+13270 paired-reads (in 1388 unique pairings) successfully merged out of 18279 (in 4103 pairings) input.
+Duplicate sequences in merged output.
+20233 paired-reads (in 2022 unique pairings) successfully merged out of 25352 (in 5132 pairings) input.
+Duplicate sequences in merged output.
+14261 paired-reads (in 1522 unique pairings) successfully merged out of 18873 (in 4124 pairings) input.
+Duplicate sequences in merged output.
+38477 paired-reads (in 2413 unique pairings) successfully merged out of 49492 (in 8241 pairings) input.
+Duplicate sequences in merged output.
+24218 paired-reads (in 2055 unique pairings) successfully merged out of 29493 (in 5017 pairings) input.
+Duplicate sequences in merged output.
+135538 paired-reads (in 2162 unique pairings) successfully merged out of 154190 (in 8913 pairings) input.
+5587 paired-reads (in 1005 unique pairings) successfully merged out of 7649 (in 2232 pairings) input.
+Duplicate sequences in merged output.
+106179 paired-reads (in 3149 unique pairings) successfully merged out of 114821 (in 6548 pairings) input.
+20123 paired-reads (in 2086 unique pairings) successfully merged out of 25078 (in 4771 pairings) input.
+Duplicate sequences in merged output.
+81768 paired-reads (in 4037 unique pairings) successfully merged out of 90518 (in 8056 pairings) input.
+Duplicate sequences in merged output.
+19351 paired-reads (in 1832 unique pairings) successfully merged out of 24087 (in 4311 pairings) input.
+Duplicate sequences in merged output.
+19118 paired-reads (in 1878 unique pairings) successfully merged out of 23805 (in 4623 pairings) input.
+Duplicate sequences in merged output.
+22864 paired-reads (in 1837 unique pairings) successfully merged out of 29703 (in 6058 pairings) input.
+Duplicate sequences in merged output.
+22979 paired-reads (in 1768 unique pairings) successfully merged out of 30378 (in 6192 pairings) input.
+Duplicate sequences in merged output.
+15470 paired-reads (in 1531 unique pairings) successfully merged out of 20909 (in 4922 pairings) input.
+28446 paired-reads (in 2111 unique pairings) successfully merged out of 39143 (in 8420 pairings) input.
+17674 paired-reads (in 1769 unique pairings) successfully merged out of 24046 (in 5761 pairings) input.
+Duplicate sequences in merged output.
+25023 paired-reads (in 1794 unique pairings) successfully merged out of 32393 (in 6223 pairings) input.
+Duplicate sequences in merged output.
+19795 paired-reads (in 1518 unique pairings) successfully merged out of 25174 (in 4759 pairings) input.
+Duplicate sequences in merged output.
+15294 paired-reads (in 1784 unique pairings) successfully merged out of 19487 (in 4031 pairings) input.
+23615 paired-reads (in 1744 unique pairings) successfully merged out of 30076 (in 5459 pairings) input.
+Duplicate sequences in merged output.
+15057 paired-reads (in 1629 unique pairings) successfully merged out of 18863 (in 3636 pairings) input.
+Duplicate sequences in merged output.
+23673 paired-reads (in 1966 unique pairings) successfully merged out of 30276 (in 5965 pairings) input.
+25939 paired-reads (in 2076 unique pairings) successfully merged out of 34598 (in 7357 pairings) input.
+Duplicate sequences in merged output.
+124526 paired-reads (in 4813 unique pairings) successfully merged out of 135206 (in 9335 pairings) input.
+Duplicate sequences in merged output.
+16754 paired-reads (in 2033 unique pairings) successfully merged out of 21406 (in 4823 pairings) input.
+17158 paired-reads (in 1871 unique pairings) successfully merged out of 22688 (in 5126 pairings) input.
+Duplicate sequences in merged output.
+19447 paired-reads (in 1713 unique pairings) successfully merged out of 25879 (in 5685 pairings) input.
+Duplicate sequences in merged output.
+16717 paired-reads (in 1842 unique pairings) successfully merged out of 21757 (in 4952 pairings) input.
+14668 paired-reads (in 1675 unique pairings) successfully merged out of 18681 (in 4094 pairings) input.
+Duplicate sequences in merged output.
+74922 paired-reads (in 1686 unique pairings) successfully merged out of 86171 (in 5701 pairings) input.
+15685 paired-reads (in 1792 unique pairings) successfully merged out of 20402 (in 4690 pairings) input.
+Duplicate sequences in merged output.
+18723 paired-reads (in 1835 unique pairings) successfully merged out of 23146 (in 4294 pairings) input.
+Duplicate sequences in merged output.
+125492 paired-reads (in 5012 unique pairings) successfully merged out of 140789 (in 11865 pairings) input.
+Duplicate sequences in merged output.
+17358 paired-reads (in 1745 unique pairings) successfully merged out of 23595 (in 5708 pairings) input.
+Duplicate sequences in merged output.
+19042 paired-reads (in 2018 unique pairings) successfully merged out of 24373 (in 4943 pairings) input.
+Duplicate sequences in merged output.
+23624 paired-reads (in 2206 unique pairings) successfully merged out of 31803 (in 7335 pairings) input.
+Duplicate sequences in merged output.
+11596 paired-reads (in 1517 unique pairings) successfully merged out of 15071 (in 3497 pairings) input.
+Duplicate sequences in merged output.
+20188 paired-reads (in 1948 unique pairings) successfully merged out of 25037 (in 4607 pairings) input.
+Duplicate sequences in merged output.
+14270 paired-reads (in 1230 unique pairings) successfully merged out of 17487 (in 3004 pairings) input.
+Duplicate sequences in merged output.
+24472 paired-reads (in 2129 unique pairings) successfully merged out of 30467 (in 5442 pairings) input.
+17149 paired-reads (in 1598 unique pairings) successfully merged out of 22773 (in 4474 pairings) input.
+Duplicate sequences in merged output.
+29280 paired-reads (in 1994 unique pairings) successfully merged out of 37471 (in 6415 pairings) input.
+Duplicate sequences in merged output.
+14142 paired-reads (in 1006 unique pairings) successfully merged out of 18089 (in 2719 pairings) input.
+19930 paired-reads (in 2059 unique pairings) successfully merged out of 25560 (in 5194 pairings) input.
+Duplicate sequences in merged output.
+23196 paired-reads (in 2305 unique pairings) successfully merged out of 29229 (in 5779 pairings) input.
+Duplicate sequences in merged output.
+26603 paired-reads (in 2273 unique pairings) successfully merged out of 33357 (in 5903 pairings) input.
+Duplicate sequences in merged output.
+22369 paired-reads (in 2173 unique pairings) successfully merged out of 27116 (in 4798 pairings) input.
+Duplicate sequences in merged output.
+28167 paired-reads (in 2138 unique pairings) successfully merged out of 35768 (in 6064 pairings) input.
+Duplicate sequences in merged output.
+38936 paired-reads (in 2858 unique pairings) successfully merged out of 47631 (in 7724 pairings) input.
+Duplicate sequences in merged output.
+20858 paired-reads (in 2059 unique pairings) successfully merged out of 26804 (in 5169 pairings) input.
+Duplicate sequences in merged output.
+21928 paired-reads (in 2000 unique pairings) successfully merged out of 27294 (in 5043 pairings) input.
+Duplicate sequences in merged output.
+152786 paired-reads (in 5238 unique pairings) successfully merged out of 165947 (in 10353 pairings) input.
+Duplicate sequences in merged output.
+15040 paired-reads (in 1422 unique pairings) successfully merged out of 19468 (in 3456 pairings) input.
+43936 paired-reads (in 2544 unique pairings) successfully merged out of 52443 (in 7130 pairings) input.
+Duplicate sequences in merged output.
+9502 paired-reads (in 904 unique pairings) successfully merged out of 13042 (in 2542 pairings) input.
+Duplicate sequences in merged output.
+16296 paired-reads (in 1444 unique pairings) successfully merged out of 21185 (in 4006 pairings) input.
+Duplicate sequences in merged output.
+158952 paired-reads (in 5287 unique pairings) successfully merged out of 174742 (in 11987 pairings) input.
+Duplicate sequences in merged output.
+13464 paired-reads (in 1184 unique pairings) successfully merged out of 16034 (in 2643 pairings) input.
+130270 paired-reads (in 5522 unique pairings) successfully merged out of 141657 (in 10627 pairings) input.
+Duplicate sequences in merged output.
+21446 paired-reads (in 1839 unique pairings) successfully merged out of 25692 (in 4104 pairings) input.
+Duplicate sequences in merged output.
+27880 paired-reads (in 2216 unique pairings) successfully merged out of 34777 (in 6001 pairings) input.
+Duplicate sequences in merged output.
+50035 paired-reads (in 2521 unique pairings) successfully merged out of 59773 (in 7327 pairings) input.
+Duplicate sequences in merged output.
+30591 paired-reads (in 2296 unique pairings) successfully merged out of 38083 (in 6263 pairings) input.
+Duplicate sequences in merged output.
+12153 paired-reads (in 1483 unique pairings) successfully merged out of 15862 (in 3441 pairings) input.
+26897 paired-reads (in 2058 unique pairings) successfully merged out of 33440 (in 5611 pairings) input.
+Duplicate sequences in merged output.
+75679 paired-reads (in 3615 unique pairings) successfully merged out of 82343 (in 6558 pairings) input.
+Duplicate sequences in merged output.
+17128 paired-reads (in 1612 unique pairings) successfully merged out of 22071 (in 4142 pairings) input.
+Duplicate sequences in merged output.
+22884 paired-reads (in 1064 unique pairings) successfully merged out of 29509 (in 4066 pairings) input.
+18481 paired-reads (in 1859 unique pairings) successfully merged out of 22012 (in 3962 pairings) input.
+Duplicate sequences in merged output.
+53345 paired-reads (in 3251 unique pairings) successfully merged out of 59358 (in 6132 pairings) input.
+Duplicate sequences in merged output.
+74488 paired-reads (in 3071 unique pairings) successfully merged out of 79710 (in 5568 pairings) input.
+Duplicate sequences in merged output.
+23821 paired-reads (in 1562 unique pairings) successfully merged out of 28570 (in 3779 pairings) input.
+Duplicate sequences in merged output.
+18872 paired-reads (in 1301 unique pairings) successfully merged out of 22367 (in 3204 pairings) input.
+Duplicate sequences in merged output.
+20596 paired-reads (in 1916 unique pairings) successfully merged out of 27324 (in 5759 pairings) input.
+Duplicate sequences in merged output.
+21466 paired-reads (in 2197 unique pairings) successfully merged out of 27310 (in 5505 pairings) input.
+Duplicate sequences in merged output.
+83551 paired-reads (in 3342 unique pairings) successfully merged out of 89670 (in 5918 pairings) input.
+Duplicate sequences in merged output.
+166487 paired-reads (in 3717 unique pairings) successfully merged out of 178668 (in 7869 pairings) input.
+Duplicate sequences in merged output.
+15181 paired-reads (in 1566 unique pairings) successfully merged out of 20004 (in 4206 pairings) input.
+Duplicate sequences in merged output.
+16951 paired-reads (in 1540 unique pairings) successfully merged out of 21519 (in 4008 pairings) input.
+Duplicate sequences in merged output.
+127047 paired-reads (in 3816 unique pairings) successfully merged out of 138600 (in 8381 pairings) input.
+Duplicate sequences in merged output.
+18690 paired-reads (in 1872 unique pairings) successfully merged out of 23661 (in 4776 pairings) input.
+Duplicate sequences in merged output.
+30405 paired-reads (in 2379 unique pairings) successfully merged out of 36366 (in 5631 pairings) input.
+Duplicate sequences in merged output.
+110598 paired-reads (in 3385 unique pairings) successfully merged out of 128334 (in 10727 pairings) input.
+Duplicate sequences in merged output.
+14815 paired-reads (in 1428 unique pairings) successfully merged out of 18603 (in 3515 pairings) input.
+Duplicate sequences in merged output.
+47592 paired-reads (in 2952 unique pairings) successfully merged out of 56950 (in 7898 pairings) input.
+Duplicate sequences in merged output.
+20315 paired-reads (in 2058 unique pairings) successfully merged out of 24951 (in 4672 pairings) input.
+Duplicate sequences in merged output.
+20401 paired-reads (in 2042 unique pairings) successfully merged out of 25802 (in 5105 pairings) input.
+Duplicate sequences in merged output.
+31535 paired-reads (in 2262 unique pairings) successfully merged out of 38542 (in 6019 pairings) input.
+Duplicate sequences in merged output.
+20172 paired-reads (in 1947 unique pairings) successfully merged out of 25649 (in 4780 pairings) input.
+Duplicate sequences in merged output.
+20258 paired-reads (in 1295 unique pairings) successfully merged out of 24667 (in 3570 pairings) input.
+Duplicate sequences in merged output.
+126960 paired-reads (in 5083 unique pairings) successfully merged out of 139002 (in 10140 pairings) input.
+Duplicate sequences in merged output.
+119185 paired-reads (in 3188 unique pairings) successfully merged out of 130649 (in 6572 pairings) input.
+Duplicate sequences in merged output.
+27725 paired-reads (in 2434 unique pairings) successfully merged out of 34987 (in 6628 pairings) input.
+Duplicate sequences in merged output.
+12663 paired-reads (in 1632 unique pairings) successfully merged out of 17127 (in 4173 pairings) input.
+Duplicate sequences in merged output.
+110284 paired-reads (in 3967 unique pairings) successfully merged out of 121894 (in 8106 pairings) input.
+Duplicate sequences in merged output.
+16943 paired-reads (in 1841 unique pairings) successfully merged out of 22051 (in 4744 pairings) input.
+112732 paired-reads (in 3371 unique pairings) successfully merged out of 121210 (in 6541 pairings) input.
+Duplicate sequences in merged output.
+35785 paired-reads (in 2728 unique pairings) successfully merged out of 43561 (in 7261 pairings) input.
+Duplicate sequences in merged output.
+24856 paired-reads (in 2053 unique pairings) successfully merged out of 31787 (in 5882 pairings) input.
+Duplicate sequences in merged output.
+14716 paired-reads (in 1527 unique pairings) successfully merged out of 19313 (in 4101 pairings) input.
+Duplicate sequences in merged output.
+17727 paired-reads (in 1924 unique pairings) successfully merged out of 22645 (in 4763 pairings) input.
+Duplicate sequences in merged output.
+31659 paired-reads (in 2419 unique pairings) successfully merged out of 39781 (in 6638 pairings) input.
+Duplicate sequences in merged output.
+93907 paired-reads (in 4235 unique pairings) successfully merged out of 101327 (in 7635 pairings) input.
+Duplicate sequences in merged output.
+108390 paired-reads (in 4008 unique pairings) successfully merged out of 116542 (in 7480 pairings) input.
+Duplicate sequences in merged output.
+35116 paired-reads (in 2536 unique pairings) successfully merged out of 44124 (in 7145 pairings) input.
+Duplicate sequences in merged output.
+39648 paired-reads (in 2891 unique pairings) successfully merged out of 49035 (in 7693 pairings) input.
+Duplicate sequences in merged output.
+20478 paired-reads (in 1921 unique pairings) successfully merged out of 26284 (in 5158 pairings) input.
+Duplicate sequences in merged output.
+143019 paired-reads (in 5369 unique pairings) successfully merged out of 158836 (in 11998 pairings) input.
+Duplicate sequences in merged output.
+24911 paired-reads (in 2268 unique pairings) successfully merged out of 32079 (in 6143 pairings) input.
+Duplicate sequences in merged output.
+21571 paired-reads (in 1714 unique pairings) successfully merged out of 27659 (in 4855 pairings) input.
+20513 paired-reads (in 1856 unique pairings) successfully merged out of 26250 (in 4873 pairings) input.
+Duplicate sequences in merged output.
+7410 paired-reads (in 586 unique pairings) successfully merged out of 8692 (in 1128 pairings) input.
+Duplicate sequences in merged output.
+18691 paired-reads (in 1805 unique pairings) successfully merged out of 24186 (in 4887 pairings) input.
+Duplicate sequences in merged output.
+33784 paired-reads (in 2710 unique pairings) successfully merged out of 42998 (in 7400 pairings) input.
+Duplicate sequences in merged output.
+17231 paired-reads (in 554 unique pairings) successfully merged out of 21210 (in 2104 pairings) input.
+19852 paired-reads (in 1898 unique pairings) successfully merged out of 25258 (in 5247 pairings) input.
+Duplicate sequences in merged output.
+356988 paired-reads (in 6961 unique pairings) successfully merged out of 385340 (in 17139 pairings) input.
+Duplicate sequences in merged output.
+20557 paired-reads (in 1748 unique pairings) successfully merged out of 26184 (in 4986 pairings) input.
+Duplicate sequences in merged output.
+167744 paired-reads (in 3845 unique pairings) successfully merged out of 180695 (in 8787 pairings) input.
+Duplicate sequences in merged output.
+42393 paired-reads (in 2836 unique pairings) successfully merged out of 52618 (in 8157 pairings) input.
+Duplicate sequences in merged output.
+32190 paired-reads (in 2259 unique pairings) successfully merged out of 41019 (in 6556 pairings) input.
+Duplicate sequences in merged output.
+19438 paired-reads (in 1596 unique pairings) successfully merged out of 24747 (in 4474 pairings) input.
+Duplicate sequences in merged output.
+36445 paired-reads (in 2717 unique pairings) successfully merged out of 45085 (in 7692 pairings) input.
+15283 paired-reads (in 1752 unique pairings) successfully merged out of 19248 (in 4027 pairings) input.
+Duplicate sequences in merged output.
+85476 paired-reads (in 4314 unique pairings) successfully merged out of 96476 (in 9353 pairings) input.
+Duplicate sequences in merged output.
+30261 paired-reads (in 2698 unique pairings) successfully merged out of 38069 (in 6904 pairings) input.
+Duplicate sequences in merged output.
+25952 paired-reads (in 2185 unique pairings) successfully merged out of 32826 (in 5998 pairings) input.
+Duplicate sequences in merged output.
+32697 paired-reads (in 2700 unique pairings) successfully merged out of 40107 (in 6583 pairings) input.
+Duplicate sequences in merged output.
+30284 paired-reads (in 2561 unique pairings) successfully merged out of 39435 (in 7564 pairings) input.
+Duplicate sequences in merged output.
+42463 paired-reads (in 2776 unique pairings) successfully merged out of 51168 (in 7428 pairings) input.
+Duplicate sequences in merged output.
+17754 paired-reads (in 1891 unique pairings) successfully merged out of 23848 (in 5663 pairings) input.
+Duplicate sequences in merged output.
+22611 paired-reads (in 1992 unique pairings) successfully merged out of 28057 (in 4875 pairings) input.
+Duplicate sequences in merged output.
+13366 paired-reads (in 1547 unique pairings) successfully merged out of 17689 (in 4088 pairings) input.
+Duplicate sequences in merged output.
+39001 paired-reads (in 2859 unique pairings) successfully merged out of 47626 (in 7265 pairings) input.
+Duplicate sequences in merged output.
+29240 paired-reads (in 1695 unique pairings) successfully merged out of 34511 (in 4504 pairings) input.
+Duplicate sequences in merged output.
+31428 paired-reads (in 1460 unique pairings) successfully merged out of 36465 (in 4063 pairings) input.
+Duplicate sequences in merged output.
+21738 paired-reads (in 1922 unique pairings) successfully merged out of 26983 (in 4623 pairings) input.
+Duplicate sequences in merged output.
+40012 paired-reads (in 2064 unique pairings) successfully merged out of 47787 (in 6039 pairings) input.
+Duplicate sequences in merged output.
+19515 paired-reads (in 1565 unique pairings) successfully merged out of 25203 (in 4580 pairings) input.
+Duplicate sequences in merged output.
+35603 paired-reads (in 2333 unique pairings) successfully merged out of 44132 (in 7223 pairings) input.
+Duplicate sequences in merged output.
+38812 paired-reads (in 2611 unique pairings) successfully merged out of 49410 (in 7975 pairings) input.
+Duplicate sequences in merged output.
+14820 paired-reads (in 1696 unique pairings) successfully merged out of 19273 (in 4331 pairings) input.
+Duplicate sequences in merged output.
+14551 paired-reads (in 1390 unique pairings) successfully merged out of 19643 (in 4392 pairings) input.
+Duplicate sequences in merged output.
+40429 paired-reads (in 2231 unique pairings) successfully merged out of 47775 (in 6082 pairings) input.
+Duplicate sequences in merged output.
+42698 paired-reads (in 3205 unique pairings) successfully merged out of 53632 (in 8945 pairings) input.
+Duplicate sequences in merged output.
+23283 paired-reads (in 1949 unique pairings) successfully merged out of 29225 (in 4941 pairings) input.
+Duplicate sequences in merged output.
+20530 paired-reads (in 2114 unique pairings) successfully merged out of 26416 (in 5373 pairings) input.
+Duplicate sequences in merged output.
+24391 paired-reads (in 2054 unique pairings) successfully merged out of 30630 (in 5383 pairings) input.
+Duplicate sequences in merged output.
+18193 paired-reads (in 1544 unique pairings) successfully merged out of 24429 (in 5269 pairings) input.
+14085 paired-reads (in 1145 unique pairings) successfully merged out of 19125 (in 3887 pairings) input.
+Duplicate sequences in merged output.
+18163 paired-reads (in 1821 unique pairings) successfully merged out of 24067 (in 4914 pairings) input.
+Duplicate sequences in merged output.
+8449 paired-reads (in 1086 unique pairings) successfully merged out of 11600 (in 2911 pairings) input.
+18808 paired-reads (in 1543 unique pairings) successfully merged out of 23217 (in 3706 pairings) input.
+Duplicate sequences in merged output.
+8109 paired-reads (in 1104 unique pairings) successfully merged out of 11245 (in 2925 pairings) input.
+Duplicate sequences in merged output.
+29204 paired-reads (in 1676 unique pairings) successfully merged out of 36792 (in 5021 pairings) input.
+17403 paired-reads (in 1935 unique pairings) successfully merged out of 22044 (in 4698 pairings) input.
+Duplicate sequences in merged output.
+17361 paired-reads (in 1766 unique pairings) successfully merged out of 23801 (in 5611 pairings) input.
+Duplicate sequences in merged output.
+9190 paired-reads (in 833 unique pairings) successfully merged out of 12711 (in 2824 pairings) input.
+15413 paired-reads (in 1914 unique pairings) successfully merged out of 19884 (in 4583 pairings) input.
+Duplicate sequences in merged output.
+26000 paired-reads (in 1983 unique pairings) successfully merged out of 32303 (in 5114 pairings) input.
+Duplicate sequences in merged output.
+17063 paired-reads (in 1476 unique pairings) successfully merged out of 21158 (in 3458 pairings) input.
+Duplicate sequences in merged output.
+21599 paired-reads (in 1941 unique pairings) successfully merged out of 27681 (in 5289 pairings) input.
+9419 paired-reads (in 1012 unique pairings) successfully merged out of 12642 (in 2844 pairings) input.
+Duplicate sequences in merged output.
+15842 paired-reads (in 1774 unique pairings) successfully merged out of 20028 (in 3966 pairings) input.
+Duplicate sequences in merged output.
+28931 paired-reads (in 1761 unique pairings) successfully merged out of 35452 (in 5034 pairings) input.
+Duplicate sequences in merged output.
+17658 paired-reads (in 1570 unique pairings) successfully merged out of 22515 (in 4024 pairings) input.
+Duplicate sequences in merged output.
+14774 paired-reads (in 1751 unique pairings) successfully merged out of 18934 (in 3971 pairings) input.
+Duplicate sequences in merged output.
+42985 paired-reads (in 2251 unique pairings) successfully merged out of 54219 (in 7259 pairings) input.
+Duplicate sequences in merged output.
+13269 paired-reads (in 1698 unique pairings) successfully merged out of 17053 (in 3936 pairings) input.
+Duplicate sequences in merged output.
+19145 paired-reads (in 1626 unique pairings) successfully merged out of 23865 (in 4038 pairings) input.
+Duplicate sequences in merged output.
+16271 paired-reads (in 1541 unique pairings) successfully merged out of 20300 (in 3718 pairings) input.
+Duplicate sequences in merged output.
+23519 paired-reads (in 1626 unique pairings) successfully merged out of 29762 (in 4834 pairings) input.
+Duplicate sequences in merged output.
+13502 paired-reads (in 727 unique pairings) successfully merged out of 16139 (in 1786 pairings) input.
+21268 paired-reads (in 919 unique pairings) successfully merged out of 25439 (in 2712 pairings) input.
+Duplicate sequences in merged output.
+40304 paired-reads (in 2466 unique pairings) successfully merged out of 49576 (in 6960 pairings) input.
+Duplicate sequences in merged output.
+11052 paired-reads (in 721 unique pairings) successfully merged out of 15806 (in 3133 pairings) input.
+Duplicate sequences in merged output.
+25323 paired-reads (in 1452 unique pairings) successfully merged out of 31996 (in 4442 pairings) input.
+Duplicate sequences in merged output.
+35849 paired-reads (in 2395 unique pairings) successfully merged out of 44036 (in 6618 pairings) input.
+Duplicate sequences in merged output.
+407654 paired-reads (in 5646 unique pairings) successfully merged out of 479616 (in 37714 pairings) input.
+Duplicate sequences in merged output.
+19920 paired-reads (in 1406 unique pairings) successfully merged out of 25714 (in 4211 pairings) input.
+Duplicate sequences in merged output.
+10794 paired-reads (in 555 unique pairings) successfully merged out of 13464 (in 2053 pairings) input.
+Duplicate sequences in merged output.
+17655 paired-reads (in 906 unique pairings) successfully merged out of 21984 (in 3386 pairings) input.
+Duplicate sequences in merged output.
+21960 paired-reads (in 2287 unique pairings) successfully merged out of 28833 (in 6201 pairings) input.
+Duplicate sequences in merged output.
+24844 paired-reads (in 1853 unique pairings) successfully merged out of 30856 (in 4957 pairings) input.
+Duplicate sequences in merged output.
+28327 paired-reads (in 1878 unique pairings) successfully merged out of 35104 (in 5467 pairings) input.
+Duplicate sequences in merged output.
+25308 paired-reads (in 1437 unique pairings) successfully merged out of 31446 (in 4846 pairings) input.
+Duplicate sequences in merged output.
+14648 paired-reads (in 1391 unique pairings) successfully merged out of 19535 (in 4251 pairings) input.
+Duplicate sequences in merged output.
+22626 paired-reads (in 1818 unique pairings) successfully merged out of 26962 (in 3949 pairings) input.
+Duplicate sequences in merged output.
+20861 paired-reads (in 1896 unique pairings) successfully merged out of 25684 (in 4340 pairings) input.
+21762 paired-reads (in 1734 unique pairings) successfully merged out of 28637 (in 5688 pairings) input.
+Duplicate sequences in merged output.
+5834 paired-reads (in 896 unique pairings) successfully merged out of 7812 (in 2017 pairings) input.
+16288 paired-reads (in 1399 unique pairings) successfully merged out of 21695 (in 4655 pairings) input.
+75421 paired-reads (in 2128 unique pairings) successfully merged out of 80521 (in 3793 pairings) input.
+Duplicate sequences in merged output.
+86683 paired-reads (in 1960 unique pairings) successfully merged out of 91559 (in 3647 pairings) input.
+Duplicate sequences in merged output.
+19027 paired-reads (in 1691 unique pairings) successfully merged out of 23702 (in 4155 pairings) input.
+13420 paired-reads (in 1115 unique pairings) successfully merged out of 15993 (in 2401 pairings) input.
+Duplicate sequences in merged output.
+20991 paired-reads (in 1824 unique pairings) successfully merged out of 26535 (in 4698 pairings) input.
+Duplicate sequences in merged output.
+19776 paired-reads (in 2072 unique pairings) successfully merged out of 25866 (in 5349 pairings) input.
+Duplicate sequences in merged output.
+20678 paired-reads (in 1656 unique pairings) successfully merged out of 25216 (in 3858 pairings) input.
+Duplicate sequences in merged output.
+16700 paired-reads (in 1346 unique pairings) successfully merged out of 20492 (in 3577 pairings) input.
+Duplicate sequences in merged output.
+14726 paired-reads (in 1511 unique pairings) successfully merged out of 19548 (in 4424 pairings) input.
+17618 paired-reads (in 1300 unique pairings) successfully merged out of 21334 (in 3312 pairings) input.
+Duplicate sequences in merged output.
+11113 paired-reads (in 1196 unique pairings) successfully merged out of 13526 (in 2526 pairings) input.
+Duplicate sequences in merged output.
+20810 paired-reads (in 1834 unique pairings) successfully merged out of 25506 (in 4452 pairings) input.
+Duplicate sequences in merged output.
+10062 paired-reads (in 1273 unique pairings) successfully merged out of 13903 (in 3380 pairings) input.
+Duplicate sequences in merged output.
+86892 paired-reads (in 3450 unique pairings) successfully merged out of 96807 (in 7043 pairings) input.
+35250 paired-reads (in 1841 unique pairings) successfully merged out of 44418 (in 6872 pairings) input.
+Duplicate sequences in merged output.
+14950 paired-reads (in 1658 unique pairings) successfully merged out of 19249 (in 4219 pairings) input.
+Duplicate sequences in merged output.
+129524 paired-reads (in 3028 unique pairings) successfully merged out of 138244 (in 6279 pairings) input.
+Duplicate sequences in merged output.
+23080 paired-reads (in 1959 unique pairings) successfully merged out of 31361 (in 6594 pairings) input.
+Duplicate sequences in merged output.
+16032 paired-reads (in 1390 unique pairings) successfully merged out of 22367 (in 5257 pairings) input.
+Duplicate sequences in merged output.
+18496 paired-reads (in 1695 unique pairings) successfully merged out of 22804 (in 4095 pairings) input.
+Duplicate sequences in merged output.
+8360 paired-reads (in 1035 unique pairings) successfully merged out of 12399 (in 3350 pairings) input.
+20816 paired-reads (in 1668 unique pairings) successfully merged out of 25983 (in 4209 pairings) input.
+Duplicate sequences in merged output.
+16692 paired-reads (in 1573 unique pairings) successfully merged out of 21672 (in 4439 pairings) input.
+15028 paired-reads (in 1839 unique pairings) successfully merged out of 20263 (in 4960 pairings) input.
+Duplicate sequences in merged output.
+14480 paired-reads (in 1720 unique pairings) successfully merged out of 19349 (in 4108 pairings) input.
+Duplicate sequences in merged output.
+13417 paired-reads (in 1577 unique pairings) successfully merged out of 18322 (in 4123 pairings) input.
+Duplicate sequences in merged output.
+22201 paired-reads (in 1680 unique pairings) successfully merged out of 28963 (in 5531 pairings) input.
+Duplicate sequences in merged output.
+17424 paired-reads (in 1605 unique pairings) successfully merged out of 24394 (in 5320 pairings) input.
+Duplicate sequences in merged output.
+25174 paired-reads (in 2080 unique pairings) successfully merged out of 31226 (in 5569 pairings) input.
+10173 paired-reads (in 1234 unique pairings) successfully merged out of 14291 (in 3635 pairings) input.
+Duplicate sequences in merged output.
+423068 paired-reads (in 6255 unique pairings) successfully merged out of 481324 (in 28680 pairings) input.
+Duplicate sequences in merged output.
+13860 paired-reads (in 1747 unique pairings) successfully merged out of 18482 (in 4290 pairings) input.
+Duplicate sequences in merged output.
+18049 paired-reads (in 2146 unique pairings) successfully merged out of 23757 (in 5617 pairings) input.
+7939 paired-reads (in 1070 unique pairings) successfully merged out of 11347 (in 3107 pairings) input.
+Duplicate sequences in merged output.
+17321 paired-reads (in 1800 unique pairings) successfully merged out of 23500 (in 5529 pairings) input.
+Duplicate sequences in merged output.
+17519 paired-reads (in 1954 unique pairings) successfully merged out of 23085 (in 5280 pairings) input.
+143208 paired-reads (in 4314 unique pairings) successfully merged out of 157182 (in 9468 pairings) input.
+Duplicate sequences in merged output.
+17975 paired-reads (in 1773 unique pairings) successfully merged out of 25019 (in 6125 pairings) input.
+Duplicate sequences in merged output.
+20850 paired-reads (in 2169 unique pairings) successfully merged out of 27193 (in 5603 pairings) input.
+Duplicate sequences in merged output.
+10277 paired-reads (in 1338 unique pairings) successfully merged out of 15088 (in 4403 pairings) input.
+17566 paired-reads (in 1941 unique pairings) successfully merged out of 22858 (in 5154 pairings) input.
+18584 paired-reads (in 1937 unique pairings) successfully merged out of 24512 (in 5599 pairings) input.
+Duplicate sequences in merged output.
+19705 paired-reads (in 674 unique pairings) successfully merged out of 24684 (in 3000 pairings) input.
+Duplicate sequences in merged output.
+98966 paired-reads (in 3459 unique pairings) successfully merged out of 104734 (in 6186 pairings) input.
+9206 paired-reads (in 1127 unique pairings) successfully merged out of 12878 (in 3296 pairings) input.
+Duplicate sequences in merged output.
+17169 paired-reads (in 1704 unique pairings) successfully merged out of 22261 (in 4657 pairings) input.
+Duplicate sequences in merged output.
+8698 paired-reads (in 1159 unique pairings) successfully merged out of 13117 (in 3793 pairings) input.
+20709 paired-reads (in 1139 unique pairings) successfully merged out of 25954 (in 3998 pairings) input.
+Duplicate sequences in merged output.
+22929 paired-reads (in 1880 unique pairings) successfully merged out of 28288 (in 4618 pairings) input.
+Duplicate sequences in merged output.
+15548 paired-reads (in 1160 unique pairings) successfully merged out of 19081 (in 2752 pairings) input.
+13125 paired-reads (in 1629 unique pairings) successfully merged out of 18820 (in 4829 pairings) input.
+16805 paired-reads (in 1866 unique pairings) successfully merged out of 22146 (in 4684 pairings) input.
+15310 paired-reads (in 1576 unique pairings) successfully merged out of 19524 (in 4035 pairings) input.
+Duplicate sequences in merged output.
+18165 paired-reads (in 1613 unique pairings) successfully merged out of 23102 (in 4538 pairings) input.
+Duplicate sequences in merged output.
+18225 paired-reads (in 1942 unique pairings) successfully merged out of 24099 (in 5169 pairings) input.
+Duplicate sequences in merged output.
+15193 paired-reads (in 1337 unique pairings) successfully merged out of 21274 (in 4733 pairings) input.
+Duplicate sequences in merged output.
+17761 paired-reads (in 579 unique pairings) successfully merged out of 21732 (in 2394 pairings) input.
+16948 paired-reads (in 1080 unique pairings) successfully merged out of 21483 (in 3558 pairings) input.
+Duplicate sequences in merged output.
+20218 paired-reads (in 1649 unique pairings) successfully merged out of 26641 (in 5044 pairings) input.
+Duplicate sequences in merged output.
+18424 paired-reads (in 1621 unique pairings) successfully merged out of 25396 (in 5635 pairings) input.
+Duplicate sequences in merged output.
+17300 paired-reads (in 1508 unique pairings) successfully merged out of 23905 (in 5072 pairings) input.
+Duplicate sequences in merged output.
+16758 paired-reads (in 1607 unique pairings) successfully merged out of 23081 (in 5083 pairings) input.
+Duplicate sequences in merged output.
+13898 paired-reads (in 1432 unique pairings) successfully merged out of 18958 (in 4520 pairings) input.
+Duplicate sequences in merged output.
+21720 paired-reads (in 1161 unique pairings) successfully merged out of 27483 (in 4008 pairings) input.
+Duplicate sequences in merged output.
+16936 paired-reads (in 886 unique pairings) successfully merged out of 20636 (in 2341 pairings) input.
+Duplicate sequences in merged output.
+26207 paired-reads (in 917 unique pairings) successfully merged out of 31557 (in 2843 pairings) input.
+11432 paired-reads (in 1347 unique pairings) successfully merged out of 14466 (in 3081 pairings) input.
+Duplicate sequences in merged output.
+28998 paired-reads (in 2009 unique pairings) successfully merged out of 38466 (in 7287 pairings) input.
+Duplicate sequences in merged output.
+33514 paired-reads (in 2277 unique pairings) successfully merged out of 46027 (in 9578 pairings) input.
+Duplicate sequences in merged output.
+18150 paired-reads (in 1771 unique pairings) successfully merged out of 23279 (in 4606 pairings) input.
+Duplicate sequences in merged output.
+20589 paired-reads (in 1816 unique pairings) successfully merged out of 26394 (in 4797 pairings) input.
+Duplicate sequences in merged output.
+31936 paired-reads (in 627 unique pairings) successfully merged out of 35459 (in 2010 pairings) input.
+Duplicate sequences in merged output.
+16939 paired-reads (in 1511 unique pairings) successfully merged out of 21587 (in 3825 pairings) input.
+Duplicate sequences in merged output.
+38341 paired-reads (in 1901 unique pairings) successfully merged out of 46362 (in 5528 pairings) input.
+Duplicate sequences in merged output.
+23526 paired-reads (in 1801 unique pairings) successfully merged out of 32591 (in 6870 pairings) input.
+Duplicate sequences in merged output.
+25420 paired-reads (in 1843 unique pairings) successfully merged out of 31202 (in 4844 pairings) input.
+Duplicate sequences in merged output.
+30605 paired-reads (in 2119 unique pairings) successfully merged out of 38773 (in 6100 pairings) input.
+Duplicate sequences in merged output.
+17764 paired-reads (in 744 unique pairings) successfully merged out of 21748 (in 2720 pairings) input.
+Duplicate sequences in merged output.
+16858 paired-reads (in 1924 unique pairings) successfully merged out of 21056 (in 4272 pairings) input.
+Duplicate sequences in merged output.
+29340 paired-reads (in 2160 unique pairings) successfully merged out of 36104 (in 5831 pairings) input.
+Duplicate sequences in merged output.
+20368 paired-reads (in 1903 unique pairings) successfully merged out of 25955 (in 5026 pairings) input.
+Duplicate sequences in merged output.
+20661 paired-reads (in 1977 unique pairings) successfully merged out of 26629 (in 5509 pairings) input.
+19536 paired-reads (in 1733 unique pairings) successfully merged out of 24207 (in 4090 pairings) input.
+Duplicate sequences in merged output.
+22505 paired-reads (in 1401 unique pairings) successfully merged out of 28878 (in 4951 pairings) input.
+Duplicate sequences in merged output.
+26678 paired-reads (in 2172 unique pairings) successfully merged out of 35078 (in 6676 pairings) input.
+Duplicate sequences in merged output.
+18062 paired-reads (in 1411 unique pairings) successfully merged out of 24568 (in 5195 pairings) input.
+Duplicate sequences in merged output.
+13131 paired-reads (in 1677 unique pairings) successfully merged out of 16888 (in 3816 pairings) input.
+Duplicate sequences in merged output.
+34708 paired-reads (in 1831 unique pairings) successfully merged out of 41416 (in 5104 pairings) input.
+Duplicate sequences in merged output.
+23147 paired-reads (in 1426 unique pairings) successfully merged out of 28630 (in 4014 pairings) input.
+Duplicate sequences in merged output.
+2184 paired-reads (in 517 unique pairings) successfully merged out of 3046 (in 1067 pairings) input.
+25984 paired-reads (in 1721 unique pairings) successfully merged out of 31949 (in 4489 pairings) input.
+Duplicate sequences in merged output.
+40388 paired-reads (in 1330 unique pairings) successfully merged out of 47169 (in 4136 pairings) input.
+Duplicate sequences in merged output.
+26990 paired-reads (in 2171 unique pairings) successfully merged out of 33439 (in 5621 pairings) input.
+Duplicate sequences in merged output.
+33556 paired-reads (in 2198 unique pairings) successfully merged out of 38874 (in 5039 pairings) input.
+Duplicate sequences in merged output.
+14382 paired-reads (in 1756 unique pairings) successfully merged out of 18620 (in 4110 pairings) input.
+23638 paired-reads (in 2239 unique pairings) successfully merged out of 29728 (in 5543 pairings) input.
+Duplicate sequences in merged output.
+21744 paired-reads (in 2219 unique pairings) successfully merged out of 27296 (in 5402 pairings) input.
+Duplicate sequences in merged output.
+15577 paired-reads (in 1580 unique pairings) successfully merged out of 20830 (in 4611 pairings) input.
+Duplicate sequences in merged output.
+17743 paired-reads (in 1910 unique pairings) successfully merged out of 23497 (in 5411 pairings) input.
+Duplicate sequences in merged output.
+21923 paired-reads (in 2251 unique pairings) successfully merged out of 26909 (in 4888 pairings) input.
+Duplicate sequences in merged output.
+24821 paired-reads (in 2399 unique pairings) successfully merged out of 30668 (in 5682 pairings) input.
+Duplicate sequences in merged output.
+13011 paired-reads (in 1632 unique pairings) successfully merged out of 17948 (in 4482 pairings) input.
+Duplicate sequences in merged output.
+22121 paired-reads (in 1836 unique pairings) successfully merged out of 27286 (in 4716 pairings) input.
+Duplicate sequences in merged output.
+28899 paired-reads (in 2598 unique pairings) successfully merged out of 35832 (in 6424 pairings) input.
+Duplicate sequences in merged output.
+20029 paired-reads (in 1955 unique pairings) successfully merged out of 24402 (in 4336 pairings) input.
+Duplicate sequences in merged output.
+32733 paired-reads (in 1657 unique pairings) successfully merged out of 37922 (in 4349 pairings) input.
+Duplicate sequences in merged output.
+16432 paired-reads (in 1983 unique pairings) successfully merged out of 21459 (in 4741 pairings) input.
+Duplicate sequences in merged output.
+27809 paired-reads (in 2213 unique pairings) successfully merged out of 35487 (in 6474 pairings) input.
+34586 paired-reads (in 2025 unique pairings) successfully merged out of 43365 (in 6317 pairings) input.
+Duplicate sequences in merged output.
+42283 paired-reads (in 2837 unique pairings) successfully merged out of 52673 (in 8217 pairings) input.
+Duplicate sequences in merged output.
+25439 paired-reads (in 2286 unique pairings) successfully merged out of 31815 (in 5953 pairings) input.
+Duplicate sequences in merged output.
+23743 paired-reads (in 1942 unique pairings) successfully merged out of 29402 (in 5396 pairings) input.
+Duplicate sequences in merged output.
+28402 paired-reads (in 2151 unique pairings) successfully merged out of 33506 (in 5087 pairings) input.
+26009 paired-reads (in 2549 unique pairings) successfully merged out of 33925 (in 6778 pairings) input.
+Duplicate sequences in merged output.
+15054 paired-reads (in 1361 unique pairings) successfully merged out of 19067 (in 3701 pairings) input.
+Duplicate sequences in merged output.
+19018 paired-reads (in 2012 unique pairings) successfully merged out of 24712 (in 5497 pairings) input.
+29335 paired-reads (in 1796 unique pairings) successfully merged out of 36949 (in 5666 pairings) input.
+Duplicate sequences in merged output.
+17988 paired-reads (in 1821 unique pairings) successfully merged out of 23588 (in 5372 pairings) input.
+38581 paired-reads (in 2540 unique pairings) successfully merged out of 47949 (in 7545 pairings) input.
+Duplicate sequences in merged output.
+24045 paired-reads (in 2117 unique pairings) successfully merged out of 31198 (in 6045 pairings) input.
+Duplicate sequences in merged output.
+83631 paired-reads (in 3953 unique pairings) successfully merged out of 99042 (in 11658 pairings) input.
+Duplicate sequences in merged output.
+15199 paired-reads (in 1890 unique pairings) successfully merged out of 19039 (in 4084 pairings) input.
+Duplicate sequences in merged output.
+16632 paired-reads (in 1811 unique pairings) successfully merged out of 22836 (in 5326 pairings) input.
+Duplicate sequences in merged output.
+34304 paired-reads (in 2533 unique pairings) successfully merged out of 42903 (in 6964 pairings) input.
+Duplicate sequences in merged output.
+28492 paired-reads (in 1938 unique pairings) successfully merged out of 34399 (in 4996 pairings) input.
+39133 paired-reads (in 1925 unique pairings) successfully merged out of 46106 (in 5345 pairings) input.
+Duplicate sequences in merged output.
+28059 paired-reads (in 2307 unique pairings) successfully merged out of 35685 (in 6677 pairings) input.
+Duplicate sequences in merged output.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+ASV length distribution:
+
+  177   184   190   198   199   202   203   204   206   208   211   212   214 
+    1     1     1     1     1     2     6     1     3     3     1     1     1 
+  215   218   219   220   221   222   223   224   225   226   227   228   229 
+    2     4     1    79   141    84   182    33     6     6    35    17     8 
+  230   231   232   234   235   236   237   238   239   240   241   242   243 
+   12     9     3     2     9     2    12     5     8    24    26    18    16 
+  244   245   246   247   248   249   250   251   252   253   254   255   256 
+    8    16     7     5    12    13    22    54   315 31515  2762   196    96 
+  257   258   259   260   261   262   263   264   265   266   267   269   270 
+   95    24    21    23    14    14     6     3    12     3     8     5     2 
+  271   272   273   274   275   276   277   278   279   280   282   283   285 
+   41    13    28     5     3     1     1     1     3     2     2     1     2 
+  287   288   289   290   291   294   295   298   303   304   305   308   311 
+    4     1     1     2     1     3     4     1     3     1     1     1     1 
+  312   315   316   317   320   323   328   329   334   340   341   343   347 
+    1     1     1     1     1     1     2     1     1     1     1     1     1 
+  348   350   355   358   361   363   364   367   369   374   376   378   416 
+    2     1     1     1     1     1     1     1     2     1     1     1     4 
+  418 
+   23 
+keeping 34960 of 36200 ASVs ( 99.3 % of reads ) with length in 250 256 
+Identified 830 bimeras out of 34960 input sequences.
+fraction of reads kept after chimera removal: 0.9906709 
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+Duplicate sequences detected and merged.
+There were 11 warnings (use warnings() to see them)
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 34130 taxa and 490 samples ]
+sample_data() Sample Data:       [ 490 samples by 12 sample variables ]
+tax_table()   Taxonomy Table:    [ 34130 taxa by 8 taxonomic ranks ]
+refseq()      DNAStringSet:      [ 34130 reference sequences ]
+removing 515 Chloroplast/Mitochondria/Phylum-NA ASVs ( 0.18 % of reads )
+2 failed samples -> /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/16S/results/ER18_ER22/neon_er_ER18_ER22.16S.failed_samples.txt 
+   sample            stage reads_input reads_at_failure
+ 069-ER18 final read count       10190             4637
+ 416-ER18 final read count        4025             2171
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 33615 taxa and 488 samples ]
+sample_data() Sample Data:       [ 488 samples by 13 sample variables ]
+tax_table()   Taxonomy Table:    [ 33615 taxa by 8 taxonomic ranks ]
+refseq()      DNAStringSet:      [ 33615 reference sequences ]
+done: 34130 ASVs in 490 samples -> /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/16S/results/ER18_ER22 
+== Sun Nov  8 08:47:30 PM PST 2026 tree (mothur V4 alignment + FastTree)
+ASVs in: 34130; removed by screen.seqs (not spanning V4): 71; see neon_er_ER18_ER22.16S.ASV.ids.bad.accnos
+low-similarity alignments (SimBtwnQuery&Template < 80, likely off-target):
+  415
+tree: /global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/16S/results/ER18_ER22/v4align/neon_er_ER18_ER22.16S.ASV.ids.good.filter.tree (tip labels = asv_id; map: neon_er_ER18_ER22.16S.ASV.ids.txt)
+Error in loadNamespace(x) : there is no package called ‘ape’
+Calls: loadNamespace -> withRestarts -> withOneRestart -> doWithOneRestart
+Execution halted
+srun: error: nid200021: task 0: Exited with exit code 1
+srun: Terminating StepId=61016813.0
+salloc: Relinquishing job allocation 61016813
