@@ -91,6 +91,7 @@ locus_settings:
       species_db: null
       levels: [Kingdom, Phylum, Class, Order, Family, Genus, Species]
       try_rc: true
+    keep_taxa: {Kingdom: [Fungi]}       # filtered phyloseq: keep only these (unassigned at the rank is dropped too)
     remove_taxa: {}
     require_ranks: []
     tree: {method: none}

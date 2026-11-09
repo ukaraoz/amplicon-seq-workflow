@@ -118,6 +118,10 @@ locus_settings:
       species_db: null
       levels: [Kingdom, Phylum, Class, Order, Family, Genus, Species]
       try_rc: true
+    # phyloseq.filtered.rds keeps Kingdom Fungi only (UNITE all-eukaryote release): drops Rhizaria (mostly Cercozoa),
+    # plants, animals, other protists and kingdom-unassigned ASVs, ~5.9% of reads in total. The full set stays in
+    # phyloseq.rds / ASVtable / taxonomy; what was removed is listed in <key>.taxa_filter.txt
+    keep_taxa: {Kingdom: [Fungi]}
     remove_taxa: {}
     require_ranks: []
     tree: {method: none}

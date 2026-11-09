@@ -13,6 +13,7 @@ results/*/*
 !results/*/*.readtracking.txt
 !results/*/*.failed_samples.txt
 !results/*/*.run.log
+!results/*/*.taxa_filter.txt
 work/
 # local scratch
 .DS_Store

@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.6
+# version 2.7
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -59,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.6"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.7"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -403,20 +403,51 @@ if(!is.na(treefile)) {
 taxa_names(ps) = paste0("ASV", seq_len(ntaxa(ps)))
 saveRDS(ps, file.path(outdir, paste0(key, ".phyloseq.rds")))
 print(ps)
-# filtered copy: drops the config's remove_taxa (rank: names, e.g. Order: Chloroplast, Family: Mitochondria) and
-# ASVs unassigned at any of require_ranks (e.g. Phylum)
+# filtered copy: keeps only the config's keep_taxa (rank: names, e.g. Kingdom: Fungi; unassigned at that rank is
+# dropped too), drops remove_taxa (rank: names, e.g. Order: Chloroplast, Family: Mitochondria) and ASVs unassigned at
+# any of require_ranks (e.g. Phylum). Names are matched without UNITE's rank prefixes (k__Fungi = Fungi).
+# Every removed ASV gets a reason (the first that applies, in that order); <key>.taxa_filter.txt summarizes the
+# removed ASVs by reason and Kingdom / Phylum / Class (ASVs, reads, % of all reads, samples), plus what is kept.
 psf = ps
-tt = as.data.frame(as(tax_table(ps), "matrix"))
-drop = rep(FALSE, ntaxa(ps))
-for(rank in names(p$remove_taxa)) drop = drop | tt[[rank]] %in% p$remove_taxa[[rank]]
-for(rank in p$require_ranks) drop = drop | is.na(tt[[rank]])
+tt = as.data.frame(as(tax_table(ps), "matrix"), stringsAsFactors = FALSE)
+tt[] = lapply(tt, function(x) sub("^[a-z]__", "", x))
+reason = rep(NA_character_, ntaxa(ps))
+for(rank in names(p$keep_taxa)) {
+  out_k = !(tt[[rank]] %in% p$keep_taxa[[rank]])
+  reason[is.na(reason) & out_k] = paste0("not ", rank, " ", paste(p$keep_taxa[[rank]], collapse = "/"))
+}
+for(rank in names(p$remove_taxa)) {
+  hit = tt[[rank]] %in% p$remove_taxa[[rank]]
+  reason[is.na(reason) & hit] = paste0(rank, " ", tt[[rank]][is.na(reason) & hit])
+}
+for(rank in p$require_ranks) reason[is.na(reason) & is.na(tt[[rank]])] = paste0("unassigned at ", rank)
+drop = !is.na(reason)
+reads = taxa_sums(ps); total = sum(reads)
+otu = as(otu_table(ps), "matrix")                                  # samples x taxa (taxa_are_rows = FALSE)
+nsamp = colSums(otu > 0)
+lvl = function(x) ifelse(is.na(x), "unassigned", x)
+grp = data.frame(status = ifelse(drop, "removed", "kept"), reason = ifelse(drop, reason, ""),
+                 Kingdom = lvl(tt[[1]]), Phylum = if(ncol(tt) > 1) lvl(tt[[2]]) else "",
+                 Class = if(ncol(tt) > 2) lvl(tt[[3]]) else "", stringsAsFactors = FALSE)
+rep_tab = do.call(rbind, lapply(split(seq_len(ntaxa(ps)), grp, drop = TRUE), function(i) cbind(grp[i[1], ],
+  ASVs = length(i), reads = sum(reads[i]), pct_reads = round(100 * sum(reads[i]) / total, 3),
+  samples = sum(rowSums(otu[, i, drop = F]) > 0), max_samples_one_ASV = max(nsamp[i]))))
+rep_tab = rep_tab[order(rep_tab$status != "removed", -rep_tab$reads), ]
+tot_row = function(s, sel) data.frame(status = s, reason = "TOTAL", Kingdom = "", Phylum = "", Class = "",
+  ASVs = sum(sel), reads = sum(reads[sel]), pct_reads = round(100 * sum(reads[sel]) / total, 3),
+  samples = sum(rowSums(otu[, sel, drop = F]) > 0), max_samples_one_ASV = if(any(sel)) max(nsamp[sel]) else 0)
+rep_tab = rbind(tot_row("removed", drop), tot_row("kept", !drop), rep_tab)
+write.table(rep_tab, file = file.path(outdir, paste0(key, ".taxa_filter.txt")), sep = "\t", row.names = F, quote = F)
 if(any(drop)) {
-  what = c(unlist(lapply(names(p$remove_taxa), function(r) paste(p$remove_taxa[[r]], collapse = "/"))),
-           if(length(p$require_ranks)) paste0(paste(p$require_ranks, collapse = "/"), "-NA"))
-  cat("removing", sum(drop), paste(what, collapse = "/"), "ASVs (", round(100 * sum(taxa_sums(ps)[drop]) / sum(taxa_sums(ps)), 2), "% of reads )\n")
+  cat("taxa filter: removing", sum(drop), "of", ntaxa(ps), "ASVs (", round(100 * sum(reads[drop]) / total, 2),
+      "% of reads ) ->", paste0(key, ".taxa_filter.txt"), "\n")
+  byreason = tapply(reads[drop], reason[drop], sum)
+  for(r in names(sort(byreason, decreasing = TRUE)))
+    cat(sprintf("  %-40s %6d ASVs  %6.2f%% of reads\n", r, sum(reason[drop] == r), 100 * byreason[[r]] / total))
   psf = prune_taxa(!drop, ps)
 }
 sample_data(psf)$reads_filtered_taxa = sample_sums(psf)
+reads_before_taxa_filter = sample_sums(ps)
 
 # ---- failed samples ----
 # context for each reason: the sample's reads vs the median (and the lowest passing sample) at the same stage
@@ -437,6 +468,11 @@ failed = rbind(
              reason = sprintf("low number of reads: %d reads in the final table (< %d), %.1f%% of the median (%d); lowest passing sample %s has %d; input %d reads vs median %d",
                               as.integer(final[lowfinal]), minfinal, 100 * final[lowfinal] / median(final), as.integer(median(final)),
                               nextlow, as.integer(final[nextlow]), out[lowfinal, "reads.in"], as.integer(med_in))))
+# reads before the taxa filter: shows which samples fail only because of it
+failed$reads_before_taxa_filter = as.integer(reads_before_taxa_filter[failed$sample])
+only_filter = failed$stage == "final read count" & failed$reads_before_taxa_filter >= minfinal
+if(any(only_filter)) cat(sum(only_filter), "sample(s) fail only after the taxa filter:",
+                         paste(failed$sample[only_filter], collapse = ", "), "\n")
 write.table(failed, file = file.path(outdir, paste0(key, ".failed_samples.txt")), sep = "\t", row.names = F, col.names = T, quote = F)
 cat(nrow(failed), "failed samples ->", file.path(outdir, paste0(key, ".failed_samples.txt")), "\n")
 if(nrow(failed) > 0) print(failed[, c("sample", "stage", "reads_input", "reads_at_failure")], row.names = F)
