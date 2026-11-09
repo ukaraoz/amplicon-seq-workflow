@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.8
+# version 2.9
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -59,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.8"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.9"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -405,6 +405,14 @@ if(!is.na(treefile)) {
       round(100 * (1 - sum(taxa_sums(ps)) / nreads_before), 2), "% of reads )\n")
 }
 taxa_names(ps) = paste0("ASV", seq_len(ntaxa(ps)))
+# metadata column names are kept as they are (e.g. "Soil pH"): phyloseq rebuilds sample_data with data.frame() in
+# many operations ($<-, prune_samples, merge_phyloseq), which turns them into "Soil.pH". sample_df() reads the table
+# back with the original names, and with_metadata_names() puts them back before an object is saved.
+md_names = c(colnames(sampledata))
+sample_df = function(x) { s = sample_data(x); d = as.data.frame(s@.Data, col.names = seq_along(s@names))
+  names(d) = c(md_names, s@names[-seq_along(md_names)]); rownames(d) = sample_names(x); d }
+with_metadata_names = function(x) { sample_data(x) = sample_data(sample_df(x)); x }
+ps = with_metadata_names(ps)
 saveRDS(ps, file.path(outdir, paste0(key, ".phyloseq.rds")))
 print(ps)
 # filtered copy: keeps only the config's keep_taxa (rank: names, e.g. Kingdom: Fungi; unassigned at that rank is
@@ -450,7 +458,9 @@ if(any(drop)) {
     cat(sprintf("  %-40s %6d ASVs  %6.2f%% of reads\n", r, sum(reason[drop] == r), 100 * byreason[[r]] / total))
   psf = prune_taxa(!drop, ps)
 }
-sample_data(psf)$reads_filtered_taxa = sample_sums(psf)
+sd_f = sample_df(psf)
+sd_f$reads_filtered_taxa = sample_sums(psf)
+sample_data(psf) = sample_data(sd_f)
 reads_before_taxa_filter = sample_sums(ps)
 
 # ---- failed samples ----
@@ -480,7 +490,7 @@ if(any(only_filter)) cat(sum(only_filter), "sample(s) fail only after the taxa f
 write.table(failed, file = file.path(outdir, paste0(key, ".failed_samples.txt")), sep = "\t", row.names = F, col.names = T, quote = F)
 cat(nrow(failed), "failed samples ->", file.path(outdir, paste0(key, ".failed_samples.txt")), "\n")
 if(nrow(failed) > 0) print(failed[, c("sample", "stage", "reads_input", "reads_at_failure")], row.names = F)
-psf = prune_samples(pass, psf)
+psf = with_metadata_names(prune_samples(pass, psf))
 saveRDS(psf, file.path(outdir, paste0(key, ".phyloseq.filtered.rds")))
 print(psf)
 cat("done:", ncol(seqtab.nochim), "ASVs in", nrow(seqtab.nochim), "samples ->", outdir, "\n")
