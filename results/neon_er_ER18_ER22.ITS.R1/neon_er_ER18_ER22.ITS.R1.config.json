@@ -104,6 +104,13 @@
         "width": 2
       },
       "panel_spacing": 10
+    },
+    "funguild_composition": {
+      "fields": [
+        "trophicMode",
+        "guild"
+      ],
+      "ntop": 15
     }
   }
 }
