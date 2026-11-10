@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.15
+# version 2.16
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]] [--pdf]
@@ -23,7 +23,8 @@
 #
 # inputs  : paths.metadata (tab-separated; samples.id_column = sample id); fastq from samples.manifest (R1, R2
 #           columns) or paths.raw/<samples.r1|r2>
-# outputs : paths.results (QC plots, read tracking, ASV table/fasta, taxonomy, RData, phyloseq rds)
+# outputs : paths.results (QC plots, read tracking, ASV table/fasta, taxonomy, RData, phyloseq rds; the filtered phyloseq
+#           also as text files per slot, <key>.filtered.*, and as <key>.filtered.tar.gz with a README)
 #           paths.work    (cutadapt + filtered reads)
 
 packages = c("dada2", "ShortRead", "Biostrings", "ggplot2", "parallel", "phyloseq")
@@ -65,7 +66,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.15"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.16"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -637,4 +638,61 @@ if(nrow(failed) > 0) print(failed[, c("sample", "stage", "reads_input", "reads_a
 psf = with_metadata_names(prune_samples(pass, psf))
 saveRDS(psf, file.path(outdir, paste0(key, ".phyloseq.filtered.rds")))
 print(psf)
+
+# ---- text exports of the filtered phyloseq object, and a tarball with a README ----
+# <key>.filtered.otu_table.txt (ASVs x samples, asv_id = the object's taxa names), .tax_table.txt (asv_id, ranks,
+# asv_seq), .sample_data.txt (one row per sample, original column names), .refseq.fa (names = asv_id), .tree (when the
+# object has one); <key>.filtered.tar.gz holds them in a folder <key>.filtered/ with README.txt,
+# <key>.metadata_columns.txt (source of each sample-data column), taxa_filter.txt and failed_samples.txt
+ex = file.path(outdir, paste0(key, ".filtered"))
+otu_x = as(otu_table(psf), "matrix"); if(!taxa_are_rows(psf)) otu_x = t(otu_x)          # ASVs x samples
+write.table(data.frame(asv_id = rownames(otu_x), otu_x, check.names = FALSE), paste0(ex, ".otu_table.txt"),
+            sep = "\t", quote = FALSE, row.names = FALSE)
+tt_x = as(tax_table(psf), "matrix")
+write.table(data.frame(asv_id = rownames(tt_x), tt_x, asv_seq = as.character(refseq(psf))[rownames(tt_x)], check.names = FALSE),
+            paste0(ex, ".tax_table.txt"), sep = "\t", quote = FALSE, row.names = FALSE, na = "")
+sd_x = sample_df(psf)
+if(!identical(as.character(sd_x[[1]]), rownames(sd_x))) sd_x = data.frame(sample_id = rownames(sd_x), sd_x, check.names = FALSE)
+write.table(sd_x, paste0(ex, ".sample_data.txt"), sep = "\t", quote = FALSE, row.names = FALSE, na = "")
+writeXStringSet(refseq(psf), paste0(ex, ".refseq.fa"))
+has_tree = !is.null(phy_tree(psf, errorIfNULL = FALSE))
+if(has_tree) ape::write.tree(phy_tree(psf), paste0(ex, ".tree"))
+exports = paste0(basename(ex), c(".otu_table.txt", ".tax_table.txt", ".sample_data.txt", ".refseq.fa", if(has_tree) ".tree"))
+extra = paste0(key, c(".metadata_columns.txt", ".taxa_filter.txt", ".failed_samples.txt"))
+extra = extra[file.exists(file.path(outdir, extra))]
+filt = c(if(length(p$keep_taxa)) paste0("keep_taxa ", paste(names(p$keep_taxa), sapply(p$keep_taxa, paste, collapse = "/"), collapse = "; ")),
+         if(length(p$remove_taxa)) paste0("remove_taxa ", paste(names(p$remove_taxa), sapply(p$remove_taxa, paste, collapse = "/"), collapse = "; ")),
+         if(length(p$require_ranks)) paste0("require_ranks ", paste(p$require_ranks, collapse = ", ")))
+readme = c(
+  paste0(key, ".filtered: the filtered phyloseq object as text files"),
+  paste0("written ", format(Sys.time(), "%Y-%m-%d %H:%M %Z"), " by dada2-asv.R ", script_version, " (amplicon-seq-workflow)"),
+  "",
+  paste0("Content of ", key, ".phyloseq.filtered.rds: ", nsamples(psf), " samples, ", ntaxa(psf), " ASVs, ",
+         format(sum(otu_x), big.mark = ","), " reads", if(has_tree) ", with a tree" else ""),
+  paste0("Taxa filter: ", if(length(filt)) paste(filt, collapse = "; ") else "none", " (", key, ".taxa_filter.txt)"),
+  paste0("Failed samples removed: fewer than ", minfinal, " reads after the taxa filter",
+         if(min_kept > 0) paste0(", or less than ", 100 * min_kept, "% of their reads kept by it") else "",
+         " (", key, ".failed_samples.txt; ", nrow(failed), " samples)"),
+  paste0("Taxonomy: ", basename(params$taxdb)),
+  "",
+  "Files",
+  paste0("  ", basename(ex), ".otu_table.txt     read counts: one row per ASV (asv_id), one column per sample"),
+  paste0("  ", basename(ex), ".tax_table.txt     taxonomy: asv_id, ", paste(colnames(tt_x), collapse = ", "), ", asv_seq (the ASV sequence)"),
+  paste0("  ", basename(ex), ".sample_data.txt   one row per sample: sample metadata (", ncol(sd_x), " columns; reads_* = read tracking)"),
+  paste0("  ", basename(ex), ".refseq.fa         ASV sequences, named by asv_id"),
+  if(has_tree) paste0("  ", basename(ex), ".tree              phylogenetic tree (Newick), tips named by asv_id"),
+  if(length(extra)) c("  provenance: ", paste0("    ", extra)),
+  "",
+  "IDs: asv_id (ASV1, ASV2, ...) are the taxa names of the phyloseq object, numbered by decreasing total abundance",
+  "before filtering; asv_seq in the tax table maps them to the sequences used as IDs in the unfiltered ASVtable.txt,",
+  "taxonomy.txt and ASV.fa. Missing values are empty cells.",
+  "",
+  "In R:  library(phyloseq); ps = readRDS(\"<key>.phyloseq.filtered.rds\")   (the same data)")
+td = tempfile(); dir.create(file.path(td, basename(ex)), recursive = TRUE)
+writeLines(readme, file.path(td, basename(ex), "README.txt"))
+file.copy(file.path(outdir, c(exports, extra)), file.path(td, basename(ex)))
+tarfile = paste0(ex, ".tar.gz")
+old_wd = setwd(td); utils::tar(tarfile, files = basename(ex), compression = "gzip", tar = "internal"); setwd(old_wd)
+unlink(td, recursive = TRUE)
+cat("filtered exports:", paste(exports, collapse = ", "), "->", basename(tarfile), "(with README.txt)\n")
 cat("done:", ncol(seqtab.nochim), "ASVs in", nrow(seqtab.nochim), "samples ->", outdir, "\n")

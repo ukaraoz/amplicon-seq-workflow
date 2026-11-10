@@ -19,6 +19,9 @@ YAML config per project/run, locally or as SLURM jobs (NERSC Perlmutter).
 Main outputs (in `paths.results`, by default `results/<key>/` in this repository, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,
 `failed_samples.txt`, `phyloseq.rds` (all ASVs and samples), `phyloseq.filtered.rds` (`remove_taxa` /
 `require_ranks` ASVs and failed samples removed; input of the analysis), `taxa_filter.txt` (what the filter removed).
+The filtered object is also written as text, one file per slot with its own ASV IDs: `filtered.otu_table.txt`,
+`filtered.tax_table.txt` (with `asv_seq`), `filtered.sample_data.txt`, `filtered.refseq.fa`, `filtered.tree` (16S), and as
+`filtered.tar.gz` (those files, a README and the filter / failed-sample / metadata-column tables).
 With cutadapt: `cutadapt_summary.txt` (per sample: pairs in, R1/R2 reads trimmed, pairs dropped, bases kept, primer
 hits), and `readtracking.txt` starts with `raw` and `cutadapt_R1_trimmed` / `cutadapt_R2_trimmed` (`input` = pairs
 after cutadapt).
