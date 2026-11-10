@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.10
+# version 2.11
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -59,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.10"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.11"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -125,6 +125,60 @@ if(needs_taxonomy && !is.null(params$speciesdb) && !file.exists(params$speciesdb
 metadata = read.table(cfg$paths$metadata, sep = "\t", header = T, check.names = F, colClasses = "character",
                       quote = "", comment.char = "", na.strings = "")
 metadata[] = lapply(metadata, function(x) if(any(grepl("^0[0-9]", x))) x else type.convert(x, as.is = TRUE))
+
+# ---- site tables (paths.site_tables) joined to the sample metadata ----
+# samples.site_key: {metadata: <metadata column>, tables: <table column>, pattern: <regex>}: the first group of the
+# pattern applied to both columns is the join key (e.g. "^([0-9]{3})": 058 for 058-ER18 / 058-ER22 / 058-ER18_A), so
+# every sample of a site gets the site's row. Tables are .csv (comma) or tab-separated, read as text and converted
+# like the metadata. Per table column, in order:
+#   - same name as a metadata column (also when equal after make.names, e.g. "Sampling.Area" = "Sampling Area"):
+#     fills only that column's empty values; stops if a non-empty value differs
+#   - otherwise added under its own name; when its values equal a column already there (e.g. Site_Name and
+#     "Site Name"), the report says so
+# <key>.metadata_columns.txt lists every sample-data column with its source file and what was done.
+metadata_sources = data.frame(column = names(metadata), source = basename(cfg$paths$metadata), action = "metadata",
+                              stringsAsFactors = FALSE)
+site_tables = unlist(cfg$paths$site_tables)
+if(length(site_tables)) {
+  sk = cfg$samples$site_key
+  if(is.null(sk$metadata) || is.null(sk$tables)) stop("paths.site_tables needs samples.site_key: {metadata, tables, pattern}")
+  pat = if(is.null(sk$pattern)) "^(.*)$" else sk$pattern
+  keyof = function(x) ifelse(grepl(pat, x), sub(paste0(pat, ".*$"), "\\1", x), NA)
+  same = function(a, b) { a = as.character(a); b = as.character(b); identical(is.na(a), is.na(b)) && all(a == b, na.rm = TRUE) }
+  mkey = keyof(as.character(metadata[[sk$metadata]]))
+  for(f in site_tables) {
+    if(!file.exists(f)) stop("site table not found: ", f)
+    tb = read.table(f, sep = if(grepl("\\.csv$", f, ignore.case = TRUE)) "," else "\t", header = TRUE, check.names = FALSE,
+                    colClasses = "character", quote = "\"", comment.char = "", na.strings = c("", "NA"))
+    tb[] = lapply(tb, function(x) if(any(grepl("^0[0-9]", x))) x else type.convert(x, as.is = TRUE))
+    tkey = keyof(as.character(tb[[sk$tables]]))
+    if(anyNA(tkey) || anyDuplicated(tkey)) stop("site table ", basename(f), ": ", sk$tables, " values must give unique keys with ", pat)
+    i = match(mkey, tkey)
+    cat(sprintf("site table %s: %d rows, %d columns; %d of %d samples matched\n", basename(f), nrow(tb), ncol(tb), sum(!is.na(i)), nrow(metadata)))
+    for(col in setdiff(names(tb), sk$tables)) {
+      v = tb[[col]][i]
+      hit = names(metadata)[names(metadata) == col | make.names(names(metadata)) == make.names(col)]
+      if(length(hit)) {
+        old = metadata[[hit[1]]]
+        clash = !is.na(old) & !is.na(v) & as.character(old) != as.character(v)
+        if(is.numeric(old) && is.numeric(v)) clash = !is.na(old) & !is.na(v) & abs(old - v) > 1e-9 * pmax(1, abs(old))
+        if(any(clash)) stop("site table ", basename(f), " column ", col, " differs from metadata column ", hit[1], " for ",
+                            sum(clash), " samples, e.g. ", metadata[[1]][which(clash)[1]])
+        fill = is.na(old) & !is.na(v)
+        if(any(fill)) metadata[[hit[1]]][fill] = v[fill]
+        metadata_sources = rbind(metadata_sources, data.frame(column = hit[1], source = basename(f),
+          action = sprintf("same values as %s; filled %d empty", hit[1], sum(fill))))
+        next
+      }
+      dup = names(metadata)[vapply(metadata, same, TRUE, b = v)]
+      metadata[[col]] = v
+      metadata_sources = rbind(metadata_sources, data.frame(column = col, source = basename(f),
+        action = if(length(dup)) paste("added; same values as", dup[1]) else "added"))
+    }
+  }
+  acts = table(sub(":.*|;.*", "", metadata_sources$action[metadata_sources$action != "metadata"]))
+  cat("site tables:", paste(names(acts), acts, sep = " ", collapse = ", "), "->", ncol(metadata), "metadata columns\n")
+}
 sample_ids = function(md) {
   ids = as.character(md[[cfg$samples$id_column]])
   if(!is.null(cfg$samples$rename)) ids = sub(cfg$samples$rename$pattern, cfg$samples$rename$replacement, ids)
@@ -450,6 +504,9 @@ if(!"raw" %in% colnames(track) && !is.null(cutstats)) { track = add_cutadapt_tra
 
 save(out, keep, errF, errR, dadaFs, dadaRs, mergers, seqtab, seqtab.nochim, taxa, track, params, cutstats,
      file = file.path(outdir, paste0(key, ".dada2.RData")))
+
+# sample-data columns and where they come from (metadata file, site tables)
+write.table(metadata_sources, file.path(outdir, paste0(key, ".metadata_columns.txt")), sep = "\t", quote = F, row.names = F)
 
 # ---- phyloseq object ----
 # sample_data = metadata (+ read tracking as reads_* columns); refseq holds the ASV sequences, taxa renamed ASV1..N

@@ -28,6 +28,7 @@ paths:
   work: "{base}/{locus}/work/{run}"
   results: "{repo}/results/{key}"      # one folder per key in the repo's results/ (git-ignored)
   analysis: "{repo}/results/{key}/analysis"
+  # site_tables: ["{repo}/config/{dataset}/metadata/site-traits.csv"]   # per-site tables joined by samples.site_key
 
 remote:                                 # the clone the workflow runs from (`workflow.py pull` copies its results here)
   host: hpc.example.org

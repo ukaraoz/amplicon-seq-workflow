@@ -41,6 +41,15 @@ paths:
   # NNN-ER18, NNN-ER22 and NNN-ER18_A/_B all get the site's row. The soil columns are 2018 measurements, also on the
   # 2022 samples; their names are unchanged.
   metadata: "{repo}/config/{dataset}/metadata/NEON_ER_amplicon_metadata_soil.tsv"
+  # per-site tables joined to the sample metadata by samples.site_key (all samples of a site, 2018 and 2022, get the
+  # site's row; like the soil columns, these are 2018 collections): leaf traits (d15N, d13C, leaf N/C, C:N, cover,
+  # LMA, leaf water, dominant plant) and remote sensing products (Lidar terrain, canopy height, spectral). Columns
+  # keep their names; site columns already in the metadata only fill its empty values (Latitude / Longitude for 10
+  # sites), duplicates under other names are skipped; see <key>.metadata_columns.txt. The two files are local
+  # symlinks to ~/Work/EastRiver/synthesis/data/biogeo_remote/ on the laptop and copies on Perlmutter (not in git).
+  site_tables:
+    - "{repo}/config/{dataset}/metadata/NEON_LeafTraits_master_11.28.2023.csv"
+    - "{repo}/config/{dataset}/metadata/NEON_RS_master_updated_11.28.2023.csv"
   work: "{scratch}/{locus}/work/{run}"   # cutadapt + filtered reads (regenerable; pscratch is purged)
   results: "{repo}/results/{key}"        # DADA2 outputs (tables, fasta, phyloseq), one folder per key in the repo
   analysis: "{repo}/results/{key}/analysis"
@@ -58,6 +67,8 @@ samples:
   # sequencing run of each sample (manifest column): each run gets its own filtering settings (locus_settings.<locus>.runs),
   # error models and denoising; the run tables are combined before chimera removal and taxonomy
   run_column: run_folder
+  # join key for paths.site_tables: SamplingCode (058) vs the tables' SampleSiteCode (058-ER18), first 3 digits
+  site_key: {metadata: SamplingCode, tables: SampleSiteCode, pattern: "^([0-9]{3})"}
   label_strip: null
 
 # ---- DADA2 (dada2-asv.R); per-locus settings override `dada2` ----

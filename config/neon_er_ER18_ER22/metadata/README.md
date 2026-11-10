@@ -11,11 +11,15 @@ md5 when copied, 2026-11-09).
 | `NEON_ER_amplicon_metadata.tsv` | the amplicon metadata before the soil join | input of the merge |
 | `ER_2018_NEON_soil-physical-chemical-measurements.csv` | 2018 soil physical/chemical measurements, one row per site (438) | input of the merge |
 | `merge_soil_metadata.R` | joins the two by `SamplingCode` (3-digit site number) | makes `NEON_ER_amplicon_metadata_soil.tsv` |
-| `NEON_LeafTraits_master_11.28.2023.csv` | leaf traits per site (438 sites, `SampleSiteCode`): site, area, collection date, vegetation type, coordinates, elevation, d15N, d13C, leaf N / C (wt %), C:N, bare / NPV / PV cover, LMA, leaf water content, dominant plant and its fractional cover and taxonomy | resource, not used by the workflow yet |
-| `NEON_RS_master_updated_11.28.2023.csv` | remote sensing products per site (438 sites, `SampleSiteCode`): the same site columns, Lidar terrain (aspect, curvature, flow accumulation, slope, solar radiation, TPI, TWI, upslope area at 5 / 9 cell windows, elevation, canopy height) and spectral products | resource, not used by the workflow yet |
+| `NEON_LeafTraits_master_11.28.2023.csv` | leaf traits per site (438 sites, `SampleSiteCode`): site, area, collection date, vegetation type, coordinates, elevation, d15N, d13C, leaf N / C (wt %), C:N, bare / NPV / PV cover, LMA, leaf water content, dominant plant and its fractional cover and taxonomy | `paths.site_tables` (joined by `samples.site_key`) |
+| `NEON_RS_master_updated_11.28.2023.csv` | remote sensing products per site (438 sites, `SampleSiteCode`): the same site columns, Lidar terrain (aspect, curvature, flow accumulation, slope, solar radiation, TPI, TWI, upslope area at 5 / 9 cell windows, elevation, canopy height) and spectral products | `paths.site_tables` (joined by `samples.site_key`) |
 
-The two resource files are **symlinks, local to the laptop** (not in git; see `.gitignore`), to
-`~/Work/EastRiver/synthesis/data/biogeo_remote/`. Both are keyed by `SampleSiteCode` (`NNN-ER18`), like the soil table.
+The leaf-trait and remote-sensing files are not in git (see `.gitignore`): on the laptop they are symlinks to
+`~/Work/EastRiver/synthesis/data/biogeo_remote/`, on Perlmutter copies (same md5) here in the clone and in the data
+folder. Both are keyed by `SampleSiteCode` (`NNN-ER18`) and are joined to every sample of the site (2018 and 2022) by
+`dada2-asv.R` (`paths.site_tables`, `samples.site_key`): site columns already in the metadata (`Sampling.Area`,
+`Latitude`, `Longitude`) are checked against it and not repeated; all other columns are added under their own names
+(collection dates are June 2018). `<key>.metadata_columns.txt` in the results lists each column's source.
 
 The soil columns are 2018 measurements, also on the 2022 samples (`NNN-ER18`, `NNN-ER22` and `NNN-ER18_A/_B` of a site
 share the row); their names are as in the soil table. To rebuild the merged file:

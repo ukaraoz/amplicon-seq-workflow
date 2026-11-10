@@ -78,6 +78,8 @@ every clone reads the same files:
 - `profiles`: per-machine paths (`vars`); the first profile whose `detect` path exists is used, or `--profile`.
 - `samples.manifest` (optional): tab-separated file with one line per sample and columns `R1`, `R2` (read paths)
   plus an optional sample name column; otherwise fastq files are `paths.raw/<samples.r1|r2>` per metadata sample.
+- `paths.site_tables` + `samples.site_key` (optional): per-site tables joined to the sample metadata (e.g. soil,
+  plant or remote sensing data per site); `<key>.metadata_columns.txt` lists each sample-data column's source.
 - `samples.run_column` (optional, with a manifest): the sequencing run of each sample. Runs get their own error
   models and denoising, and `locus_settings.<locus>.runs.<run>` can override `truncLen` / `maxEE` / `trimLeft`.
 - `paths`, `samples`: metadata, fastq naming, output folders; `{project}`, `{run}`, `{run_id}`, `{locus}`, `{key}`,
