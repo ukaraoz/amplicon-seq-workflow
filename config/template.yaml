@@ -2,7 +2,8 @@
 # A complete worked example: biochar-M007649.yaml.
 #
 # Strings may use {placeholders}: any key under `vars` or the selected profile's `vars`, plus {project}, {run},
-# {run_id}, {locus}, {key} and {repo} (this repository's folder).
+# {run_id}, {locus}, {key}, {repo} (this repository's folder) and {dataset} ({project}_{run_id}).
+# Keep the dataset's sample metadata (and fastq manifests) in config/{dataset}/metadata/, committed with the config.
 
 project: myproject
 run: RUNNAME
@@ -22,7 +23,7 @@ profiles:                               # first profile whose `detect` path exis
       refdir: /path/on/laptop/refdata
 
 paths:
-  metadata: "{base}/metadata-{run}.txt"
+  metadata: "{repo}/config/{dataset}/metadata/metadata-{run}.txt"
   raw: "{base}/{locus}/raw/{run}"
   work: "{base}/{locus}/work/{run}"
   results: "{repo}/results/{key}"      # one folder per key in the repo's results/ (git-ignored)
@@ -40,7 +41,7 @@ samples:
   # paths, absolute or relative to the manifest's folder; an optional sample column (id_column or "sample") names
   # the sample, else the R1 file name minus _L001_R1_001.fastq.gz does). Each sample must be in the metadata;
   # metadata samples not in the manifest are not run. paths.raw, r1 and r2 are then not used.
-  manifest: null                        # e.g. "{base}/{locus}/reads-{run}.tsv"
+  manifest: null                        # e.g. "{repo}/config/{dataset}/metadata/reads-{locus}.tsv"
   run_column: null                      # manifest column with the sequencing run: runs are filtered (locus_settings
                                         # .<locus>.runs overrides), error-modelled and denoised separately
   # ... or paths.raw/<r1|r2> for every metadata sample, {sample} = the (renamed) metadata id

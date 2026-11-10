@@ -1,7 +1,9 @@
 # amplicon-seq-workflow config: biochar greenhouse experiment, iTag run M007649 (16S V4 + ITS1, 2x300 MiSeq)
 #
 # Strings may use {placeholders}: any key under `vars` (after the profile's vars are merged in), plus
-# {project}, {run}, {run_id} and {locus}. Placeholders are expanded repeatedly, so vars can refer to other vars.
+# {project}, {run}, {run_id}, {locus}, {key}, {repo} (this repository's folder) and {dataset} ({project}_{run_id}).
+# Placeholders are expanded repeatedly, so vars can refer to other vars. The sample metadata is in
+# config/{dataset}/metadata/ (= config/biochar_M007649/metadata/).
 
 project: biochar
 run: M007649__260914_300PE_MS1
@@ -30,7 +32,7 @@ profiles:
       mothur_ref: "{refdir}/mothur"
 
 paths:
-  metadata: "{base}/metadata-{run}.txt"   # tab-separated, one row per sample
+  metadata: "{repo}/config/{dataset}/metadata/metadata-{run}.txt"   # tab-separated, one row per sample
   raw: "{base}/{locus}/raw/{run}"         # demultiplexed fastq.gz
   work: "{base}/{locus}/work/{run}"       # cutadapt + filtered reads
   results: "{results}"                    # DADA2 outputs (tables, fasta, phyloseq)

@@ -97,9 +97,11 @@ def resolve(cfg, locus, profile=None, merge=None, repo=None):
     if locus not in (cfg.get("locus_settings") or {}):
         sys.exit(f"locus {locus} has no locus_settings in the config")
     pname, prof = pick_profile(cfg, profile)
-    # {repo}: this repository (results go to {repo}/results/{key} by default); {key} is added once it is known
-    variables = {"project": cfg["project"], "run": cfg["run"], "run_id": cfg.get("run_id", cfg["run"]), "locus": locus,
-                 "repo": repo or HERE}
+    # {repo}: this repository (results go to {repo}/results/{key} by default); {dataset}: {project}_{run_id}, the
+    # dataset's folder config/{dataset}/ (its metadata/); {key} is added once it is known
+    run_id = cfg.get("run_id", cfg["run"])
+    variables = {"project": cfg["project"], "run": cfg["run"], "run_id": run_id, "locus": locus,
+                 "repo": repo or HERE, "dataset": f"{cfg['project']}_{run_id}"}
     variables.update(cfg.get("vars") or {})
     variables.update(prof.get("vars") or {})
     variables = {k: expand(v, variables) for k, v in variables.items()}   # vars may refer to vars

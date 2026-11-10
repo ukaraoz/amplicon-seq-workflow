@@ -15,7 +15,8 @@
 #   ./workflow.py run -c config/neon-ER18-ER22.yaml --steps reference,dada2,tree,phyloseq --slurm
 #
 # Strings may use {placeholders}: any key under `vars` (after the profile's vars are merged in), plus
-# {project}, {run}, {run_id}, {locus}, {key} and {repo} (this repository's folder).
+# {project}, {run}, {run_id}, {locus}, {key}, {repo} (this repository's folder) and {dataset} ({project}_{run_id}).
+# Metadata and manifests: config/{dataset}/metadata/ (= config/neon_er_ER18_ER22/metadata/, see its README.md).
 
 project: neon_er
 run: ER18_ER22
@@ -39,7 +40,7 @@ paths:
   # (ER_2018_NEON_soil-physical-chemical-measurements.csv), joined by SamplingCode = the 3-digit site number:
   # NNN-ER18, NNN-ER22 and NNN-ER18_A/_B all get the site's row. The soil columns are 2018 measurements, also on the
   # 2022 samples; their names are unchanged.
-  metadata: "{base}/NEON_ER_amplicon_metadata_soil.tsv"
+  metadata: "{repo}/config/{dataset}/metadata/NEON_ER_amplicon_metadata_soil.tsv"
   work: "{scratch}/{locus}/work/{run}"   # cutadapt + filtered reads (regenerable; pscratch is purged)
   results: "{repo}/results/{key}"        # DADA2 outputs (tables, fasta, phyloseq), one folder per key in the repo
   analysis: "{repo}/results/{key}/analysis"
@@ -53,7 +54,7 @@ remote:
 # ---- samples ----
 samples:
   id_column: sample
-  manifest: "{base}/NEON_ER_{locus}_manifest.tsv"   # columns sample, R1, R2 (+ SampleSiteCode, year, replicate, run_folder)
+  manifest: "{repo}/config/{dataset}/metadata/NEON_ER_{locus}_manifest.tsv"   # columns sample, R1, R2 (+ SampleSiteCode, year, replicate, run_folder)
   # sequencing run of each sample (manifest column): each run gets its own filtering settings (locus_settings.<locus>.runs),
   # error models and denoising; the run tables are combined before chimera removal and taxonomy
   run_column: run_folder
