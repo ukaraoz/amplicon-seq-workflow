@@ -1,7 +1,7 @@
 # Community analysis of the DADA2 phyloseq objects (output of dada2-asv.R) for the neon_er_ER18_ER22 dataset
 # (NEON East River 2018 + 2022 survey; dataset key {project}_{run_id} of config/neon-ER18-ER22.yaml)
 #
-# version 1.5
+# version 1.6
 #
 # usage: Rscript analyze-phyloseq-neon_er_ER18_ER22.R --config=<key>.config.json [--pdf]
 #   normally run by workflow.py (analyze step, analysis.script), which writes the resolved config
@@ -35,7 +35,7 @@
 
 packages = c("phyloseq", "ggplot2")
 invisible(lapply(packages, function(p) suppressPackageStartupMessages(library(p, character.only = TRUE))))
-script_version = "1.5"
+script_version = "1.6"
 
 allargs = commandArgs(trailingOnly = TRUE)
 write_pdf = "--pdf" %in% allargs
@@ -147,12 +147,13 @@ composition_plot = function(lab, legend_name, title, what, unassigned_note, file
              unassigned = if("unassigned" %in% colnames(m)) m[, "unassigned"] else 0)
   o = if(by_abundance) do.call(order, c(list(match(group, glev)), lapply(keep[seq_len(min(3, length(keep)))], function(k) -mm[, k])))
       else seq_len(nrow(mm))                                                    # sample order
-  # x position of each sample within its panel: consecutive bars, plus gap_w empty bars where gap_by changes
+  # x position of each sample: consecutive bars, plus gap_w empty bars where gap_by changes within a panel; positions
+  # continue from panel to panel (each panel shows only its own range), so every sample has its own x for its label
   smp = rownames(mm)[o]; gs = group[o]
   gv = if(!is.null(gap_by)) { v = as.character(sd[smp, gap_by]); v[is.na(v)] = "NA"; v } else rep("", length(smp))
-  xpos = numeric(length(smp))
+  xpos = numeric(length(smp)); offset = 0
   for(gl in unique(gs)) { i = which(gs == gl); chg = c(0, cumsum(gv[i][-1] != gv[i][-length(i)]))
-    xpos[i] = seq_along(i) + gap_w * chg }
+    xpos[i] = offset + seq_along(i) + gap_w * chg; offset = max(xpos[i]) + 10 }
   xpos = setNames(xpos, smp)
   lv = c(keep, "Other", "unassigned")
   long = data.frame(x = rep(xpos[rownames(mm)], ncol(mm)), taxon = factor(rep(colnames(mm), each = nrow(mm)), levels = rev(lv)),
@@ -169,23 +170,21 @@ composition_plot = function(lab, legend_name, title, what, unassigned_note, file
     (if(!is.null(bd)) scale_colour_manual(values = band_cols, breaks = names(band_cols), name = paste(bands, collapse = " / ")) else NULL) +
     facet_grid(. ~ group, scales = "free_x", space = "free_x") +
     scale_fill_manual(values = cols, breaks = lv, name = legend_name) +
-    scale_x_continuous(expand = c(0, 0.6)) +
+    scale_x_continuous(expand = c(0, 0.6), breaks = unname(xpos), labels = names(xpos)) +   # sample IDs under the bars
     scale_y_continuous(labels = function(x) paste0(100 * x, "%"), breaks = seq(0, 1, 0.25), expand = c(0, 0),
                        limits = c(if(!is.null(bd)) -0.01 - length(bands) * band_h else 0, 1)) +
-    labs(x = paste0("samples, by ", group_name, if(by_abundance) " (ordered within each panel by the most abundant categories)"
-                    else paste0(" (in sample order: ", paste(by, collapse = " > "), ")"),
-                    if(!is.null(gap_by)) paste0("; gaps between ", gap_by, " groups") else ""),
-         y = "relative abundance (share of sample reads)", title = title,
+    labs(x = NULL, y = "relative abundance (share of sample reads)", title = title,
          subtitle = paste0(desc, if(!is.null(note)) paste0("; ", note) else "", "\n", length(keep), " most abundant ", what,
                            " by mean relative abundance (", length(mean_ab), " in total); Other = the remaining ", length(other),
                            " (mean ", sprintf("%.1f", pct_oth), "%); unassigned = ", unassigned_note, " (mean ", sprintf("%.1f", pct_un), "%)")) +
     theme_bw(base_size = 10) +
-    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid = element_blank(),
+    theme(axis.text.x = element_text(size = 2.6, angle = 90, hjust = 1, vjust = 0.5, margin = margin(t = 1)),
+          axis.ticks.x = element_line(linewidth = 0.1), axis.ticks.length.x = unit(1, "pt"), panel.grid = element_blank(),
           panel.spacing = unit(if(is.null(opt$panel_spacing)) 10 else opt$panel_spacing, "pt"),
           strip.text = element_text(size = 8, angle = if(length(glev) > 6) 90 else 0),
           plot.subtitle = element_text(size = 8, lineheight = 1.1), legend.key.size = unit(10, "pt"),
           legend.text = element_text(size = if(max(nchar(lv)) > 40) 6.5 else 8, face = if(italic) "italic" else "plain"))
-  f = save_plot(g, file, width = 14, height = 6.5)
+  f = save_plot(g, file, width = 21, height = 6.8)
   list(file = f, n = length(mean_ab), keep = length(keep), top = 100 * mean(rowSums(mm[, keep, drop = FALSE])), other = pct_oth, unassigned = pct_un)
 }
 report = function(sec, name, r) cat(sprintf("%s %-12s %5d categories; top %d cover %.1f%% on average, Other %.1f%%, unassigned %.1f%% -> %s.png%s\n",
