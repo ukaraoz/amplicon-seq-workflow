@@ -11,7 +11,8 @@ locus settings) into <results>/<key>.config.json, which the R and shell steps re
   tree       16S: align-asv-v4.sh (mothur V4 alignment + FastTree); skipped when tree.method is none
   phyloseq   dada2-asv.R --resume=outputs: rebuild the phyloseq objects with the tree
   guilds     ITS: fungal-guilds.R: FungalTraits lifestyles and FUNGuild guilds per ASV; skipped without `guilds`
-  figures    plot-readtracking.R: read tracking per sample by run -> <results>/<key>.readtracking_*.png / .pdf
+  figures    plot-readtracking.R, plot-taxonomy.R: read tracking per sample by run, taxonomic composition per
+             sample for each rank -> <results>/<key>.readtracking_*.png, <key>.taxonomy_<Rank>.png (--pdf: also PDF)
   analyze    analyze-phyloseq.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, distances, betapart
 
 \b
@@ -263,7 +264,9 @@ def commands(res, conf_json, steps, args):
             if prm.get("guilds"):
                 cmds.append((step, rscript + [os.path.join(SCRIPTS, "fungal-guilds.R"), "--config=" + conf_json], {}))
         elif step == "figures":
-            cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-readtracking.R"), "--config=" + conf_json], {}))
+            pdf = ["--pdf"] if args.pdf else []
+            cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-readtracking.R"), "--config=" + conf_json] + pdf, {}))
+            cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-taxonomy.R"), "--config=" + conf_json] + pdf, {}))
         elif step == "analyze":
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "analyze-phyloseq.R"), "--config=" + conf_json]
                          + (["--pdf"] if args.pdf else []), {}))
@@ -354,7 +357,7 @@ def check_cmd(config, locus, profile, merge):
 @click.option("--steps", default=",".join(STEPS), show_default=True, callback=parse_steps, help="comma-separated steps")
 @click.option("--threads", type=int, help="overrides the config's dada2 threads (default there: SLURM CPUs, else 4)")
 @click.option("--nsamples", type=int, help="test run on the first N samples (dada2 step)")
-@click.option("--pdf", is_flag=True, help="analysis figures also as PDF")
+@click.option("--pdf", is_flag=True, help="figures (figures and analyze steps) also as PDF; default PNG only")
 @click.option("--slurm", is_flag=True, help="submit one SLURM job per locus")
 @click.option("--dry-run", is_flag=True, help="print the commands only")
 @click.argument("extra", nargs=-1, type=click.UNPROCESSED)
