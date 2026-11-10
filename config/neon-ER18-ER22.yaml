@@ -176,6 +176,11 @@ analysis:
     band: [Vegetation.Type, year]
     gap: {by: Vegetation.Type, width: 2}
     panel_spacing: 10
+  # 2. ITS: the same plots by FUNGuild trophic mode and guild (guilds step); confidence: [Probable, Highly Probable]
+  #    would count only those matches (default: all); display options from taxonomic_composition
+  funguild_composition:
+    fields: [trophicMode, guild]
+    ntop: 15
 
 # ---- SLURM (workflow.py run --slurm) ----
 slurm:

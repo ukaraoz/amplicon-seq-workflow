@@ -1,7 +1,7 @@
 # Community analysis of the DADA2 phyloseq objects (output of dada2-asv.R) for the neon_er_ER18_ER22 dataset
 # (NEON East River 2018 + 2022 survey; dataset key {project}_{run_id} of config/neon-ER18-ER22.yaml)
 #
-# version 1.4
+# version 1.5
 #
 # usage: Rscript analyze-phyloseq-neon_er_ER18_ER22.R --config=<key>.config.json [--pdf]
 #   normally run by workflow.py (analyze step, analysis.script), which writes the resolved config
@@ -27,12 +27,15 @@
 #      the bars (e.g. [Vegetation.Type, year], top to bottom); gap: {by: <column>, width: <bars>}: an empty space
 #      of that many bar widths within a panel wherever the column's value changes (e.g. between vegetation types);
 #      names without UNITE's rank prefixes, species as "Genus species"
+#   2. FUNGuild composition (funguild_composition): the same bar plots with ASVs grouped by FUNGuild trophic mode and
+#      guild (fields) from <key>.phyloseq.filtered.guilds.rds (guilds step); confidence: count only matches with
+#      these rankings; display options as in the section, else as in taxonomic_composition
 #
 # All analyses of the phyloseq objects go in this script, as further numbered sections.
 
 packages = c("phyloseq", "ggplot2")
 invisible(lapply(packages, function(p) suppressPackageStartupMessages(library(p, character.only = TRUE))))
-script_version = "1.4"
+script_version = "1.5"
 
 allargs = commandArgs(trailingOnly = TRUE)
 write_pdf = "--pdf" %in% allargs
@@ -116,78 +119,119 @@ pal = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377
         "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94", "#f7b6d2", "#dbdb8d", "#9edae5",
         "#393b79", "#637939", "#8c6d31", "#843c39", "#7b4173", "#3182bd", "#e6550d")
 
+# ---- composition bar plots (sections 1 and 2) ----
+# composition_plot(lab, ...): stacked bars of relative abundance per sample, ASVs grouped by `lab` (one value per ASV,
+# NA = unassigned): the ntop categories by mean relative abundance across samples, the rest as "Other", unassigned
+# last. Display options (opt): order (sample order, or "abundance" within each panel), band (sample-data columns
+# shown as strips under the bars), gap {by, width} (empty bars where a column changes within a panel), panel_spacing.
+band_pals = list(c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02"),
+                 c("#4d4d4d", "#bdbdbd", "#878787", "#e0e0e0"),
+                 c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c"))
+band_h = 0.035                                                     # height of one band (fraction of the y axis)
+rel = otu / rowSums(otu)
+composition_plot = function(lab, legend_name, title, what, unassigned_note, file, opt, ntop = 15, italic = FALSE, note = NULL) {
+  by_abundance = identical(opt$order, "abundance")
+  bands = intersect(unlist(opt$band), names(sd))
+  band_vals = lapply(bands, function(b) { v = as.character(sd[[b]]); v[is.na(v)] = "NA"; v })
+  band_cols = unlist(lapply(seq_along(bands), function(i) { lv = sort(unique(band_vals[[i]]))
+    setNames(band_pals[[(i - 1) %% length(band_pals) + 1]][(seq_along(lv) - 1) %% 6 + 1], lv) }))
+  gap_by = if(!is.null(opt$gap$by) && opt$gap$by %in% names(sd)) opt$gap$by else NULL
+  gap_w = if(is.null(opt$gap$width)) 2 else as.numeric(opt$gap$width)
+  lab = ifelse(is.na(lab), "unassigned", lab)
+  m = t(rowsum(t(rel), lab))                                                  # samples x categories
+  mean_ab = sort(colMeans(m[, colnames(m) != "unassigned", drop = FALSE]), decreasing = TRUE)
+  keep = names(mean_ab)[seq_len(min(ntop, length(mean_ab)))]
+  other = setdiff(colnames(m), c(keep, "unassigned"))
+  mm = cbind(m[, keep, drop = FALSE],
+             Other = if(length(other)) rowSums(m[, other, drop = FALSE]) else 0,
+             unassigned = if("unassigned" %in% colnames(m)) m[, "unassigned"] else 0)
+  o = if(by_abundance) do.call(order, c(list(match(group, glev)), lapply(keep[seq_len(min(3, length(keep)))], function(k) -mm[, k])))
+      else seq_len(nrow(mm))                                                    # sample order
+  # x position of each sample within its panel: consecutive bars, plus gap_w empty bars where gap_by changes
+  smp = rownames(mm)[o]; gs = group[o]
+  gv = if(!is.null(gap_by)) { v = as.character(sd[smp, gap_by]); v[is.na(v)] = "NA"; v } else rep("", length(smp))
+  xpos = numeric(length(smp))
+  for(gl in unique(gs)) { i = which(gs == gl); chg = c(0, cumsum(gv[i][-1] != gv[i][-length(i)]))
+    xpos[i] = seq_along(i) + gap_w * chg }
+  xpos = setNames(xpos, smp)
+  lv = c(keep, "Other", "unassigned")
+  long = data.frame(x = rep(xpos[rownames(mm)], ncol(mm)), taxon = factor(rep(colnames(mm), each = nrow(mm)), levels = rev(lv)),
+                    group = factor(rep(glab[group], ncol(mm)), levels = glab), ab = as.vector(mm))
+  bd = if(length(bands)) do.call(rbind, lapply(seq_along(bands), function(i) data.frame(
+         x = xpos[rownames(mm)], group = factor(glab[group], levels = glab),
+         band = band_vals[[i]], ymax = -0.008 - (i - 1) * band_h, ymin = -0.008 - i * band_h + 0.006))) else NULL
+  cols = c(setNames(pal[(seq_along(keep) - 1) %% length(pal) + 1], keep), Other = "#b3b3b3", unassigned = "#e8e8e8")
+  pct_un = 100 * mean(mm[, "unassigned"]); pct_oth = 100 * mean(mm[, "Other"])
+  g = ggplot(long, aes(x, ab, fill = taxon)) +
+    geom_col(width = 1) +
+    (if(!is.null(bd)) geom_linerange(data = bd, aes(x = x, ymin = ymin, ymax = ymax, colour = band), inherit.aes = FALSE,
+                                     linewidth = 1.2) else NULL) +
+    (if(!is.null(bd)) scale_colour_manual(values = band_cols, breaks = names(band_cols), name = paste(bands, collapse = " / ")) else NULL) +
+    facet_grid(. ~ group, scales = "free_x", space = "free_x") +
+    scale_fill_manual(values = cols, breaks = lv, name = legend_name) +
+    scale_x_continuous(expand = c(0, 0.6)) +
+    scale_y_continuous(labels = function(x) paste0(100 * x, "%"), breaks = seq(0, 1, 0.25), expand = c(0, 0),
+                       limits = c(if(!is.null(bd)) -0.01 - length(bands) * band_h else 0, 1)) +
+    labs(x = paste0("samples, by ", group_name, if(by_abundance) " (ordered within each panel by the most abundant categories)"
+                    else paste0(" (in sample order: ", paste(by, collapse = " > "), ")"),
+                    if(!is.null(gap_by)) paste0("; gaps between ", gap_by, " groups") else ""),
+         y = "relative abundance (share of sample reads)", title = title,
+         subtitle = paste0(desc, if(!is.null(note)) paste0("; ", note) else "", "\n", length(keep), " most abundant ", what,
+                           " by mean relative abundance (", length(mean_ab), " in total); Other = the remaining ", length(other),
+                           " (mean ", sprintf("%.1f", pct_oth), "%); unassigned = ", unassigned_note, " (mean ", sprintf("%.1f", pct_un), "%)")) +
+    theme_bw(base_size = 10) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid = element_blank(),
+          panel.spacing = unit(if(is.null(opt$panel_spacing)) 10 else opt$panel_spacing, "pt"),
+          strip.text = element_text(size = 8, angle = if(length(glev) > 6) 90 else 0),
+          plot.subtitle = element_text(size = 8, lineheight = 1.1), legend.key.size = unit(10, "pt"),
+          legend.text = element_text(size = if(max(nchar(lv)) > 40) 6.5 else 8, face = if(italic) "italic" else "plain"))
+  f = save_plot(g, file, width = 14, height = 6.5)
+  list(file = f, n = length(mean_ab), keep = length(keep), top = 100 * mean(rowSums(mm[, keep, drop = FALSE])), other = pct_oth, unassigned = pct_un)
+}
+report = function(sec, name, r) cat(sprintf("%s %-12s %5d categories; top %d cover %.1f%% on average, Other %.1f%%, unassigned %.1f%% -> %s.png%s\n",
+                                            sec, name, r$n, r$keep, r$top, r$other, r$unassigned, r$file, if(write_pdf) " + .pdf" else ""))
+
 # ---- 1. taxonomic composition (analysis.taxonomic_composition) ----
 if(!is.null(acfg$taxonomic_composition)) {
   tc = acfg$taxonomic_composition
-  ntop = if(is.null(tc$ntop)) 15 else as.integer(tc$ntop)
   ranks = if(!is.null(tc$ranks)) intersect(tc$ranks, names(tax)) else names(tax)[-1]     # below the first rank
-  by_abundance = identical(tc$order, "abundance")
-  bands = intersect(unlist(tc$band), names(sd))
-  # one palette per band (by position); values of all bands share one colour legend
-  band_pals = list(c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02"),
-                   c("#4d4d4d", "#bdbdbd", "#878787", "#e0e0e0"),
-                   c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c"))
-  band_h = 0.035                                                   # height of one band (fraction of the y axis)
-  gap_by = if(!is.null(tc$gap$by) && tc$gap$by %in% names(sd)) tc$gap$by else NULL
-  gap_w = if(is.null(tc$gap$width)) 2 else as.numeric(tc$gap$width)
-  band_vals = lapply(bands, function(b) { v = as.character(sd[[b]]); v[is.na(v)] = "NA"; v })
-  band_cols = unlist(lapply(seq_along(bands), function(i) { lv = unique(band_vals[[i]][order(match(band_vals[[i]], sort(unique(band_vals[[i]]))))])
-    setNames(band_pals[[(i - 1) %% length(band_pals) + 1]][(seq_along(lv) - 1) %% 6 + 1], lv) }))
-  rel = otu / rowSums(otu)
   for(rk in ranks) {
-    lab = ifelse(is.na(tax[[rk]]), "unassigned", tax[[rk]])
-    m = t(rowsum(t(rel), lab))                                                # samples x taxa at this rank
-    mean_ab = sort(colMeans(m[, colnames(m) != "unassigned", drop = FALSE]), decreasing = TRUE)
-    keep = names(mean_ab)[seq_len(min(ntop, length(mean_ab)))]
-    other = setdiff(colnames(m), c(keep, "unassigned"))
-    mm = cbind(m[, keep, drop = FALSE],
-               Other = if(length(other)) rowSums(m[, other, drop = FALSE]) else 0,
-               unassigned = if("unassigned" %in% colnames(m)) m[, "unassigned"] else 0)
-    o = if(by_abundance) do.call(order, c(list(match(group, glev)), lapply(keep[seq_len(min(3, length(keep)))], function(k) -mm[, k])))
-        else seq_len(nrow(mm))                                                  # sample order
-    # x position of each sample within its panel: consecutive bars, plus gap_w empty bars where gap_by changes
-    smp = rownames(mm)[o]; gs = group[o]
-    gv = if(!is.null(gap_by)) { v = as.character(sd[smp, gap_by]); v[is.na(v)] = "NA"; v } else rep("", length(smp))
-    xpos = numeric(length(smp))
-    for(gl in unique(gs)) { i = which(gs == gl); chg = c(0, cumsum(gv[i][-1] != gv[i][-length(i)]))
-      xpos[i] = seq_along(i) + gap_w * chg }
-    xpos = setNames(xpos, smp)
-    long = data.frame(sample = factor(rep(rownames(mm), ncol(mm)), levels = rownames(mm)[o]), x = rep(xpos[rownames(mm)], ncol(mm)),
-                      taxon = factor(rep(colnames(mm), each = nrow(mm)), levels = rev(c(keep, "Other", "unassigned"))),
-                      group = factor(rep(glab[group], ncol(mm)), levels = glab), ab = as.vector(mm))
-    lv = c(keep, "Other", "unassigned")
-    bd = if(length(bands)) do.call(rbind, lapply(seq_along(bands), function(i) data.frame(
-           sample = factor(rownames(mm), levels = rownames(mm)[o]), x = xpos[rownames(mm)], group = factor(glab[group], levels = glab),
-           band = band_vals[[i]], ymax = -0.008 - (i - 1) * band_h, ymin = -0.008 - i * band_h + 0.006))) else NULL
-    cols = c(setNames(pal[seq_along(keep)], keep), Other = "#b3b3b3", unassigned = "#e8e8e8")
-    pct_un = 100 * mean(mm[, "unassigned"]); pct_oth = 100 * mean(mm[, "Other"])
-    g = ggplot(long, aes(x, ab, fill = taxon)) +
-      geom_col(width = 1) +
-      (if(!is.null(bd)) geom_linerange(data = bd, aes(x = x, ymin = ymin, ymax = ymax, colour = band), inherit.aes = FALSE,
-                                       linewidth = 1.2) else NULL) +
-      (if(!is.null(bd)) scale_colour_manual(values = band_cols, breaks = names(band_cols), name = paste(bands, collapse = " / ")) else NULL) +
-      facet_grid(. ~ group, scales = "free_x", space = "free_x") +
-      scale_fill_manual(values = cols, breaks = lv, name = rk) +
-      scale_x_continuous(expand = c(0, 0.6)) +
-      scale_y_continuous(labels = function(x) paste0(100 * x, "%"), breaks = seq(0, 1, 0.25), expand = c(0, 0),
-                         limits = c(if(!is.null(bd)) -0.01 - length(bands) * band_h else 0, 1)) +
-      labs(x = paste0("samples, by ", group_name, if(by_abundance) " (ordered within each panel by the most abundant taxa)"
-                      else paste0(" (in sample order: ", paste(by, collapse = " > "), ")"),
-                      if(!is.null(gap_by)) paste0("; gaps between ", gap_by, " groups") else ""),
-           y = "relative abundance (share of sample reads)",
-           title = paste0(cfg$locus, " taxonomic composition per sample: ", rk),
-           subtitle = paste0(desc, "\n", length(keep), " most abundant ", tolower(rk), " taxa by mean relative abundance (",
-                             length(mean_ab), " in total); Other = the remaining ", length(other), " (mean ", sprintf("%.1f", pct_oth),
-                             "%); unassigned = not assigned at ", tolower(rk), " level (mean ", sprintf("%.1f", pct_un), "%)")) +
-      theme_bw(base_size = 10) +
-      theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid = element_blank(),
-            panel.spacing = unit(if(is.null(tc$panel_spacing)) 10 else tc$panel_spacing, "pt"), strip.text = element_text(size = 8, angle = if(length(glev) > 6) 90 else 0), plot.subtitle = element_text(size = 8, lineheight = 1.1),
-            legend.key.size = unit(10, "pt"),
-            legend.text = element_text(size = 8, face = if(rk %in% c("Genus", "Species")) "italic" else "plain"))
-    f = save_plot(g, paste0("taxonomy_", rk), width = 14, height = 6.5)
-    cat(sprintf("1. taxonomic composition %-8s %5d taxa; top %d cover %.1f%% on average, Other %.1f%%, unassigned %.1f%% -> %s.png%s\n",
-                rk, length(mean_ab), length(keep), 100 * mean(rowSums(mm[, keep, drop = FALSE])), pct_oth, pct_un, f,
-                if(write_pdf) " + .pdf" else ""))
+    r = composition_plot(tax[[rk]], rk, paste0(cfg$locus, " taxonomic composition per sample: ", rk),
+                         paste(tolower(rk), "taxa"), paste0("not assigned at ", tolower(rk), " level"), paste0("taxonomy_", rk),
+                         tc, ntop = if(is.null(tc$ntop)) 15 else as.integer(tc$ntop), italic = rk %in% c("Genus", "Species"))
+    report("1. taxonomic composition", rk, r)
+  }
+}
+
+# ---- 2. FUNGuild composition (analysis.funguild_composition) ----
+# ASVs grouped by their FUNGuild trophic mode / guild from <key>.phyloseq.filtered.guilds.rds (guilds step);
+# confidence: only matches with these confidence rankings count (others as unassigned), default all. Display options
+# (order, band, gap, panel_spacing) as in the section itself, else as in taxonomic_composition.
+if(!is.null(acfg$funguild_composition)) {
+  fc = acfg$funguild_composition
+  gfile = file.path(resdir, paste0(key, ".phyloseq.filtered.guilds.rds"))
+  if(!file.exists(gfile)) {
+    cat("2. FUNGuild composition: skipped, no", basename(gfile), "(guilds step; ITS only)\n")
+  } else {
+  gtt = as.data.frame(as(tax_table(readRDS(gfile)), "matrix"), stringsAsFactors = FALSE)
+  gtt = gtt[colnames(otu), , drop = FALSE]                                     # same ASVs, in the order of otu
+  if(anyNA(rownames(gtt))) stop("the guilds object has different ASVs from phyloseq.filtered.rds; rerun the guilds step")
+  opt = fc
+  for(k in c("order", "band", "gap", "panel_spacing")) if(is.null(opt[[k]])) opt[[k]] = acfg$taxonomic_composition[[k]]
+  conf = unlist(fc$confidence)
+  ok = if(length(conf)) gtt$FG_confidence %in% conf else rep(TRUE, nrow(gtt))
+  conf_note = if(length(conf)) paste0("FUNGuild matches with confidence ", paste(conf, collapse = " / "), " only") else "all FUNGuild matches"
+  fields = if(is.null(fc$fields)) c("trophicMode", "guild") else unlist(fc$fields)
+  for(fl in fields) {
+    col = paste0("FG_", fl)
+    if(!col %in% names(gtt)) stop("no column ", col, " in the guilds object")
+    lab = ifelse(ok, gtt[[col]], NA)
+    r = composition_plot(lab, paste("FUNGuild", fl), paste0(cfg$locus, " FUNGuild composition per sample: ", fl),
+                         paste("FUNGuild", if(fl == "guild") "guilds" else "trophic modes"),
+                         if(length(conf)) "no FUNGuild record, or below the confidence set" else "no FUNGuild record", paste0("funguild_", fl), opt,
+                         ntop = if(is.null(fc$ntop)) 15 else as.integer(fc$ntop), note = conf_note)
+    report("2. FUNGuild composition", fl, r)
+  }
   }
 }
 
