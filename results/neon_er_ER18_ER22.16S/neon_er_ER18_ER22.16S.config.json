@@ -13,7 +13,7 @@
     ],
     "work": "/pscratch/sd/u/ukaraoz/neon_itag/16S/work/ER18_ER22",
     "results": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.16S",
-    "analysis": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.16S/analysis"
+    "analysis": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.16S"
   },
   "samples": {
     "id_column": "sample",
@@ -101,5 +101,11 @@
       "v4_end": 23444
     }
   },
-  "analysis": {}
+  "analysis": {
+    "script": "analyze-phyloseq.R",
+    "groups": "year",
+    "taxonomic_composition": {
+      "ntop": 15
+    }
+  }
 }
