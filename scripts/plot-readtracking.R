@@ -1,11 +1,12 @@
 # Read tracking figure: distribution of each readtracking.txt metric per sample, by sequencing run
 #
-# version 1.1
+# version 1.2
 #
 # usage: Rscript plot-readtracking.R --config=<key>.config.json        (workflow.py `figures` step)
 #   reads   <results>/<key>.readtracking.txt and the resolved config (processing parameters for the subtitle)
-#   writes  <results>/figures/<key>.readtracking_by_run.png and .pdf          reads per sample
-#           <results>/figures/<key>.readtracking_pct_by_run.png and .pdf      % of the sample's input reads
+#   writes  <results>/<key>.readtracking_by_run.png and .pdf          reads per sample
+#           <results>/<key>.readtracking_pct_by_run.png and .pdf      % of the sample's input reads
+#           (in the results folder itself, next to the other plots; no figures/ subfolder)
 # One panel per metric, in pipeline order (cutadapt_R2_trimmed left out; R1-only runs have no R2 metrics anyway):
 # box (median, quartiles) and points (samples) per run on a log scale, the median per run as a number, and the
 # failed-sample threshold (minfinal) on the last panel. The subtitle lists the cutadapt, filterAndTrim and DADA2
@@ -17,7 +18,7 @@ if(length(cfgfile) != 1) stop("usage: Rscript plot-readtracking.R --config=<key>
 cfg = fromJSON(cfgfile, simplifyVector = TRUE); p = cfg$params; key = cfg$key
 tr = read.delim(file.path(cfg$paths$results, paste0(key, ".readtracking.txt")), check.names = FALSE)
 if(!"run" %in% names(tr)) tr$run = "all"
-figdir = file.path(cfg$paths$results, "figures"); dir.create(figdir, showWarnings = FALSE)
+figdir = cfg$paths$results
 
 # ---- metrics, in pipeline order ----
 desc = c(raw = "pairs into cutadapt", cutadapt_R1_trimmed = "R1 with primer / read-through removed",
@@ -92,7 +93,7 @@ w = max(8, length(metrics) * (0.85 * length(runs) + 0.9)); h = 5.4 + 0.18 * leng
 out = file.path(figdir, paste0(key, ".readtracking_by_run"))
 ggsave(paste0(out, ".png"), g, width = w, height = h, dpi = 140)
 ggsave(paste0(out, ".pdf"), g, width = w, height = h)
-cat("plot-readtracking.R 1.1:", paste0(out, ".png / .pdf"), "\n")
+cat("plot-readtracking.R 1.2:", paste0(out, ".png / .pdf"), "\n")
 
 # ---- the same metrics as % of each sample's input reads (pairs after cutadapt, or input pairs) ----
 pm = setdiff(metrics, c("raw", "input"))   # raw / input is ~100% (cutadapt drops almost no pairs; counts in the other figure)
@@ -122,4 +123,4 @@ w2 = max(8, length(pm) * (0.85 * length(runs) + 0.9))
 out2 = file.path(figdir, paste0(key, ".readtracking_pct_by_run"))
 ggsave(paste0(out2, ".png"), g2, width = w2, height = h, dpi = 140)
 ggsave(paste0(out2, ".pdf"), g2, width = w2, height = h)
-cat("plot-readtracking.R 1.1:", paste0(out2, ".png / .pdf"), "\n")
+cat("plot-readtracking.R 1.2:", paste0(out2, ".png / .pdf"), "\n")
