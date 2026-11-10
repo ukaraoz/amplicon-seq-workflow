@@ -17,6 +17,7 @@ results/*/*
 !results/*/*.guild_summary.txt
 !results/*/*.cutadapt_summary.txt
 !results/*/*.metadata_columns.txt
+!results/*/*.sample_order.txt
 work/
 # local scratch
 .DS_Store
