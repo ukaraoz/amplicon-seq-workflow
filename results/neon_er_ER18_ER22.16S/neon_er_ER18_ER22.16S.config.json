@@ -106,6 +106,7 @@
     "sample_order": {
       "by": [
         "Site Name",
+        "Vegetation.Type",
         "SamplingCode",
         "year",
         "replicate"
@@ -114,7 +115,10 @@
     "groups": "Site Name",
     "taxonomic_composition": {
       "ntop": 15,
-      "band": "year"
+      "band": [
+        "Vegetation.Type",
+        "year"
+      ]
     }
   }
 }
