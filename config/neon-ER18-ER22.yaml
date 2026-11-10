@@ -11,7 +11,7 @@
 # Longitude, Soil ...; see paths.metadata). Made by merging NEON_ER_amplicon_metadata.tsv with
 # ER_2018_NEON_soil-physical-chemical-measurements.csv on SamplingCode.
 #
-# Community analysis: scripts/analyze-phyloseq.R (`analysis` section; analyze step), e.g.
+# Community analysis: scripts/analyze-phyloseq-neon_er_ER18_ER22.R (`analysis` section; analyze step), e.g.
 #   ./workflow.py run -c config/neon-ER18-ER22.yaml --steps analyze            (--pdf: also PDF figures)
 #
 # Strings may use {placeholders}: any key under `vars` (after the profile's vars are merged in), plus
@@ -52,7 +52,7 @@ paths:
     - "{repo}/config/{dataset}/metadata/NEON_RS_master_updated_11.28.2023.csv"
   work: "{scratch}/{locus}/work/{run}"   # cutadapt + filtered reads (regenerable; pscratch is purged)
   results: "{repo}/results/{key}"        # DADA2 outputs (tables, fasta, phyloseq), one folder per key in the repo
-  analysis: "{repo}/results/{key}"         # analyze-phyloseq.R outputs, next to the other results (no subfolder)
+  analysis: "{repo}/results/{key}"         # analysis outputs, next to the other results (no subfolder)
 
 # ---- where the workflow runs: `workflow.py pull` copies results/<key>/ from this clone ----
 remote:
@@ -157,10 +157,10 @@ locus_settings:
     require_ranks: []
     tree: {method: none}
 
-# ---- community analysis (scripts/analyze-phyloseq.R, analyze step) ----
+# ---- community analysis (scripts/analyze-phyloseq-{dataset}.R = analyze-phyloseq-neon_er_ER18_ER22.R, analyze step) ----
 # Each section runs when present; outputs go to paths.analysis as <key>.<analysis>....png (PDF with --pdf).
 analysis:
-  script: analyze-phyloseq.R
+  script: analyze-phyloseq-{dataset}.R   # = analyze-phyloseq-neon_er_ER18_ER22.R
   # sample order of every figure and table: by site, then the sample (site number), then year (2018 before 2022),
   # then technical replicate (A, B), so a site's 2018 and 2022 samples are side by side
   sample_order:

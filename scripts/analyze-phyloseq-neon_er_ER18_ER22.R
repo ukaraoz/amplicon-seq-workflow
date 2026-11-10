@@ -1,8 +1,9 @@
-# Community analysis of the DADA2 phyloseq objects (output of dada2-asv.R), for survey designs such as NEON ER18+ER22
+# Community analysis of the DADA2 phyloseq objects (output of dada2-asv.R) for the neon_er_ER18_ER22 dataset
+# (NEON East River 2018 + 2022 survey; dataset key {project}_{run_id} of config/neon-ER18-ER22.yaml)
 #
-# version 1.1
+# version 1.2
 #
-# usage: Rscript analyze-phyloseq.R --config=<key>.config.json [--pdf]
+# usage: Rscript analyze-phyloseq-neon_er_ER18_ER22.R --config=<key>.config.json [--pdf]
 #   normally run by workflow.py (analyze step, analysis.script), which writes the resolved config
 #   --pdf  also write PDFs of the figures (default: PNG only)
 # input : paths.results/<key>.phyloseq.filtered.rds (taxa filter applied, failed samples removed; tree from the
@@ -29,19 +30,19 @@
 
 packages = c("phyloseq", "ggplot2")
 invisible(lapply(packages, function(p) suppressPackageStartupMessages(library(p, character.only = TRUE))))
-script_version = "1.1"
+script_version = "1.2"
 
 allargs = commandArgs(trailingOnly = TRUE)
 write_pdf = "--pdf" %in% allargs
 config_file = sub("^--config=", "", allargs[grepl("^--config=", allargs)])
-if(length(config_file) != 1) stop("usage: Rscript analyze-phyloseq.R --config=<key>.config.json [--pdf] (see workflow.py)")
+if(length(config_file) != 1) stop("usage: Rscript analyze-phyloseq-neon_er_ER18_ER22.R --config=<key>.config.json [--pdf] (see workflow.py)")
 cfg = jsonlite::read_json(config_file, simplifyVector = TRUE)
 acfg = if(is.null(cfg$analysis)) list() else cfg$analysis
 key = cfg$key
 resdir = cfg$paths$results
 outdir = if(is.null(cfg$paths$analysis)) resdir else cfg$paths$analysis
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
-cat("analyze-phyloseq.R version", script_version, ":", key, "->", outdir, "\n")
+cat("analyze-phyloseq-neon_er_ER18_ER22.R version", script_version, ":", key, "->", outdir, "\n")
 
 # figures: always PNG; PDF only with --pdf
 save_plot = function(p, name, width, height, dpi = 140) {
@@ -170,4 +171,4 @@ if(!is.null(acfg$taxonomic_composition)) {
   }
 }
 
-cat("analyze-phyloseq.R done\n")
+cat("analyze-phyloseq-neon_er_ER18_ER22.R done\n")

@@ -12,7 +12,8 @@ locus settings) into <results>/<key>.config.json, which the R and shell steps re
   phyloseq   dada2-asv.R --resume=outputs: rebuild the phyloseq objects with the tree
   guilds     ITS: fungal-guilds.R: FungalTraits lifestyles and FUNGuild guilds per ASV; skipped without `guilds`
   figures    plot-readtracking.R: read tracking per sample by run -> <results>/<key>.readtracking_*.png (--pdf: also PDF)
-  analyze    analysis.script (default analyze-phyloseq.R: taxonomic composition per rank, ...; biochar:
+  analyze    analysis.script (default analyze-phyloseq-<dataset>.R, dataset = {project}_{run_id}; NEON:
+             analyze-phyloseq-neon_er_ER18_ER22.R, taxonomic composition per rank, ...; biochar:
              analyze-phyloseq-biochar.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, betapart)
 
 \b
@@ -267,7 +268,8 @@ def commands(res, conf_json, steps, args):
             pdf = ["--pdf"] if args.pdf else []
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-readtracking.R"), "--config=" + conf_json] + pdf, {}))
         elif step == "analyze":
-            script = (res.get("analysis") or {}).get("script") or "analyze-phyloseq.R"
+            # analysis script of the dataset: analysis.script, default analyze-phyloseq-<project>_<run_id>.R
+            script = (res.get("analysis") or {}).get("script") or f"analyze-phyloseq-{res['project']}_{res['run_id']}.R"
             cmds.append((step, rscript + [os.path.join(SCRIPTS, script), "--config=" + conf_json]
                          + (["--pdf"] if args.pdf else []), {}))
     return cmds
