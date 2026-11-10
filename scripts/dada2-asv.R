@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.17
+# version 2.18
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]] [--pdf]
@@ -67,7 +67,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.17"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.18"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -601,6 +601,26 @@ sd_f = sample_df(psf)
 sd_f$reads_filtered_taxa = sample_sums(psf)
 sample_data(psf) = sample_data(sd_f)
 reads_before_taxa_filter = sample_sums(ps)
+# read tracking: reads kept by the taxa filter (what minfinal applies to) and their % of the sample's nonchim reads
+# (with a tree, reads of ASVs not in the tree count as not kept). Column taxa_filtered_<label>: params
+# taxa_filter_label if set, else from the filter: keep_taxa names (Fungi -> fungal, Bacteria -> bacterial,
+# Archaea -> archaeal, others lowercased), else no_<remove_taxa names> and <require_ranks>_assigned, e.g.
+# taxa_filtered_fungal, taxa_filtered_no_chloroplast_mitochondria_phylum_assigned; taxa_filtered_<label>_pct_nonchim
+filter_label = function(p) {
+  if(length(p$taxa_filter_label)) return(p$taxa_filter_label)
+  adj = c(Fungi = "fungal", Bacteria = "bacterial", Archaea = "archaeal")
+  nm = function(x) { x = unlist(x); ifelse(x %in% names(adj), adj[x], tolower(x)) }
+  if(length(p$keep_taxa)) return(paste(nm(p$keep_taxa), collapse = "_"))
+  lab = c(if(length(p$remove_taxa)) paste0("no_", paste(nm(p$remove_taxa), collapse = "_")),
+          if(length(p$require_ranks)) paste0(paste(tolower(p$require_ranks), collapse = "_"), "_assigned"))
+  if(length(lab)) paste(lab, collapse = "_") else "none"
+}
+tf_col = paste0("taxa_filtered_", gsub("[^A-Za-z0-9]+", "_", filter_label(p)))
+track = track[, !grepl("^taxa_filtered", colnames(track)), drop = F]
+tf_reads = as.numeric(sample_sums(psf)[rownames(track)])
+track = cbind(track, setNames(data.frame(tf_reads, round(100 * tf_reads / track[, "nonchim"], 2)),
+                              c(tf_col, paste0(tf_col, "_pct_nonchim"))))
+write_track(track)
 
 # ---- failed samples ----
 # context for each reason: the sample's reads vs the median (and the lowest passing sample) at the same stage
@@ -644,7 +664,7 @@ print(psf)
 # <key>.filtered.otu_table.txt (ASVs x samples, asv_id = the object's taxa names), .tax_table.txt (asv_id, ranks,
 # asv_seq), .sample_data.txt (one row per sample, original column names), .refseq.fa (names = asv_id), .tree (when the
 # object has one), and <key>.filtered.README.txt describing them. The package step (package-filtered.py) bundles
-# them with <key>.metadata_columns.txt, taxa_filter.txt, failed_samples.txt and, for ITS, the guild files into
+# them with <key>.readtracking.txt, metadata_columns.txt, taxa_filter.txt, failed_samples.txt and, for ITS, the guild tables into
 # <key>.filtered.tar.gz (README.txt = this README plus a guild section)
 ex = file.path(outdir, paste0(key, ".filtered"))
 otu_x = as(otu_table(psf), "matrix"); if(!taxa_are_rows(psf)) otu_x = t(otu_x)          # ASVs x samples

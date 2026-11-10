@@ -105,6 +105,7 @@ locus_settings:
       try_rc: false
     remove_taxa: {Order: [Chloroplast], Family: [Mitochondria]}
     require_ranks: [Phylum]
+    taxa_filter_label: no_organelles    # read tracking column taxa_filtered_no_organelles (default: from the filter)
     tree:
       method: mothur-v4                 # align-asv-v4.sh: SILVA V4 reference alignment + FastTree
       reference: "{mothur_ref}"         # holds silva.nr_v138_2.tgz (+ the V4 alignment, already built)

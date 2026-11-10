@@ -75,6 +75,7 @@ locus_settings:
       try_rc: false
     remove_taxa: {Order: [Chloroplast], Family: [Mitochondria]}
     require_ranks: [Phylum]
+    taxa_filter_label: no_organelles    # read tracking column taxa_filtered_no_organelles (default: from the filter)
     tree: {method: mothur-v4, reference: "{refdir}/mothur/silva.nr_v138_2", v4_start: 13862, v4_end: 23444}
   ITS:
     fwd_primer: CTTGGTCATTTAGAGGAAGTAA  # ITS1F

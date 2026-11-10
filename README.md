@@ -15,18 +15,23 @@ YAML config per project/run, locally or as SLURM jobs (NERSC Perlmutter).
 | `guilds` | `scripts/fungal-guilds.R` | ITS: FungalTraits lifestyles and traits (genus) and FUNGuild guilds (most specific rank, with confidence) per ASV; summaries over the filtered fungal reads; per-sample guild abundances; skipped without `guilds` in the config |
 | `figures` | `scripts/plot-readtracking.R` | read tracking per sample by sequencing run (one panel per `readtracking.txt` metric), as reads (`<key>.readtracking_by_run`) and as % of each sample's input reads (`<key>.readtracking_pct_by_run`); PNG in the results folder, `--pdf` also PDF |
 | `analyze` | `analysis.script` (default `scripts/analyze-phyloseq-<dataset>.R`, `<dataset>` = `{project}_{run_id}`): `scripts/analyze-phyloseq-neon_er_ER18_ER22.R` (NEON) or `scripts/analyze-phyloseq-biochar.R` | all analyses of the phyloseq objects. `analyze-phyloseq-neon_er_ER18_ER22.R`: sample order (`analysis.sample_order`, `<key>.sample_order.txt`), FUNGuild composition per sample by trophic mode and guild (`<key>.<field>`, ITS, from the guilds step), taxonomic composition per sample for each rank (`<key>.taxonomy_<Rank>`: top taxa, Other, unassigned; panels by `analysis.groups`), further sections to come. `analyze-phyloseq-biochar.R`: taxa bar plots, alpha diversity, Venn, NMDS + PERMANOVA (UniFrac or Bray-Curtis/Jaccard), pairwise PERMANOVA, source sharing, distances to a reference treatment, betapart turnover/nestedness |
-| `package` | `scripts/package-filtered.py` | `<key>.filtered.tar.gz`: the filtered exports, `README.txt`, the filter / failed-sample / metadata-column tables and, for ITS, `guilds.txt`, `guild_summary.txt`, `guild_abundance.txt` and `guild.png` |
+| `package` | `scripts/package-filtered.py` | `<key>.filtered.tar.gz`: the filtered exports, `README.txt`, the read-tracking / filter / failed-sample / metadata-column tables and, for ITS, `guilds.txt`, `guild_summary.txt` and `guild_abundance.txt` (no figures) |
 
 Main outputs (in `paths.results`, by default `results/<key>/` in this repository, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,
 `failed_samples.txt`, `phyloseq.rds` (all ASVs and samples), `phyloseq.filtered.rds` (`remove_taxa` /
 `require_ranks` ASVs and failed samples removed; input of the analysis), `taxa_filter.txt` (what the filter removed).
 The filtered object is also written as text, one file per slot with its own ASV IDs: `filtered.otu_table.txt`,
 `filtered.tax_table.txt` (with `asv_seq`), `filtered.sample_data.txt`, `filtered.refseq.fa`, `filtered.tree` (16S), and as
-`filtered.tar.gz` (package step: those files, a README and the filter / failed-sample / metadata-column tables; for ITS
-also `guilds.txt`, `guild_summary.txt`, `guild_abundance.txt` and `guild.png`).
+`filtered.tar.gz` (package step: those files, a README and the read-tracking / filter / failed-sample / metadata-column
+tables; for ITS also `guilds.txt`, `guild_summary.txt` and `guild_abundance.txt`).
 With cutadapt: `cutadapt_summary.txt` (per sample: pairs in, R1/R2 reads trimmed, pairs dropped, bases kept, primer
 hits), and `readtracking.txt` starts with `raw` and `cutadapt_R1_trimmed` / `cutadapt_R2_trimmed` (`input` = pairs
 after cutadapt).
+`readtracking.txt` ends with `taxa_filtered_<label>` (reads kept by the taxa filter; what `minfinal` applies to) and
+`taxa_filtered_<label>_pct_nonchim` (those reads as % of `nonchim`; with a tree, reads of ASVs not in the tree count as
+removed). The label is `taxa_filter_label` if set in the config, else it comes from the filter: `keep_taxa` names
+(Kingdom Fungi -> `taxa_filtered_fungal`), else `no_<remove_taxa>` and `<require_ranks>_assigned` (16S:
+`taxa_filtered_no_chloroplast_mitochondria_phylum_assigned`).
 ITS with `guilds`: `guilds.txt` (per ASV), `guild_summary.txt` (per guild: ASVs, % of fungal reads, samples, and the
 unassigned share), `guild_abundance_FungalTraits.txt` / `guild_abundance.txt` (FUNGuild; relative abundance per
 sample, wide: one row per sample, one column per lifestyle / trophic mode / guild), `phyloseq.filtered.guilds.rds`. Analysis figures and tables

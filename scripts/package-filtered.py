@@ -3,15 +3,15 @@
 
 usage: package-filtered.py --config=<key>.config.json        (workflow.py `package` step, the last step)
 
-version 1.0
+version 1.1
 
 The tarball holds one folder <key>.filtered/ with
   README.txt                       <key>.filtered.README.txt (written by dada2-asv.R), plus a guild section when
                                    guild files are present
   <key>.filtered.otu_table.txt, .tax_table.txt, .sample_data.txt, .refseq.fa, .tree (16S)   from dada2-asv.R
-  <key>.metadata_columns.txt, .taxa_filter.txt, .failed_samples.txt                         provenance, dada2-asv.R
+  <key>.readtracking.txt, .metadata_columns.txt, .taxa_filter.txt, .failed_samples.txt    provenance, dada2-asv.R
   <key>.guilds.txt, .guild_summary.txt, .guild_abundance.txt                                 fungal-guilds.R (ITS)
-  <key>.guild.png                                                                            analyze step (ITS)
+No figures.
 Files that do not exist (e.g. no tree for ITS, no guilds for 16S) are left out. Standard library only.
 """
 import datetime
@@ -21,10 +21,10 @@ import os
 import sys
 import tarfile
 
-VERSION = "1.0"
+VERSION = "1.1"
 EXPORTS = [".filtered.otu_table.txt", ".filtered.tax_table.txt", ".filtered.sample_data.txt", ".filtered.refseq.fa",
            ".filtered.tree"]
-PROVENANCE = [".metadata_columns.txt", ".taxa_filter.txt", ".failed_samples.txt"]
+PROVENANCE = [".readtracking.txt", ".metadata_columns.txt", ".taxa_filter.txt", ".failed_samples.txt"]
 GUILDS = [
     (".guilds.txt", "one row per ASV (all ASVs; in_filtered = in the filtered object): asv_id, asv_seq, taxonomy, "
                     "reads, samples, FungalTraits (FT_*) and FUNGuild (FG_*) assignments and how they were matched"),
@@ -33,7 +33,6 @@ GUILDS = [
     (".guild_abundance.txt", "FUNGuild, wide: one row per sample, fungal_reads, then the relative abundance (share of "
                              "the sample's fungal reads) of each trophic mode (\"trophicMode: ...\") and each guild "
                              "(\"guild: ...\"); each set sums to 1 per sample"),
-    (".guild.png", "FUNGuild guild composition per sample (top guilds, Other, unassigned), from the analyze step"),
 ]
 
 
@@ -54,6 +53,14 @@ def main():
     readme = open(readme_src).read().rstrip("\n")
 
     files = [f for f in (find(key + s) for s in EXPORTS + PROVENANCE) if f]
+    rt = find(key + ".readtracking.txt")
+    if rt:
+        cols = open(rt).readline().rstrip("\n").split("\t")
+        tf = [c for c in cols if c.startswith("taxa_filtered_") and not c.endswith("_pct_nonchim")]
+        readme += (f"\n\nRead tracking\n  {os.path.basename(rt)}\n      one row per sample that passed filterAndTrim: reads at "
+                   f"each step ({', '.join(c for c in cols if c not in ('sample', 'run'))})"
+                   + (f"; {tf[0]} = reads kept by the taxa filter (what minfinal applies to), with its % of nonchim"
+                      if tf else ""))
     guilds = [(f, desc) for f, desc in ((find(key + s), d) for s, d in GUILDS) if f]
     if guilds:
         readme += ("\n\nFungal guilds (fungal-guilds.R; FungalTraits 1.2 by genus, FUNGuild by the most specific rank)\n"

@@ -1,6 +1,6 @@
 # Read tracking figure: distribution of each readtracking.txt metric per sample, by sequencing run
 #
-# version 1.5
+# version 1.6
 #
 # usage: Rscript plot-readtracking.R --config=<key>.config.json [--pdf]        (workflow.py `figures` step)
 #   reads   <results>/<key>.readtracking.txt and the resolved config
@@ -26,6 +26,9 @@ desc = c(raw = "pairs into cutadapt", cutadapt_R1_trimmed = "R1 with primer / re
          input = if("raw" %in% names(tr)) "pairs after cutadapt" else "input pairs", filtered = "after filterAndTrim",
          denoisedF = "R1 after DADA2", denoisedR = "R2 after DADA2", merged = "merged pairs",
          nonchim = "after chimera removal")
+# taxa_filtered_<label> (e.g. taxa_filtered_fungal): reads kept by the taxa filter; its _pct_nonchim is not plotted
+tfc = grep("^taxa_filtered", setdiff(names(tr), grep("_pct_nonchim$", names(tr), value = TRUE)), value = TRUE)
+if(length(tfc)) desc[tfc] = "after the taxa filter"
 metrics = intersect(names(desc), setdiff(names(tr), c("sample", "run", "cutadapt_R2_trimmed")))
 mlab = setNames(paste0(metrics, "\n(", desc[metrics], ")"), metrics)
 
@@ -66,7 +69,7 @@ w = max(8, length(metrics) * (0.85 * length(runs) + 0.9)); h = 5.4
 out = file.path(figdir, paste0(key, ".readtracking_by_run"))
 ggsave(paste0(out, ".png"), g, width = w, height = h, dpi = 300)
 if(want_pdf) ggsave(paste0(out, ".pdf"), g, width = w, height = h)
-cat("plot-readtracking.R 1.5:", paste0(out, if(want_pdf) ".png / .pdf" else ".png"), "\n")
+cat("plot-readtracking.R 1.6:", paste0(out, if(want_pdf) ".png / .pdf" else ".png"), "\n")
 
 # ---- the same metrics as % of each sample's input reads (pairs after cutadapt, or input pairs) ----
 pm = setdiff(metrics, c("raw", "input"))   # raw / input is ~100% (cutadapt drops almost no pairs; counts in the other figure)
@@ -95,4 +98,4 @@ w2 = max(8, length(pm) * (0.85 * length(runs) + 0.9))
 out2 = file.path(figdir, paste0(key, ".readtracking_pct_by_run"))
 ggsave(paste0(out2, ".png"), g2, width = w2, height = h, dpi = 300)
 if(want_pdf) ggsave(paste0(out2, ".pdf"), g2, width = w2, height = h)
-cat("plot-readtracking.R 1.5:", paste0(out2, if(want_pdf) ".png / .pdf" else ".png"), "\n")
+cat("plot-readtracking.R 1.6:", paste0(out2, if(want_pdf) ".png / .pdf" else ".png"), "\n")
