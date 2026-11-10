@@ -102,6 +102,7 @@ locus_settings:
 
 # ---- community analysis (analyze-phyloseq-biochar.R) ----
 analysis:
+  script: analyze-phyloseq-biochar.R   # the biochar experiment's analyses (default: analyze-phyloseq.R)
   # metadata columns, mapped to the names used in the analysis and its tables
   columns: {habitat: habitat, treatment: treatment, replicate: pot, baseline: is_T0, source: is_pellet}
   habitats: [bulk, rhizosphere, root]

@@ -104,6 +104,7 @@ locus_settings:
     tree: {method: none}
 
 analysis:
+  script: analyze-phyloseq.R           # or analyze-phyloseq-biochar.R for a habitat x treatment design (sections below)
   columns: {habitat: habitat, treatment: treatment, replicate: pot, baseline: null, source: null}
   habitats: [soil]
   treatments:

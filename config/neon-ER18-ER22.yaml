@@ -11,8 +11,8 @@
 # Longitude, Soil ...; see paths.metadata). Made by merging NEON_ER_amplicon_metadata.tsv with
 # ER_2018_NEON_soil-physical-chemical-measurements.csv on SamplingCode.
 #
-# No community analysis yet (no `analysis` section): run the steps up to phyloseq, e.g.
-#   ./workflow.py run -c config/neon-ER18-ER22.yaml --steps reference,dada2,tree,phyloseq --slurm
+# Community analysis: scripts/analyze-phyloseq.R (`analysis` section; analyze step), e.g.
+#   ./workflow.py run -c config/neon-ER18-ER22.yaml --steps analyze            (--pdf: also PDF figures)
 #
 # Strings may use {placeholders}: any key under `vars` (after the profile's vars are merged in), plus
 # {project}, {run}, {run_id}, {locus}, {key}, {repo} (this repository's folder) and {dataset} ({project}_{run_id}).
@@ -52,7 +52,7 @@ paths:
     - "{repo}/config/{dataset}/metadata/NEON_RS_master_updated_11.28.2023.csv"
   work: "{scratch}/{locus}/work/{run}"   # cutadapt + filtered reads (regenerable; pscratch is purged)
   results: "{repo}/results/{key}"        # DADA2 outputs (tables, fasta, phyloseq), one folder per key in the repo
-  analysis: "{repo}/results/{key}/analysis"
+  analysis: "{repo}/results/{key}"         # analyze-phyloseq.R outputs, next to the other results (no subfolder)
 
 # ---- where the workflow runs: `workflow.py pull` copies results/<key>/ from this clone ----
 remote:
@@ -156,6 +156,14 @@ locus_settings:
     remove_taxa: {}
     require_ranks: []
     tree: {method: none}
+
+# ---- community analysis (scripts/analyze-phyloseq.R, analyze step) ----
+# Each section runs when present; outputs go to paths.analysis as <key>.<analysis>....png (PDF with --pdf).
+analysis:
+  script: analyze-phyloseq.R
+  groups: year                          # sample-data column for figure panels (2018 / 2022); default: sequencing run
+  # 1. relative abundance per sample for each rank below Kingdom: ntop taxa, Other, unassigned
+  taxonomic_composition: {ntop: 15}
 
 # ---- SLURM (workflow.py run --slurm) ----
 slurm:

@@ -11,9 +11,9 @@ locus settings) into <results>/<key>.config.json, which the R and shell steps re
   tree       16S: align-asv-v4.sh (mothur V4 alignment + FastTree); skipped when tree.method is none
   phyloseq   dada2-asv.R --resume=outputs: rebuild the phyloseq objects with the tree
   guilds     ITS: fungal-guilds.R: FungalTraits lifestyles and FUNGuild guilds per ASV; skipped without `guilds`
-  figures    plot-readtracking.R, plot-taxonomy.R: read tracking per sample by run, taxonomic composition per
-             sample for each rank -> <results>/<key>.readtracking_*.png, <key>.taxonomy_<Rank>.png (--pdf: also PDF)
-  analyze    analyze-phyloseq-biochar.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, distances, betapart
+  figures    plot-readtracking.R: read tracking per sample by run -> <results>/<key>.readtracking_*.png (--pdf: also PDF)
+  analyze    analysis.script (default analyze-phyloseq.R: taxonomic composition per rank, ...; biochar:
+             analyze-phyloseq-biochar.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, betapart)
 
 \b
 usage:
@@ -266,9 +266,9 @@ def commands(res, conf_json, steps, args):
         elif step == "figures":
             pdf = ["--pdf"] if args.pdf else []
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-readtracking.R"), "--config=" + conf_json] + pdf, {}))
-            cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-taxonomy.R"), "--config=" + conf_json] + pdf, {}))
         elif step == "analyze":
-            cmds.append((step, rscript + [os.path.join(SCRIPTS, "analyze-phyloseq-biochar.R"), "--config=" + conf_json]
+            script = (res.get("analysis") or {}).get("script") or "analyze-phyloseq.R"
+            cmds.append((step, rscript + [os.path.join(SCRIPTS, script), "--config=" + conf_json]
                          + (["--pdf"] if args.pdf else []), {}))
     return cmds
 
