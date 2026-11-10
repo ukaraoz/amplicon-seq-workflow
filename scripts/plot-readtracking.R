@@ -1,10 +1,11 @@
 # Read tracking figure: distribution of each readtracking.txt metric per sample, by sequencing run
 #
-# version 1.0
+# version 1.1
 #
 # usage: Rscript plot-readtracking.R --config=<key>.config.json        (workflow.py `figures` step)
 #   reads   <results>/<key>.readtracking.txt and the resolved config (processing parameters for the subtitle)
-#   writes  <results>/figures/<key>.readtracking_by_run.png and .pdf
+#   writes  <results>/figures/<key>.readtracking_by_run.png and .pdf          reads per sample
+#           <results>/figures/<key>.readtracking_pct_by_run.png and .pdf      % of the sample's input reads
 # One panel per metric, in pipeline order (cutadapt_R2_trimmed left out; R1-only runs have no R2 metrics anyway):
 # box (median, quartiles) and points (samples) per run on a log scale, the median per run as a number, and the
 # failed-sample threshold (minfinal) on the last panel. The subtitle lists the cutadapt, filterAndTrim and DADA2
@@ -91,4 +92,34 @@ w = max(8, length(metrics) * (0.85 * length(runs) + 0.9)); h = 5.4 + 0.18 * leng
 out = file.path(figdir, paste0(key, ".readtracking_by_run"))
 ggsave(paste0(out, ".png"), g, width = w, height = h, dpi = 140)
 ggsave(paste0(out, ".pdf"), g, width = w, height = h)
-cat("plot-readtracking.R 1.0:", paste0(out, ".png / .pdf"), "\n")
+cat("plot-readtracking.R 1.1:", paste0(out, ".png / .pdf"), "\n")
+
+# ---- the same metrics as % of each sample's input reads (pairs after cutadapt, or input pairs) ----
+pm = setdiff(metrics, c("raw", "input"))   # raw / input is ~100% (cutadapt drops almost no pairs; counts in the other figure)
+plong = do.call(rbind, lapply(pm, function(m) data.frame(sample = tr$sample, run = rlab[tr$run], metric = mlab[[m]],
+                                                         pct = 100 * tr[[m]] / tr$input)))
+plong$metric = factor(plong$metric, levels = mlab[pm]); plong$run = factor(plong$run, levels = rlab)
+plong = plong[is.finite(plong$pct), ]
+pmed = aggregate(pct ~ run + metric, plong, median)
+pmed$lab = sprintf("%.1f%%", pmed$pct)
+ref = if("raw" %in% names(tr)) "input = pairs after cutadapt" else "input = input pairs"
+g2 = ggplot(plong, aes(run, pct, colour = run)) +
+  geom_boxplot(outlier.shape = NA, width = 0.55, linewidth = 0.4) +
+  geom_jitter(width = 0.18, height = 0, size = 0.9, alpha = 0.45) +
+  geom_text(data = pmed, aes(y = pct, label = lab), colour = "black", size = 2.6, nudge_x = 0.42, hjust = 0) +
+  facet_wrap(~ metric, nrow = 1) +
+  scale_y_continuous(limits = c(0, max(100, plong$pct) * 1.02), breaks = seq(0, 100, 20), labels = function(x) paste0(x, "%")) +
+  scale_x_discrete(expand = expansion(add = c(0.6, 1.1))) +
+  scale_colour_manual(values = cols, guide = "none") +
+  labs(x = NULL, y = paste0("% of the sample's input reads (", ref, ")"),
+       title = paste0(cfg$project, " ", cfg$locus, " read tracking per sample as % of input reads, by sequencing run (", key, ", ", nrow(tr), " samples)"),
+       subtitle = paste(sub(" \\(dashed line\\)", "", lines), collapse = "\n"),
+       caption = paste0("each metric divided by the same sample's input reads (", ref, "); box: median and quartiles; points: samples; numbers: median per run")) +
+  theme_bw(base_size = 10) +
+  theme(plot.subtitle = element_text(size = 7.6, lineheight = 1.1), strip.text = element_text(size = 8),
+        axis.text.x = element_text(size = 7.5), panel.grid.minor = element_blank())
+w2 = max(8, length(pm) * (0.85 * length(runs) + 0.9))
+out2 = file.path(figdir, paste0(key, ".readtracking_pct_by_run"))
+ggsave(paste0(out2, ".png"), g2, width = w2, height = h, dpi = 140)
+ggsave(paste0(out2, ".pdf"), g2, width = w2, height = h)
+cat("plot-readtracking.R 1.1:", paste0(out2, ".png / .pdf"), "\n")
