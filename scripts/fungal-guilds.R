@@ -1,6 +1,6 @@
 # Fungal guilds / lifestyles for ITS ASVs from their UNITE taxonomy: FungalTraits and FUNGuild
 #
-# version 1.0
+# version 1.1
 #
 # usage: Rscript fungal-guilds.R --config=<key>.config.json     (workflow.py `guilds` step, after `phyloseq`)
 #   reads   <results>/<key>.phyloseq.rds (all ASVs) and <key>.phyloseq.filtered.rds
@@ -11,8 +11,13 @@
 #           <key>.guild_summary.txt       per database / field / value: ASVs, reads, % of fungal reads, samples, over
 #                                         the filtered phyloseq (Fungi kept by the taxa filter, passing samples),
 #                                         with rows for fungal reads that could not be assigned and why
-#           <key>.guild_abundance.txt     per sample: reads and relative abundance (of the sample's fungal reads) of
-#                                         each FungalTraits primary lifestyle and FUNGuild trophic mode / guild
+#           <key>.guild_abundance_FungalTraits.txt   wide: one row per sample (filtered phyloseq), fungal_reads,
+#                                         then the relative abundance (share of the sample's fungal reads) of each
+#                                         FungalTraits primary lifestyle; columns sum to 1 per sample
+#           <key>.guild_abundance_FUNGuild.txt       wide: one row per sample, fungal_reads, then the relative
+#                                         abundance of each FUNGuild trophic mode ("trophicMode: ...") and each guild
+#                                         ("guild: ..."); each of the two sets sums to 1 per sample
+#           ("unassigned": fungal reads without a match in that database)
 #           <key>.phyloseq.filtered.guilds.rds   the filtered phyloseq with guild columns added to the tax table
 #
 # matching (names without UNITE's rank prefixes; placeholder names such as Ascomycota_gen_Incertae_sedis count as
@@ -105,18 +110,27 @@ S = do.call(rbind, lst)
 S = S[order(S$database, match(S$field, unique(S$field)), -S$reads), ]
 write.table(S, file.path(outdir, paste0(key, ".guild_summary.txt")), sep = "\t", quote = F, row.names = F)
 
-# ---- per-sample abundance (long format) ----
-ab = function(db, field, value) {
+# ---- per-sample relative abundance, wide: one file per database, one row per sample ----
+# columns ordered by total abundance (largest first), "unassigned" last; prefix (e.g. "guild: ") when a file has
+# more than one field
+wide = function(value, prefix = "") {
   value[is.na(value)] = "unassigned"
   grp = split(seq_along(value), value)
   m = matrix(sapply(grp, function(i) rowSums(otu[, i, drop = F])), nrow = nrow(otu), dimnames = list(rownames(otu), names(grp)))
-  data.frame(sample = rep(rownames(m), ncol(m)), database = db, field = field, value = rep(colnames(m), each = nrow(m)),
-             reads = as.vector(m), rel_abundance = round(as.vector(m / rowSums(otu)), 5), stringsAsFactors = FALSE)
+  o = order(colnames(m) == "unassigned", -colSums(m))
+  m = round(m[, o, drop = F] / rowSums(otu), 6)
+  colnames(m) = paste0(prefix, colnames(m))
+  m
 }
-A = rbind(ab("FungalTraits", "primary_lifestyle", a$FT_primary_lifestyle),
-          ab("FUNGuild", "trophicMode", a$FG_trophicMode),
-          ab("FUNGuild", "guild", a$FG_guild))
-write.table(A, file.path(outdir, paste0(key, ".guild_abundance.txt")), sep = "\t", quote = F, row.names = F)
+write_wide = function(m, db) {
+  w = data.frame(sample = rownames(otu), fungal_reads = as.integer(rowSums(otu)), m, check.names = FALSE)
+  f = file.path(outdir, paste0(key, ".guild_abundance_", db, ".txt"))
+  write.table(w, f, sep = "\t", quote = F, row.names = F)
+  cat(sprintf("%s: %d samples x %d categories -> %s\n", db, nrow(w), ncol(m), basename(f)))
+}
+write_wide(wide(a$FT_primary_lifestyle), "FungalTraits")
+write_wide(cbind(wide(a$FG_trophicMode, "trophicMode: "), wide(a$FG_guild, "guild: ")), "FUNGuild")
+unlink(file.path(outdir, paste0(key, ".guild_abundance.txt")))   # long format of version 1.0
 
 # ---- filtered phyloseq with guild columns ----
 add = c("FT_match", "FT_primary_lifestyle", "FT_Secondary_lifestyle", "FT_Ectomycorrhiza_exploration_type",

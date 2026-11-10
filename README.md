@@ -23,7 +23,8 @@ With cutadapt: `cutadapt_summary.txt` (per sample: pairs in, R1/R2 reads trimmed
 hits), and `readtracking.txt` starts with `raw` and `cutadapt_R1_trimmed` / `cutadapt_R2_trimmed` (`input` = pairs
 after cutadapt).
 ITS with `guilds`: `guilds.txt` (per ASV), `guild_summary.txt` (per guild: ASVs, % of fungal reads, samples, and the
-unassigned share), `guild_abundance.txt` (per sample), `phyloseq.filtered.guilds.rds`. Analysis figures and tables
+unassigned share), `guild_abundance_FungalTraits.txt` / `guild_abundance_FUNGuild.txt` (relative abundance per
+sample, wide: one row per sample, one column per lifestyle / trophic mode / guild), `phyloseq.filtered.guilds.rds`. Analysis figures and tables
 go to `paths.analysis`.
 
 ## Setup
