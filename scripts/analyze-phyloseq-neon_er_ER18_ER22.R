@@ -1,7 +1,7 @@
 # Community analysis of the DADA2 phyloseq objects (output of dada2-asv.R) for the neon_er_ER18_ER22 dataset
 # (NEON East River 2018 + 2022 survey; dataset key {project}_{run_id} of config/neon-ER18-ER22.yaml)
 #
-# version 1.2
+# version 1.3
 #
 # usage: Rscript analyze-phyloseq-neon_er_ER18_ER22.R --config=<key>.config.json [--pdf]
 #   normally run by workflow.py (analyze step, analysis.script), which writes the resolved config
@@ -23,14 +23,15 @@
 #      (share of its reads) as stacked bars: the ntop taxa by mean relative abundance across samples, the rest as
 #      "Other", reads not assigned at that rank (or only to a placeholder such as Ascomycota_gen_Incertae_sedis) as
 #      "unassigned"; one panel per group, samples in sample order (order: abundance: by the most abundant taxa
-#      within each panel instead); band: a sample-data column shown as a coloured strip under the bars (e.g. year);
+#      within each panel instead); band: one or more sample-data columns, each shown as a coloured strip under
+#      the bars (e.g. [Vegetation.Type, year], top to bottom);
 #      names without UNITE's rank prefixes, species as "Genus species"
 #
 # All analyses of the phyloseq objects go in this script, as further numbered sections.
 
 packages = c("phyloseq", "ggplot2")
 invisible(lapply(packages, function(p) suppressPackageStartupMessages(library(p, character.only = TRUE))))
-script_version = "1.2"
+script_version = "1.3"
 
 allargs = commandArgs(trailingOnly = TRUE)
 write_pdf = "--pdf" %in% allargs
@@ -45,7 +46,7 @@ dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 cat("analyze-phyloseq-neon_er_ER18_ER22.R version", script_version, ":", key, "->", outdir, "\n")
 
 # figures: always PNG; PDF only with --pdf
-save_plot = function(p, name, width, height, dpi = 140) {
+save_plot = function(p, name, width, height, dpi = 300) {
   f = file.path(outdir, paste0(key, ".", name))
   ggsave(paste0(f, ".png"), p, width = width, height = height, dpi = dpi)
   if(write_pdf) ggsave(paste0(f, ".pdf"), p, width = width, height = height)
@@ -120,8 +121,15 @@ if(!is.null(acfg$taxonomic_composition)) {
   ntop = if(is.null(tc$ntop)) 15 else as.integer(tc$ntop)
   ranks = if(!is.null(tc$ranks)) intersect(tc$ranks, names(tax)) else names(tax)[-1]     # below the first rank
   by_abundance = identical(tc$order, "abundance")
-  band = if(!is.null(tc$band) && tc$band %in% names(sd)) tc$band else NULL
-  band_cols = c("#4d4d4d", "#bdbdbd", "#d95f02", "#1b9e77", "#7570b3", "#e7298a")
+  bands = intersect(unlist(tc$band), names(sd))
+  # one palette per band (by position); values of all bands share one colour legend
+  band_pals = list(c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02"),
+                   c("#4d4d4d", "#bdbdbd", "#878787", "#e0e0e0"),
+                   c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c"))
+  band_h = 0.035                                                   # height of one band (fraction of the y axis)
+  band_vals = lapply(bands, function(b) { v = as.character(sd[[b]]); v[is.na(v)] = "NA"; v })
+  band_cols = unlist(lapply(seq_along(bands), function(i) { lv = unique(band_vals[[i]][order(match(band_vals[[i]], sort(unique(band_vals[[i]]))))])
+    setNames(band_pals[[(i - 1) %% length(band_pals) + 1]][(seq_along(lv) - 1) %% 6 + 1], lv) }))
   rel = otu / rowSums(otu)
   for(rk in ranks) {
     lab = ifelse(is.na(tax[[rk]]), "unassigned", tax[[rk]])
@@ -138,20 +146,20 @@ if(!is.null(acfg$taxonomic_composition)) {
                       taxon = factor(rep(colnames(mm), each = nrow(mm)), levels = rev(c(keep, "Other", "unassigned"))),
                       group = factor(rep(glab[group], ncol(mm)), levels = glab), ab = as.vector(mm))
     lv = c(keep, "Other", "unassigned")
-    bd = if(!is.null(band)) data.frame(sample = factor(rownames(mm), levels = rownames(mm)[o]),
-                                       group = factor(glab[group], levels = glab),
-                                       band = factor(as.character(sd[rownames(mm), band]))) else NULL
+    bd = if(length(bands)) do.call(rbind, lapply(seq_along(bands), function(i) data.frame(
+           sample = factor(rownames(mm), levels = rownames(mm)[o]), group = factor(glab[group], levels = glab),
+           band = band_vals[[i]], ymax = -0.008 - (i - 1) * band_h, ymin = -0.008 - i * band_h + 0.006))) else NULL
     cols = c(setNames(pal[seq_along(keep)], keep), Other = "#b3b3b3", unassigned = "#e8e8e8")
     pct_un = 100 * mean(mm[, "unassigned"]); pct_oth = 100 * mean(mm[, "Other"])
     g = ggplot(long, aes(sample, ab, fill = taxon)) +
       geom_col(width = 1) +
-      (if(!is.null(bd)) geom_linerange(data = bd, aes(x = sample, ymin = -0.045, ymax = -0.01, colour = band), inherit.aes = FALSE,
+      (if(!is.null(bd)) geom_linerange(data = bd, aes(x = sample, ymin = ymin, ymax = ymax, colour = band), inherit.aes = FALSE,
                                        linewidth = 1.2) else NULL) +
-      (if(!is.null(bd)) scale_colour_manual(values = setNames(band_cols[seq_along(levels(bd$band))], levels(bd$band)), name = band) else NULL) +
+      (if(!is.null(bd)) scale_colour_manual(values = band_cols, breaks = names(band_cols), name = paste(bands, collapse = " / ")) else NULL) +
       facet_grid(. ~ group, scales = "free_x", space = "free_x") +
       scale_fill_manual(values = cols, breaks = lv, name = rk) +
       scale_y_continuous(labels = function(x) paste0(100 * x, "%"), breaks = seq(0, 1, 0.25), expand = c(0, 0),
-                         limits = c(if(!is.null(bd)) -0.05 else 0, 1)) +
+                         limits = c(if(!is.null(bd)) -0.01 - length(bands) * band_h else 0, 1)) +
       labs(x = paste0("samples, by ", group_name, if(by_abundance) " (ordered within each panel by the most abundant taxa)"
                       else paste0(" (in sample order: ", paste(by, collapse = " > "), ")")),
            y = "relative abundance (share of sample reads)",

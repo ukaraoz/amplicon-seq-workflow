@@ -161,14 +161,15 @@ locus_settings:
 # Each section runs when present; outputs go to paths.analysis as <key>.<analysis>....png (PDF with --pdf).
 analysis:
   script: analyze-phyloseq-{dataset}.R   # = analyze-phyloseq-neon_er_ER18_ER22.R
-  # sample order of every figure and table: by site, then the sample (site number), then year (2018 before 2022),
-  # then technical replicate (A, B), so a site's 2018 and 2022 samples are side by side
+  # sample order of every figure and table: by site, then vegetation type (Meadow, Shrubs, Trees), then the sample
+  # (site number), then year (2018 before 2022), then technical replicate (A, B): within a site the samples are
+  # grouped by vegetation type, and each site's 2018 and 2022 samples are side by side
   sample_order:
-    by: [Site Name, SamplingCode, year, replicate]
+    by: [Site Name, Vegetation.Type, SamplingCode, year, replicate]
   groups: Site Name                     # sample-data column for figure panels (13 sites); default: sequencing run
   # 1. relative abundance per sample for each rank below Kingdom: ntop taxa, Other, unassigned; samples in sample
   #    order (order: abundance would sort them by the most abundant taxa within each panel)
-  taxonomic_composition: {ntop: 15, band: year}   # band: strip under the bars coloured by year
+  taxonomic_composition: {ntop: 15, band: [Vegetation.Type, year]}   # strips under the bars: vegetation type, year
 
 # ---- SLURM (workflow.py run --slurm) ----
 slurm:
