@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.11
+# version 2.12
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -15,8 +15,10 @@
 #   R1 only or merged pairs: config params.merge (workflow.py --merge / --no-merge); R1-only keys end in ".R1"
 #
 # failed samples (<key>.failed_samples.txt, with the reason): < mincount reads after quality filtering (dropped
-#   before denoising), or < minfinal reads in the final table (after removing the config's remove_taxa /
-#   require_ranks ASVs). Failed samples are kept in <key>.phyloseq.rds but removed from <key>.phyloseq.filtered.rds
+#   before denoising), < minfinal reads in the final table (after the config's keep_taxa / remove_taxa /
+#   require_ranks filter), or (optional min_taxa_kept_fraction) less than that fraction of the sample's reads kept
+#   by that filter (e.g. 0.5 with keep_taxa Fungi: < 50% fungal reads). Failed samples are kept in
+#   <key>.phyloseq.rds but removed from <key>.phyloseq.filtered.rds
 #
 # inputs  : paths.metadata (tab-separated; samples.id_column = sample id); fastq from samples.manifest (R1, R2
 #           columns) or paths.raw/<samples.r1|r2>
@@ -49,6 +51,8 @@ stopifnot(resume_mode %in% c(NA, "taxonomy", "outputs"))
 resume = !is.na(resume_mode)
 mincount = cfg$params$mincount   # samples with fewer filtered reads are dropped before denoising
 minfinal = cfg$params$minfinal   # samples with fewer reads in the final table are reported as failed
+min_kept = cfg$params$min_taxa_kept_fraction   # samples keeping a smaller fraction of their reads after the taxa
+                                               # filter are reported as failed (NULL: no such check)
 set.seed(100)
 # run per-sample jobs in parallel: as many forked workers as fit in nthreads, splitting the threads between them
 # (dada/mergePairs on one sample use only a fraction of 128 threads, so parallelizing across samples is what scales)
@@ -59,7 +63,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.11"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.12"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -590,7 +594,9 @@ reads_before_taxa_filter = sample_sums(ps)
 final = sample_sums(psf)
 lowcount = setdiff(rownames(out), keep)
 lowfinal = names(final)[final < minfinal]
-pass = setdiff(names(final), lowfinal)
+kept_frac = final / reads_before_taxa_filter[names(final)]
+lowfrac = if(is.null(min_kept)) character(0) else setdiff(names(final)[kept_frac < min_kept], lowfinal)
+pass = setdiff(names(final), c(lowfinal, lowfrac))
 nextlow = pass[which.min(final[pass])]
 med_in = median(out[, "reads.in"])
 failed = rbind(
@@ -603,7 +609,12 @@ failed = rbind(
              reads_input = out[lowfinal, "reads.in"], reads_at_failure = as.integer(final[lowfinal]),
              reason = sprintf("low number of reads: %d reads in the final table (< %d), %.1f%% of the median (%d); lowest passing sample %s has %d; input %d reads vs median %d",
                               as.integer(final[lowfinal]), minfinal, 100 * final[lowfinal] / median(final), as.integer(median(final)),
-                              nextlow, as.integer(final[nextlow]), out[lowfinal, "reads.in"], as.integer(med_in))))
+                              nextlow, as.integer(final[nextlow]), out[lowfinal, "reads.in"], as.integer(med_in))),
+  data.frame(sample = lowfrac, stage = rep("taxa filter fraction", length(lowfrac)),
+             reads_input = out[lowfrac, "reads.in"], reads_at_failure = as.integer(final[lowfrac]),
+             reason = sprintf("%.1f%% of the sample's reads kept by the taxa filter (%d of %d; < %.0f%%); median across samples %.1f%%",
+                              100 * kept_frac[lowfrac], as.integer(final[lowfrac]), as.integer(reads_before_taxa_filter[lowfrac]),
+                              100 * if(is.null(min_kept)) 0 else min_kept, 100 * median(kept_frac))))
 # reads before the taxa filter: shows which samples fail only because of it
 failed$reads_before_taxa_filter = as.integer(reads_before_taxa_filter[failed$sample])
 only_filter = failed$stage == "final read count" & failed$reads_before_taxa_filter >= minfinal

@@ -53,6 +53,7 @@ samples:
 dada2:
   mincount: 1000
   minfinal: 5000
+  # min_taxa_kept_fraction: 0.5         # also fail samples keeping < 50% of their reads after the taxa filter
   minLen: 50
   minOverlap: 12
   threads: null                         # dada2-asv.R threads; null: SLURM CPUs, else 4 (--threads overrides)

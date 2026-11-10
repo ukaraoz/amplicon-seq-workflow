@@ -140,6 +140,10 @@ locus_settings:
     # plants, animals, other protists and kingdom-unassigned ASVs, ~5.9% of reads in total. The full set stays in
     # phyloseq.rds / ASVtable / taxonomy; what was removed is listed in <key>.taxa_filter.txt
     keep_taxa: {Kingdom: [Fungi]}
+    # failed samples (removed from phyloseq.filtered.rds, listed in failed_samples.txt): fewer than 1,000 Fungi reads,
+    # or less than 50% of the sample's reads Fungi (ITS only; 16S keeps the dada2-section minfinal of 5,000)
+    minfinal: 1000
+    min_taxa_kept_fraction: 0.5
     # guilds step: FungalTraits 1.2 (genus lifestyles and traits) and FUNGuild (guilds with confidence), matched to
     # the UNITE taxonomy; tables made by get-guild-dbs.py (the reference step downloads them into dir if missing)
     guilds:
