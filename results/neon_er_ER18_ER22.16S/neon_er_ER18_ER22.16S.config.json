@@ -102,7 +102,7 @@
     }
   },
   "analysis": {
-    "script": "analyze-phyloseq.R",
+    "script": "analyze-phyloseq-neon_er_ER18_ER22.R",
     "sample_order": {
       "by": [
         "Site Name",
