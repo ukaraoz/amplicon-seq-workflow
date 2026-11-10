@@ -142,10 +142,11 @@ locus_settings:
     # phyloseq.rds / ASVtable / taxonomy; what was removed is listed in <key>.taxa_filter.txt
     keep_taxa: {Kingdom: [Fungi]}
     # failed samples (removed from phyloseq.filtered.rds, listed in failed_samples.txt): fewer than 1,000 Fungi reads
-    # (minfinal counts the reads after keep_taxa), or less than 50% of the sample's reads Fungi (ITS only; 16S keeps
-    # the dada2-section minfinal 5,000 and min_taxa_kept_fraction 0)
+    # (minfinal counts the reads after keep_taxa; 16S keeps the dada2-section minfinal 5,000). No minimum % of Fungi
+    # reads (min_taxa_kept_fraction 0): samples with a low fungal share, e.g. 131-ER18 (38.5%) and 091-ER18 (48.5%),
+    # stay in phyloseq.filtered.rds with their fungal reads only
     minfinal: 1000
-    min_taxa_kept_fraction: 0.5
+    min_taxa_kept_fraction: 0
     # guilds step: FungalTraits 1.2 (genus lifestyles and traits) and FUNGuild (guilds with confidence), matched to
     # the UNITE taxonomy; tables made by get-guild-dbs.py (the reference step downloads them into dir if missing)
     guilds:
