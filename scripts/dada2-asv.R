@@ -1,9 +1,9 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.13
+# version 2.14
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
-#                            [--resume[=outputs]]
+#                            [--resume[=outputs]] [--pdf]
 #   normally run by workflow.py (dada2 and phyloseq steps), which writes the resolved config
 #   --config=FILE      resolved per-locus config (workflow.py): paths, sample naming, locus parameters, references
 #   --threads=N        threads (default: config params.threads, else $SLURM_CPUS_PER_TASK, else 4)
@@ -12,6 +12,7 @@
 #   --resume           load the seqtab checkpoint (<key>.dada2.seqtab.RData) and run only taxonomy + outputs
 #   --resume=outputs   load the final <key>.dada2.RData (with taxonomy) and only rewrite the outputs
 #                      (tables, fasta, phyloseq, failed samples), e.g. after building the tree
+#   --pdf              also write the raw read quality profiles as PDF (default: PNG only)
 #   R1 only or merged pairs: config params.merge (workflow.py --merge / --no-merge); R1-only keys end in ".R1"
 #
 # failed samples (<key>.failed_samples.txt, with the reason): < mincount reads after quality filtering (dropped
@@ -46,6 +47,7 @@ cutadapt = Sys.which("cutadapt")
 nthreads = as.integer(optval("threads", if(!is.null(cfg$params$threads)) cfg$params$threads else Sys.getenv("SLURM_CPUS_PER_TASK", "4")))
 nsamples = as.integer(optval("nsamples", NA))
 run_taxonomy = !("--no-taxonomy" %in% opts)
+write_pdf = "--pdf" %in% opts
 resume_mode = if("--resume" %in% opts) "taxonomy" else optval("resume", NA)
 stopifnot(resume_mode %in% c(NA, "taxonomy", "outputs"))
 resume = !is.na(resume_mode)
@@ -63,7 +65,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.13"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.14"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -316,8 +318,13 @@ if(resume) {
 } else {
   # ---- raw quality profiles (a few samples) ----
   qc.samples = sample(samplenames, min(6, length(samplenames)))
-  ggsave(file.path(outdir, paste0(key, ".quality.raw.R1.pdf")), plotQualityProfile(Ffiles[qc.samples]), width = 12, height = 8)
-  ggsave(file.path(outdir, paste0(key, ".quality.raw.R2.pdf")), plotQualityProfile(Rfiles[qc.samples]), width = 12, height = 8)
+  # PNG (300 dpi); PDF too with --pdf
+  for(rd in c("R1", "R2")) {
+    qp = plotQualityProfile(if(rd == "R1") Ffiles[qc.samples] else Rfiles[qc.samples])
+    f = file.path(outdir, paste0(key, ".quality.raw.", rd))
+    ggsave(paste0(f, ".png"), qp, width = 12, height = 8, dpi = 300)
+    if(write_pdf) ggsave(paste0(f, ".pdf"), qp, width = 12, height = 8)
+  }
 
   # ---- primer check ----
   allOrients = function(primer) {

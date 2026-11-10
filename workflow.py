@@ -248,7 +248,8 @@ def commands(res, conf_json, steps, args):
                 cmds.append((step, [sys.executable, os.path.join(SCRIPTS, "get-guild-dbs.py"), gu["dir"]], {}))
         elif step == "dada2":
             extra = (["--nsamples=" + str(args.nsamples)] if args.nsamples else []) + list(args.extra)
-            cmds.append((step, rscript + [os.path.join(SCRIPTS, "dada2-asv.R"), "--config=" + conf_json] + threads + extra, {}))
+            cmds.append((step, rscript + [os.path.join(SCRIPTS, "dada2-asv.R"), "--config=" + conf_json] + threads
+                         + (["--pdf"] if args.pdf else []) + extra, {}))
         elif step == "tree":
             tree = prm.get("tree") or {}
             if tree.get("method") == "mothur-v4":
@@ -359,7 +360,7 @@ def check_cmd(config, locus, profile, merge):
 @click.option("--steps", default=",".join(STEPS), show_default=True, callback=parse_steps, help="comma-separated steps")
 @click.option("--threads", type=int, help="overrides the config's dada2 threads (default there: SLURM CPUs, else 4)")
 @click.option("--nsamples", type=int, help="test run on the first N samples (dada2 step)")
-@click.option("--pdf", is_flag=True, help="figures (figures and analyze steps) also as PDF; default PNG only")
+@click.option("--pdf", is_flag=True, help="figures (dada2 quality profiles, figures and analyze steps) also as PDF; default PNG only")
 @click.option("--slurm", is_flag=True, help="submit one SLURM job per locus")
 @click.option("--dry-run", is_flag=True, help="print the commands only")
 @click.argument("extra", nargs=-1, type=click.UNPROCESSED)
