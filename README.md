@@ -18,6 +18,9 @@ YAML config per project/run, locally or as SLURM jobs (NERSC Perlmutter).
 Main outputs (in `paths.results`, by default `results/<key>/` in this repository, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,
 `failed_samples.txt`, `phyloseq.rds` (all ASVs and samples), `phyloseq.filtered.rds` (`remove_taxa` /
 `require_ranks` ASVs and failed samples removed; input of the analysis), `taxa_filter.txt` (what the filter removed).
+With cutadapt: `cutadapt_summary.txt` (per sample: pairs in, R1/R2 reads trimmed, pairs dropped, bases kept, primer
+hits), and `readtracking.txt` starts with `raw` and `cutadapt_R1_trimmed` / `cutadapt_R2_trimmed` (`input` = pairs
+after cutadapt).
 ITS with `guilds`: `guilds.txt` (per ASV), `guild_summary.txt` (per guild: ASVs, % of fungal reads, samples, and the
 unassigned share), `guild_abundance.txt` (per sample), `phyloseq.filtered.guilds.rds`. Analysis figures and tables
 go to `paths.analysis`.

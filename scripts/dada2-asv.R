@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.9
+# version 2.10
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]]
@@ -59,7 +59,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.9"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.10"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -189,6 +189,63 @@ for(r in runnames) {
               paste(rp$truncLen, collapse = "/"), paste(rp$maxEE, collapse = "/"), paste(rp$trimLeft, collapse = "/")))
 }
 
+# ---- cutadapt tracking ----
+# per-sample numbers from the cutadapt reports (<work>/cutadapt/<sample>.cutadapt.log): read pairs in, R1 / R2 reads
+# with a primer or read-through removed, pairs dropped as too short, pairs written, bases in / out per read, and
+# how often each primer was found. Written to <key>.cutadapt_summary.txt; readtracking.txt gets raw (pairs given
+# to cutadapt) and cutadapt_R1_trimmed / cutadapt_R2_trimmed before input (= pairs written by cutadapt).
+parse_cutadapt_logs = function(dir, samples) {
+  num = function(pat, txt) { m = regmatches(txt, regexec(pat, txt))[[1]]; if(length(m) < 2) NA_real_ else as.numeric(gsub(",", "", m[2])) }
+  rows = lapply(samples, function(s) {
+    f = file.path(dir, paste0(s, ".cutadapt.log"))
+    if(!file.exists(f)) return(NULL)
+    txt = paste(readLines(f, warn = FALSE), collapse = "\n")
+    ad = regmatches(txt, gregexpr("Sequence: [ACGTNRYSWKMBDHVacgtn]+; Type: [^;]+;[^\n]*Trimmed: [0-9]+ times", txt))[[1]]
+    adn = as.numeric(sub(".*Trimmed: ([0-9]+) times.*", "\\1", ad))
+    adt = sub(".*Type: ([^;]+);.*", "\\1", ad)
+    data.frame(sample = s,
+      pairs_in = num("Total read pairs processed:\\s+([0-9,]+)", txt),
+      R1_trimmed = num("Read 1 with adapter:\\s+([0-9,]+)", txt), R2_trimmed = num("Read 2 with adapter:\\s+([0-9,]+)", txt),
+      pairs_too_short = num("Pairs that were too short:\\s+([0-9,]+)", txt),
+      pairs_written = num("Pairs written \\(passing filters\\):\\s+([0-9,]+)", txt),
+      R1_bp_in = num("Total basepairs processed:[^\n]*\n\\s+Read 1:\\s+([0-9,]+)", txt),
+      R1_bp_out = num("Total written \\(filtered\\):[^\n]*\n\\s+Read 1:\\s+([0-9,]+)", txt),
+      R2_bp_in = num("Total basepairs processed:[^\n]*\n[^\n]*\n\\s+Read 2:\\s+([0-9,]+)", txt),
+      R2_bp_out = num("Total written \\(filtered\\):[^\n]*\n[^\n]*\n\\s+Read 2:\\s+([0-9,]+)", txt),
+      # adapters in command-line order: -g (R1 5'), -a (R1 3'), -G (R2 5'), -A (R2 3')
+      R1_5prime_primer = if(length(adn) >= 1) adn[1] else NA, R1_3prime_readthrough = if(length(adn) >= 2) adn[2] else NA,
+      R2_5prime_primer = if(length(adn) >= 3) adn[3] else NA, R2_3prime_readthrough = if(length(adn) >= 4) adn[4] else NA,
+      stringsAsFactors = FALSE)
+  })
+  rows = do.call(rbind, rows)
+  if(is.null(rows)) return(NULL)
+  rows$pct_R1_trimmed = round(100 * rows$R1_trimmed / rows$pairs_in, 2)
+  rows$pct_R1_bp_kept = round(100 * rows$R1_bp_out / rows$R1_bp_in, 2)
+  rows
+}
+add_cutadapt_tracking = function(track, cs) {
+  if(is.null(cs) || "raw" %in% colnames(track)) return(track)
+  i = match(rownames(track), cs$sample)
+  cbind(raw = cs$pairs_in[i], cutadapt_R1_trimmed = cs$R1_trimmed[i], cutadapt_R2_trimmed = cs$R2_trimmed[i], track)
+}
+write_cutadapt_summary = function(cs) {
+  if(is.null(cs)) return(invisible())
+  cs$run = sampleruns[cs$sample]
+  write.table(cs[, c("sample", "run", setdiff(names(cs), c("sample", "run")))],
+              file.path(outdir, paste0(key, ".cutadapt_summary.txt")), sep = "\t", quote = F, row.names = F)
+  for(r in unique(cs$run)) { z = cs[cs$run == r, ]
+    cat(sprintf("cutadapt %-28s %4d samples: %s pairs in, R1 trimmed %.1f%%, R2 trimmed %.1f%%, too short %d, written %s, R1 bases kept %.1f%%\n",
+                r, nrow(z), format(sum(z$pairs_in), big.mark = ","), 100 * sum(z$R1_trimmed) / sum(z$pairs_in),
+                100 * sum(z$R2_trimmed) / sum(z$pairs_in), as.integer(sum(z$pairs_too_short)),
+                format(sum(z$pairs_written), big.mark = ","), 100 * sum(z$R1_bp_out) / sum(z$R1_bp_in))) }
+}
+write_track = function(track) {
+  tw = tibble::rownames_to_column(as.data.frame(track), "sample")
+  if(length(runnames) > 1) tw = cbind(tw[1], run = sampleruns[tw$sample], tw[-1])
+  write.table(tw, file = file.path(outdir, paste0(key, ".readtracking.txt")), sep = "\t", row.names = F, col.names = T, quote = F)
+}
+cutstats = NULL
+
 checkpoint = file.path(outdir, paste0(key, ".dada2.seqtab.RData"))
 if(resume) {
   # ---- resume from the seqtab checkpoint (or, for --resume=outputs, from the final RData with taxonomy) ----
@@ -250,6 +307,8 @@ if(resume) {
               stdout = file.path(cutdir, paste0(samplenames[i], ".cutadapt.log")))
     }))
     names(cutFfiles) = names(cutRfiles) = samplenames
+    cutstats = parse_cutadapt_logs(cutdir, samplenames)
+    write_cutadapt_summary(cutstats)
     Ffiles = cutFfiles
     Rfiles = cutRfiles
     cat("primer hits after cutadapt (", qc.samples[1], "):\n"); print(primerCheck(Ffiles[qc.samples[1]], Rfiles[qc.samples[1]]))
@@ -350,12 +409,10 @@ if(resume) {
   if(params$merge) track = cbind(track, denoisedR = sapply(dadaRs, getN), merged = sapply(mergers, getN))
   track = cbind(track, nonchim = rowSums(seqtab.nochim))
   colnames(track)[1:2] = c("input", "filtered")
-  track.towrite = tibble::rownames_to_column(as.data.frame(track), "sample")
-  if(length(runnames) > 1) track.towrite = cbind(track.towrite[1], run = sampleruns[track.towrite$sample], track.towrite[-1])
-  write.table(track.towrite, file = file.path(outdir, paste0(key, ".readtracking.txt")),
-              sep = "\t", row.names = F, col.names = T, quote = F)
+  track = add_cutadapt_tracking(track, cutstats)
+  write_track(track)
   # checkpoint before taxonomy: assignTaxonomy against SILVA is memory hungry and can get the job killed
-  save(out, keep, sampleruns, errF, errR, dadaFs, dadaRs, mergers, seqtab, seqtab.nochim, track, params,
+  save(out, keep, sampleruns, errF, errR, dadaFs, dadaRs, mergers, seqtab, seqtab.nochim, track, params, cutstats,
        file = checkpoint)
   if(!run_taxonomy) {
     cat("stopping before taxonomy (--no-taxonomy):", ncol(seqtab.nochim), "ASVs in", nrow(seqtab.nochim), "samples ->", outdir, "\n")
@@ -383,7 +440,15 @@ asvs = DNAStringSet(colnames(seqtab.nochim))
 names(asvs) = colnames(seqtab.nochim)
 writeXStringSet(asvs, file.path(outdir, paste0(key, ".ASV.fa")))
 
-save(out, keep, errF, errR, dadaFs, dadaRs, mergers, seqtab, seqtab.nochim, taxa, track, params,
+# cutadapt tracking for runs resumed from a checkpoint made before it existed: read the reports if still in <work>
+if(params$run_cutadapt && is.null(cutstats)) {
+  cutstats = parse_cutadapt_logs(file.path(workdir, "cutadapt"), rownames(out))
+  if(is.null(cutstats)) cat("note: no cutadapt reports in", file.path(workdir, "cutadapt"), "- readtracking without cutadapt columns\n")
+  write_cutadapt_summary(cutstats)
+}
+if(!"raw" %in% colnames(track) && !is.null(cutstats)) { track = add_cutadapt_tracking(track, cutstats); write_track(track) }
+
+save(out, keep, errF, errR, dadaFs, dadaRs, mergers, seqtab, seqtab.nochim, taxa, track, params, cutstats,
      file = file.path(outdir, paste0(key, ".dada2.RData")))
 
 # ---- phyloseq object ----

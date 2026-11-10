@@ -15,6 +15,7 @@ results/*/*
 !results/*/*.run.log
 !results/*/*.taxa_filter.txt
 !results/*/*.guild_summary.txt
+!results/*/*.cutadapt_summary.txt
 work/
 # local scratch
 .DS_Store
