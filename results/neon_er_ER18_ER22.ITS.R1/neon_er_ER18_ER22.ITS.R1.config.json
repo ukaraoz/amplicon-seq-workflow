@@ -29,7 +29,7 @@
   "params": {
     "mincount": 1000,
     "minfinal": 1000,
-    "min_taxa_kept_fraction": 0.5,
+    "min_taxa_kept_fraction": 0,
     "minLen": 50,
     "minOverlap": 12,
     "threads": 8,

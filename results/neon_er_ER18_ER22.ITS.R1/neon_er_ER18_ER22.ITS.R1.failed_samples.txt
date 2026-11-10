@@ -1,3 +1,1 @@
 sample	stage	reads_input	reads_at_failure	reason	reads_before_taxa_filter
-091-ER18	taxa filter fraction	29595	7551	48.5% of the sample's reads kept by the taxa filter (7551 of 15563; < 50%); median across samples 97.2%	15563
-131-ER18	taxa filter fraction	16748	3694	38.5% of the sample's reads kept by the taxa filter (3694 of 9587; < 50%); median across samples 97.2%	9587
