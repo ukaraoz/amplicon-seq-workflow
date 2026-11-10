@@ -118,7 +118,12 @@
       "band": [
         "Vegetation.Type",
         "year"
-      ]
+      ],
+      "gap": {
+        "by": "Vegetation.Type",
+        "width": 2
+      },
+      "panel_spacing": 10
     }
   }
 }
