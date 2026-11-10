@@ -1,3 +1,3 @@
 sample	stage	reads_input	reads_at_failure	reason	reads_before_taxa_filter
-069-ER18	final read count	10190	4630	low number of reads: 4630 reads in the final table (< 5000), 23.1% of the median (20078); lowest passing sample 149-ER18 has 5516; input 10190 reads vs median 33400	4652
-416-ER18	final read count	4025	2167	low number of reads: 2167 reads in the final table (< 5000), 10.8% of the median (20078); lowest passing sample 149-ER18 has 5516; input 4025 reads vs median 33400	2167
+069-ER18	final read count	10190	4630	low number of reads: 4630 reads after the taxa filter (< 5000), 23.1% of the median (20078); lowest passing sample 149-ER18 has 5516; input 10190 reads vs median 33400	4652
+416-ER18	final read count	4025	2167	low number of reads: 2167 reads after the taxa filter (< 5000), 10.8% of the median (20078); lowest passing sample 149-ER18 has 5516; input 4025 reads vs median 33400	2167
