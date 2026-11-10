@@ -1,7 +1,7 @@
 # Community analysis of the DADA2 phyloseq objects (output of dada2-asv.R) for the neon_er_ER18_ER22 dataset
 # (NEON East River 2018 + 2022 survey; dataset key {project}_{run_id} of config/neon-ER18-ER22.yaml)
 #
-# version 1.3
+# version 1.4
 #
 # usage: Rscript analyze-phyloseq-neon_er_ER18_ER22.R --config=<key>.config.json [--pdf]
 #   normally run by workflow.py (analyze step, analysis.script), which writes the resolved config
@@ -24,14 +24,15 @@
 #      "Other", reads not assigned at that rank (or only to a placeholder such as Ascomycota_gen_Incertae_sedis) as
 #      "unassigned"; one panel per group, samples in sample order (order: abundance: by the most abundant taxa
 #      within each panel instead); band: one or more sample-data columns, each shown as a coloured strip under
-#      the bars (e.g. [Vegetation.Type, year], top to bottom);
+#      the bars (e.g. [Vegetation.Type, year], top to bottom); gap: {by: <column>, width: <bars>}: an empty space
+#      of that many bar widths within a panel wherever the column's value changes (e.g. between vegetation types);
 #      names without UNITE's rank prefixes, species as "Genus species"
 #
 # All analyses of the phyloseq objects go in this script, as further numbered sections.
 
 packages = c("phyloseq", "ggplot2")
 invisible(lapply(packages, function(p) suppressPackageStartupMessages(library(p, character.only = TRUE))))
-script_version = "1.3"
+script_version = "1.4"
 
 allargs = commandArgs(trailingOnly = TRUE)
 write_pdf = "--pdf" %in% allargs
@@ -127,6 +128,8 @@ if(!is.null(acfg$taxonomic_composition)) {
                    c("#4d4d4d", "#bdbdbd", "#878787", "#e0e0e0"),
                    c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c"))
   band_h = 0.035                                                   # height of one band (fraction of the y axis)
+  gap_by = if(!is.null(tc$gap$by) && tc$gap$by %in% names(sd)) tc$gap$by else NULL
+  gap_w = if(is.null(tc$gap$width)) 2 else as.numeric(tc$gap$width)
   band_vals = lapply(bands, function(b) { v = as.character(sd[[b]]); v[is.na(v)] = "NA"; v })
   band_cols = unlist(lapply(seq_along(bands), function(i) { lv = unique(band_vals[[i]][order(match(band_vals[[i]], sort(unique(band_vals[[i]]))))])
     setNames(band_pals[[(i - 1) %% length(band_pals) + 1]][(seq_along(lv) - 1) %% 6 + 1], lv) }))
@@ -142,26 +145,35 @@ if(!is.null(acfg$taxonomic_composition)) {
                unassigned = if("unassigned" %in% colnames(m)) m[, "unassigned"] else 0)
     o = if(by_abundance) do.call(order, c(list(match(group, glev)), lapply(keep[seq_len(min(3, length(keep)))], function(k) -mm[, k])))
         else seq_len(nrow(mm))                                                  # sample order
-    long = data.frame(sample = factor(rep(rownames(mm), ncol(mm)), levels = rownames(mm)[o]),
+    # x position of each sample within its panel: consecutive bars, plus gap_w empty bars where gap_by changes
+    smp = rownames(mm)[o]; gs = group[o]
+    gv = if(!is.null(gap_by)) { v = as.character(sd[smp, gap_by]); v[is.na(v)] = "NA"; v } else rep("", length(smp))
+    xpos = numeric(length(smp))
+    for(gl in unique(gs)) { i = which(gs == gl); chg = c(0, cumsum(gv[i][-1] != gv[i][-length(i)]))
+      xpos[i] = seq_along(i) + gap_w * chg }
+    xpos = setNames(xpos, smp)
+    long = data.frame(sample = factor(rep(rownames(mm), ncol(mm)), levels = rownames(mm)[o]), x = rep(xpos[rownames(mm)], ncol(mm)),
                       taxon = factor(rep(colnames(mm), each = nrow(mm)), levels = rev(c(keep, "Other", "unassigned"))),
                       group = factor(rep(glab[group], ncol(mm)), levels = glab), ab = as.vector(mm))
     lv = c(keep, "Other", "unassigned")
     bd = if(length(bands)) do.call(rbind, lapply(seq_along(bands), function(i) data.frame(
-           sample = factor(rownames(mm), levels = rownames(mm)[o]), group = factor(glab[group], levels = glab),
+           sample = factor(rownames(mm), levels = rownames(mm)[o]), x = xpos[rownames(mm)], group = factor(glab[group], levels = glab),
            band = band_vals[[i]], ymax = -0.008 - (i - 1) * band_h, ymin = -0.008 - i * band_h + 0.006))) else NULL
     cols = c(setNames(pal[seq_along(keep)], keep), Other = "#b3b3b3", unassigned = "#e8e8e8")
     pct_un = 100 * mean(mm[, "unassigned"]); pct_oth = 100 * mean(mm[, "Other"])
-    g = ggplot(long, aes(sample, ab, fill = taxon)) +
+    g = ggplot(long, aes(x, ab, fill = taxon)) +
       geom_col(width = 1) +
-      (if(!is.null(bd)) geom_linerange(data = bd, aes(x = sample, ymin = ymin, ymax = ymax, colour = band), inherit.aes = FALSE,
+      (if(!is.null(bd)) geom_linerange(data = bd, aes(x = x, ymin = ymin, ymax = ymax, colour = band), inherit.aes = FALSE,
                                        linewidth = 1.2) else NULL) +
       (if(!is.null(bd)) scale_colour_manual(values = band_cols, breaks = names(band_cols), name = paste(bands, collapse = " / ")) else NULL) +
       facet_grid(. ~ group, scales = "free_x", space = "free_x") +
       scale_fill_manual(values = cols, breaks = lv, name = rk) +
+      scale_x_continuous(expand = c(0, 0.6)) +
       scale_y_continuous(labels = function(x) paste0(100 * x, "%"), breaks = seq(0, 1, 0.25), expand = c(0, 0),
                          limits = c(if(!is.null(bd)) -0.01 - length(bands) * band_h else 0, 1)) +
       labs(x = paste0("samples, by ", group_name, if(by_abundance) " (ordered within each panel by the most abundant taxa)"
-                      else paste0(" (in sample order: ", paste(by, collapse = " > "), ")")),
+                      else paste0(" (in sample order: ", paste(by, collapse = " > "), ")"),
+                      if(!is.null(gap_by)) paste0("; gaps between ", gap_by, " groups") else ""),
            y = "relative abundance (share of sample reads)",
            title = paste0(cfg$locus, " taxonomic composition per sample: ", rk),
            subtitle = paste0(desc, "\n", length(keep), " most abundant ", tolower(rk), " taxa by mean relative abundance (",
@@ -169,7 +181,7 @@ if(!is.null(acfg$taxonomic_composition)) {
                              "%); unassigned = not assigned at ", tolower(rk), " level (mean ", sprintf("%.1f", pct_un), "%)")) +
       theme_bw(base_size = 10) +
       theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid = element_blank(),
-            panel.spacing = unit(3, "pt"), strip.text = element_text(size = 8, angle = if(length(glev) > 6) 90 else 0), plot.subtitle = element_text(size = 8, lineheight = 1.1),
+            panel.spacing = unit(if(is.null(tc$panel_spacing)) 10 else tc$panel_spacing, "pt"), strip.text = element_text(size = 8, angle = if(length(glev) > 6) 90 else 0), plot.subtitle = element_text(size = 8, lineheight = 1.1),
             legend.key.size = unit(10, "pt"),
             legend.text = element_text(size = 8, face = if(rk %in% c("Genus", "Species")) "italic" else "plain"))
     f = save_plot(g, paste0("taxonomy_", rk), width = 14, height = 6.5)

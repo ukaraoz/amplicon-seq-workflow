@@ -169,7 +169,13 @@ analysis:
   groups: Site Name                     # sample-data column for figure panels (13 sites); default: sequencing run
   # 1. relative abundance per sample for each rank below Kingdom: ntop taxa, Other, unassigned; samples in sample
   #    order (order: abundance would sort them by the most abundant taxa within each panel)
-  taxonomic_composition: {ntop: 15, band: [Vegetation.Type, year]}   # strips under the bars: vegetation type, year
+  # strips under the bars: vegetation type, year; a 2-bar gap between vegetation types within a site; 10 pt
+  # between site panels
+  taxonomic_composition:
+    ntop: 15
+    band: [Vegetation.Type, year]
+    gap: {by: Vegetation.Type, width: 2}
+    panel_spacing: 10
 
 # ---- SLURM (workflow.py run --slurm) ----
 slurm:
