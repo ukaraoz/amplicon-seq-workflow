@@ -1,23 +1,10 @@
-# data live outside the repo (config paths); results go to results/<key>/ (contents not tracked)
+# data live outside the repo (config paths); results go to results/<key>/ and are tracked
 *.fastq
 *.fastq.gz
 *.rds
 *.RData
-# results/<key>/: only the small text outputs are tracked (committed in the clone that ran the workflow);
-# phyloseq objects, tables, fasta, tree and plots are copied with `workflow.py pull`; checkpoints stay there
-results/*
-!results/README.md
-!results/*/
-results/*/*
-!results/*/*.config.json
-!results/*/*.readtracking.txt
-!results/*/*.failed_samples.txt
-!results/*/*.run.log
-!results/*/*.taxa_filter.txt
-!results/*/*.guild_summary.txt
-!results/*/*.cutadapt_summary.txt
-!results/*/*.metadata_columns.txt
-!results/*/*.sample_order.txt
+# results/<key>/: all outputs are tracked, phyloseq objects (.rds) included
+!results/**/*.rds
 work/
 # local scratch
 .DS_Store
