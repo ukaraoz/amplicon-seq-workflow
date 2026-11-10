@@ -6,7 +6,7 @@
   "key": "neon_er_ER18_ER22.ITS.R1",
   "profile": "nersc",
   "paths": {
-    "metadata": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_amplicon_metadata.tsv",
+    "metadata": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_amplicon_metadata_soil.tsv",
     "work": "/pscratch/sd/u/ukaraoz/neon_itag/ITS/work/ER18_ER22",
     "results": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.ITS.R1",
     "analysis": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.ITS.R1/analysis"

@@ -1,0 +1,75 @@
+status	reason	Kingdom	Phylum	Class	ASVs	reads	pct_reads	samples	max_samples_one_ASV
+removed	TOTAL				504	32934	0.182	482	199
+kept	TOTAL				33555	18040051	99.818	490	490
+removed	Order Chloroplast	Bacteria	Bacillati	Cyanobacteriota	82	16252	0.09	456	156
+removed	Family Mitochondria	Bacteria	Pseudomonadati	Pseudomonadota	104	9103	0.05	415	199
+removed	unassigned at Phylum	Bacteria	unassigned	unassigned	128	3027	0.017	286	76
+removed	unassigned at Phylum	Bacteria	Pseudomonadati--other	unassigned	21	1691	0.009	171	52
+removed	unassigned at Phylum	Bacteria	Pseudomonadati	unassigned	84	1620	0.009	173	57
+removed	unassigned at Phylum	Bacteria	Bacillati	unassigned	85	1241	0.007	200	139
+kept		Bacteria	Pseudomonadati	Pseudomonadota	6130	4955182	27.418	490	490
+kept		Bacteria	Bacillati	Actinomycetota	4243	4197104	23.223	490	472
+kept		Bacteria	Pseudomonadati--other	Acidobacteriota	3419	2607670	14.429	490	482
+kept		Bacteria	Pseudomonadati--other	Verrucomicrobiota	1889	1594036	8.82	490	486
+kept		Bacteria	Pseudomonadati--other	Bacteroidota	2793	997012	5.517	490	474
+kept		Bacteria	Pseudomonadati--other	Gemmatimonadota	1270	741485	4.103	490	442
+kept		Bacteria	Bacillati	Chloroflexota--other	2151	647626	3.583	490	479
+kept		Bacteria	Pseudomonadati--other	Planctomycetota	3720	548359	3.034	490	429
+kept		Bacteria	Pseudomonadati	Myxococcota	1810	498487	2.758	490	419
+kept		Bacteria	Bacillati	Bacillota	261	488317	2.702	486	467
+kept		Archaea	Thermoproteati	Thermoproteota	64	108327	0.599	448	307
+kept		Bacteria	Pseudomonadati--other	Nitrospirota	107	88963	0.492	465	314
+kept		Bacteria	Pseudomonadati	Candidatus Binatota	115	87661	0.485	489	385
+kept		Bacteria	Pseudomonadati	Desulfobacterota	264	77319	0.428	472	267
+kept		Bacteria	Pseudomonadati--other	Candidatus Latescibacterota	365	65120	0.36	459	204
+kept		Bacteria	Pseudomonadati--other	Candidatus Methylomirabilota	48	38737	0.214	449	351
+kept		Bacteria	Bacillati	Thermomicrobiota	178	30378	0.168	456	207
+kept		Bacteria	Bacillati	Chloroflexota	206	28559	0.158	452	273
+kept		Bacteria	Bacillati	Vulcanimicrobiota	139	21070	0.117	362	90
+kept		Bacteria	Bacillati	Elusimicrobiota	244	20059	0.111	482	202
+kept		Bacteria	Bacillati	Armatimonadota	266	19287	0.107	479	308
+kept		Bacteria	Pseudomonadati	NB1-j	92	19266	0.107	245	90
+kept		Bacteria	Pseudomonadati	Bdellovibrionota--other	371	17541	0.097	435	122
+kept		Bacteria	Bacillati	Clostridiota	148	17468	0.097	298	274
+kept		Bacteria	Pseudomonadati	Bdellovibrionota	372	16401	0.091	464	141
+kept		Bacteria	Pseudomonadati--other	Chlorobiota	232	14278	0.079	467	156
+kept		Bacteria	Bacillati	Minisyncoccota	815	11720	0.065	458	129
+kept		Bacteria	Pseudomonadati--other	Candidatus Tectimicrobiota	44	10858	0.06	352	205
+kept		Bacteria	Pseudomonadati--other	Chlamydiota	354	10147	0.056	341	101
+kept		Bacteria	Pseudomonadati--other	Candidatus Babelota	345	8232	0.046	400	99
+kept		Bacteria	Pseudomonadati--other	Fibrobacterota	79	7715	0.043	445	135
+kept		Bacteria	Pseudomonadati	MBNT15	35	7385	0.041	166	73
+kept		Bacteria	Bacillati	Cyanobacteriota	177	5374	0.03	398	104
+kept		Bacteria	Pseudomonadati--other	Abditibacteriota	54	4328	0.024	314	160
+kept		Bacteria	Bacillati	Mycoplasmatota	126	3952	0.022	329	119
+kept		Bacteria	Pseudomonadati--other	Spirochaetota	56	3385	0.019	68	35
+kept		Bacteria	Bacillati	Desulfotomaculota	28	3364	0.019	194	155
+kept		Bacteria	Pseudomonadati	Thermodesulfobacteriota--other	38	2768	0.015	24	8
+kept		Bacteria	Bacillati	Bacillota--other	24	2632	0.015	72	35
+kept		Bacteria	Pseudomonadati--other	Candidatus Omnitrophota	105	2314	0.013	257	86
+kept		Bacteria	Incertae Sedis	Candidatus Sumerlaeota	46	1811	0.01	248	78
+kept		Bacteria	Pseudomonadati	Incertae Sedis	86	1611	0.009	194	55
+kept		Bacteria	Pseudomonadati--other	FCPU426	32	1454	0.008	213	92
+kept		Bacteria	Pseudomonadati--other	Nitrospinota	12	1101	0.006	13	6
+kept		Archaea	Methanobacteriati--other	Thermoplasmatota	33	1092	0.006	160	72
+kept		Archaea	Nanobdellati	Nanobdellota	60	836	0.005	105	49
+kept		Bacteria	Pseudomonadati	Deferrisomatota	5	503	0.003	18	12
+kept		Bacteria	Pseudomonadati	Sva0485	9	467	0.003	8	7
+kept		Bacteria	Pseudomonadati--other	Candidatus Zixiibacteriota	23	331	0.002	13	2
+kept		Bacteria	Pseudomonadati--other	Kiritimatiellota	18	266	0.001	48	17
+kept		Archaea	Methanobacteriati	Methanobacteriota	5	154	0.001	11	8
+kept		Archaea	Methanobacteriati--other	Halobacteriota	10	135	0.001	7	4
+kept		Bacteria	Incertae Sedis	Candidatus Hydrogenedentota	15	98	0.001	38	12
+kept		Bacteria	Thermotogati	Candidatus Sysuimicrobiota	3	66	0	13	11
+kept		Bacteria	Bacillati	Deinococcota	5	43	0	5	1
+kept		Bacteria	Pseudomonadati--other	WOR-1	1	40	0	1	1
+kept		Bacteria	Pseudomonadati	Desulfovibrionota	2	33	0	3	2
+kept		Bacteria	Pseudomonadati--other	Lentisphaerota	2	30	0	2	1
+kept		Bacteria	Pseudomonadati--other	Candidatus Ratteibacteriota	1	19	0	1	1
+kept		Bacteria	Pseudomonadati--other	LCP-89	1	17	0	1	1
+kept		Bacteria	Pseudomonadati--other	TA06	1	17	0	1	1
+kept		Bacteria	Pseudomonadati--other	Rhodothermota	2	16	0	4	2
+kept		Bacteria	Pseudomonadati	TX1A-33	2	12	0	2	1
+kept		Bacteria	Fusobacteriati	Fusobacteriota	2	7	0	2	1
+kept		Bacteria	Incertae Sedis	Candidatus Dadaibacteriota	1	4	0	1	1
+kept		Bacteria	Bacillati	Caldisericota	1	2	0	1	1
