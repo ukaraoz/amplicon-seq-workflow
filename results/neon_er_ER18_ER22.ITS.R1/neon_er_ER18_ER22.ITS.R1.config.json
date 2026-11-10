@@ -28,7 +28,7 @@
   },
   "params": {
     "mincount": 1000,
-    "minfinal": 5000,
+    "minfinal": 1000,
     "minLen": 50,
     "minOverlap": 12,
     "threads": 8,
@@ -69,6 +69,7 @@
         "Fungi"
       ]
     },
+    "min_taxa_kept_fraction": 0.5,
     "guilds": {
       "dir": "/global/homes/u/ukaraoz/m3260/refdata/guilds/2026-11-09",
       "fungaltraits": "/global/homes/u/ukaraoz/m3260/refdata/guilds/2026-11-09/FungalTraits_1.2.tsv",

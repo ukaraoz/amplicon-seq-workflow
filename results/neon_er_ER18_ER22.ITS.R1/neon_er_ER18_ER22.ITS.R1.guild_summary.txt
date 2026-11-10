@@ -1,55 +1,55 @@
 database	field	value	ASVs	reads	pct_fungal_reads	samples
-FungalTraits	match	genus	14627	10557164	81.479	467
-FungalTraits	match	no genus assigned	7465	1493733	11.528	467
-FungalTraits	match	genus not in FungalTraits	524	906056	6.993	467
-FungalTraits	primary_lifestyle	soil_saprotroph	3402	3413056	26.342	467
-FungalTraits	primary_lifestyle	ectomycorrhizal	1916	2578899	19.904	467
-FungalTraits	primary_lifestyle	unassigned	7998	2400034	18.523	467
-FungalTraits	primary_lifestyle	litter_saprotroph	2286	1123502	8.671	467
-FungalTraits	primary_lifestyle	plant_pathogen	1365	1035720	7.994	467
-FungalTraits	primary_lifestyle	unspecified_saprotroph	1046	874951	6.753	467
-FungalTraits	primary_lifestyle	wood_saprotroph	1667	553304	4.27	467
-FungalTraits	primary_lifestyle	dung_saprotroph	502	333530	2.574	455
-FungalTraits	primary_lifestyle	animal_parasite	539	218387	1.685	461
-FungalTraits	primary_lifestyle	mycoparasite	371	154096	1.189	457
-FungalTraits	primary_lifestyle	arbuscular_mycorrhizal	671	80353	0.62	436
-FungalTraits	primary_lifestyle	root_endophyte	315	60714	0.469	417
-FungalTraits	primary_lifestyle	lichen_parasite	205	51744	0.399	432
-FungalTraits	primary_lifestyle	sooty_mold	13	20770	0.16	242
-FungalTraits	primary_lifestyle	nectar/tap_saprotroph	59	14602	0.113	149
-FungalTraits	primary_lifestyle	lichenized	84	11622	0.09	264
-FungalTraits	primary_lifestyle	algal_parasite	37	9946	0.077	312
-FungalTraits	primary_lifestyle	foliar_endophyte	37	8775	0.068	216
+FungalTraits	match	genus	14627	10591764	81.473	479
+FungalTraits	match	no genus assigned	7465	1498045	11.523	479
+FungalTraits	match	genus not in FungalTraits	524	910529	7.004	479
+FungalTraits	primary_lifestyle	soil_saprotroph	3402	3430652	26.389	479
+FungalTraits	primary_lifestyle	ectomycorrhizal	1916	2577642	19.827	479
+FungalTraits	primary_lifestyle	unassigned	7998	2408819	18.529	479
+FungalTraits	primary_lifestyle	litter_saprotroph	2286	1130052	8.692	479
+FungalTraits	primary_lifestyle	plant_pathogen	1365	1040817	8.006	479
+FungalTraits	primary_lifestyle	unspecified_saprotroph	1046	876377	6.741	479
+FungalTraits	primary_lifestyle	wood_saprotroph	1667	554785	4.267	479
+FungalTraits	primary_lifestyle	dung_saprotroph	502	334187	2.571	468
+FungalTraits	primary_lifestyle	animal_parasite	539	219063	1.685	473
+FungalTraits	primary_lifestyle	mycoparasite	371	154605	1.189	468
+FungalTraits	primary_lifestyle	arbuscular_mycorrhizal	671	81569	0.627	448
+FungalTraits	primary_lifestyle	root_endophyte	315	60887	0.468	425
+FungalTraits	primary_lifestyle	lichen_parasite	205	52014	0.4	442
+FungalTraits	primary_lifestyle	sooty_mold	13	20901	0.161	249
+FungalTraits	primary_lifestyle	nectar/tap_saprotroph	59	14603	0.112	150
+FungalTraits	primary_lifestyle	lichenized	84	11633	0.089	267
+FungalTraits	primary_lifestyle	algal_parasite	37	10003	0.077	317
+FungalTraits	primary_lifestyle	foliar_endophyte	37	8776	0.068	217
 FungalTraits	primary_lifestyle	moss_symbiont	5	4723	0.036	20
-FungalTraits	primary_lifestyle	epiphyte	36	4373	0.034	136
+FungalTraits	primary_lifestyle	epiphyte	36	4375	0.034	137
 FungalTraits	primary_lifestyle	pollen_saprotroph	38	2765	0.021	57
 FungalTraits	primary_lifestyle	unspecified_pathotroph	6	586	0.005	25
-FungalTraits	primary_lifestyle	unspecified	12	362	0.003	41
+FungalTraits	primary_lifestyle	unspecified	12	365	0.003	42
 FungalTraits	primary_lifestyle	animal_endosymbiont	3	92	0.001	8
 FungalTraits	primary_lifestyle	protistan_parasite	3	47	0	3
-FungalTraits	Secondary_lifestyle	unassigned	14909	7763540	59.918	467
-FungalTraits	Secondary_lifestyle	epiphyte	114	901715	6.959	467
-FungalTraits	Secondary_lifestyle	root-associated	1374	822738	6.35	467
-FungalTraits	Secondary_lifestyle	foliar_endophyte	860	760882	5.872	467
-FungalTraits	Secondary_lifestyle	unspecified_symbiotroph	959	755202	5.829	461
-FungalTraits	Secondary_lifestyle	litter_saprotroph	1089	684841	5.286	467
-FungalTraits	Secondary_lifestyle	plant_pathogen	499	217489	1.679	456
-FungalTraits	Secondary_lifestyle	soil_saprotroph	428	209235	1.615	466
-FungalTraits	Secondary_lifestyle	rock-inhabiting	225	171510	1.324	447
-FungalTraits	Secondary_lifestyle	fungal_decomposer	427	151050	1.166	460
-FungalTraits	Secondary_lifestyle	wood_saprotroph	455	145568	1.123	465
-FungalTraits	Secondary_lifestyle	root_endophyte_dark_septate	314	109061	0.842	458
-FungalTraits	Secondary_lifestyle	animal_decomposer	221	87338	0.674	437
-FungalTraits	Secondary_lifestyle	root_endophyte	177	79501	0.614	441
-FungalTraits	Secondary_lifestyle	ericoid_mycorrhizal	66	32802	0.253	369
-FungalTraits	Secondary_lifestyle	animal_parasite	245	28744	0.222	390
-FungalTraits	Secondary_lifestyle	dung_saprotroph	158	23999	0.185	334
+FungalTraits	Secondary_lifestyle	unassigned	14909	7779876	59.844	479
+FungalTraits	Secondary_lifestyle	epiphyte	114	904478	6.957	479
+FungalTraits	Secondary_lifestyle	root-associated	1374	828363	6.372	479
+FungalTraits	Secondary_lifestyle	unspecified_symbiotroph	959	762988	5.869	472
+FungalTraits	Secondary_lifestyle	foliar_endophyte	860	761472	5.857	479
+FungalTraits	Secondary_lifestyle	litter_saprotroph	1089	688219	5.294	479
+FungalTraits	Secondary_lifestyle	plant_pathogen	499	218381	1.68	469
+FungalTraits	Secondary_lifestyle	soil_saprotroph	428	209752	1.613	478
+FungalTraits	Secondary_lifestyle	rock-inhabiting	225	172877	1.33	460
+FungalTraits	Secondary_lifestyle	fungal_decomposer	427	151742	1.167	471
+FungalTraits	Secondary_lifestyle	wood_saprotroph	455	147293	1.133	477
+FungalTraits	Secondary_lifestyle	root_endophyte_dark_septate	314	109803	0.845	470
+FungalTraits	Secondary_lifestyle	animal_decomposer	221	87491	0.673	449
+FungalTraits	Secondary_lifestyle	root_endophyte	177	79975	0.615	452
+FungalTraits	Secondary_lifestyle	ericoid_mycorrhizal	66	32914	0.253	379
+FungalTraits	Secondary_lifestyle	animal_parasite	245	28886	0.222	401
+FungalTraits	Secondary_lifestyle	dung_saprotroph	158	24082	0.185	341
 FungalTraits	Secondary_lifestyle	protistan_parasite	12	4541	0.035	88
-FungalTraits	Secondary_lifestyle	unspecified_saprotroph	17	3440	0.027	53
-FungalTraits	Secondary_lifestyle	pollen_saprotroph	14	1529	0.012	63
+FungalTraits	Secondary_lifestyle	unspecified_saprotroph	17	3440	0.026	53
+FungalTraits	Secondary_lifestyle	pollen_saprotroph	14	1535	0.012	64
 FungalTraits	Secondary_lifestyle	algal_parasite	15	1073	0.008	34
 FungalTraits	Secondary_lifestyle	unsepcified_saprotroph	3	436	0.003	22
-FungalTraits	Secondary_lifestyle	bryophilous	16	371	0.003	38
+FungalTraits	Secondary_lifestyle	bryophilous	16	373	0.003	39
 FungalTraits	Secondary_lifestyle	nematophagous	9	216	0.002	7
 FungalTraits	Secondary_lifestyle	nectar/tap_saprotroph	4	99	0.001	9
 FungalTraits	Secondary_lifestyle	resin_saprotroph	1	14	0	4
@@ -58,270 +58,270 @@ FungalTraits	Secondary_lifestyle	moss_parasite	1	3	0	1
 FungalTraits	Secondary_lifestyle	arthropod-associated	1	2	0	1
 FungalTraits	Secondary_lifestyle	insect-associated	1	2	0	1
 FungalTraits	Secondary_lifestyle	vertebrate-associated	1	2	0	1
-FungalTraits	Ectomycorrhiza_exploration_type	(not ectomycorrhizal)	20700	10378054	80.096	467
-FungalTraits	Ectomycorrhiza_exploration_type	contact	198	686028	5.295	414
-FungalTraits	Ectomycorrhiza_exploration_type	medium-distance_fringe	474	675112	5.21	437
-FungalTraits	Ectomycorrhiza_exploration_type	short-distance_delicate	544	615118	4.747	408
-FungalTraits	Ectomycorrhiza_exploration_type	medium-distance_smooth	414	350324	2.704	381
-FungalTraits	Ectomycorrhiza_exploration_type	short-distance_coarse	143	200856	1.55	375
-FungalTraits	Ectomycorrhiza_exploration_type	long-distance	58	32919	0.254	144
-FungalTraits	Ectomycorrhiza_exploration_type	mat	78	17628	0.136	112
+FungalTraits	Ectomycorrhiza_exploration_type	(not ectomycorrhizal)	20700	10422696	80.173	479
+FungalTraits	Ectomycorrhiza_exploration_type	contact	198	686083	5.277	426
+FungalTraits	Ectomycorrhiza_exploration_type	medium-distance_fringe	474	675123	5.193	442
+FungalTraits	Ectomycorrhiza_exploration_type	short-distance_delicate	544	613796	4.721	416
+FungalTraits	Ectomycorrhiza_exploration_type	medium-distance_smooth	414	350309	2.695	384
+FungalTraits	Ectomycorrhiza_exploration_type	short-distance_coarse	143	200869	1.545	384
+FungalTraits	Ectomycorrhiza_exploration_type	long-distance	58	32919	0.253	144
+FungalTraits	Ectomycorrhiza_exploration_type	mat	78	17629	0.136	113
 FungalTraits	Ectomycorrhiza_exploration_type	unknown	7	914	0.007	27
-FungalTraits	Decay_type	unassigned	21253	11642761	89.857	467
-FungalTraits	Decay_type	soft_rot	381	513507	3.963	465
-FungalTraits	Decay_type	mold	329	425639	3.285	458
-FungalTraits	Decay_type	chitinolytic	222	293584	2.266	467
-FungalTraits	Decay_type	white_rot	330	71771	0.554	410
-FungalTraits	Decay_type	keratinolytic	72	7824	0.06	261
+FungalTraits	Decay_type	unassigned	21253	11682187	89.861	479
+FungalTraits	Decay_type	soft_rot	381	514971	3.961	478
+FungalTraits	Decay_type	mold	329	426059	3.277	469
+FungalTraits	Decay_type	chitinolytic	222	295441	2.273	479
+FungalTraits	Decay_type	white_rot	330	71976	0.554	417
+FungalTraits	Decay_type	keratinolytic	72	7837	0.06	264
 FungalTraits	Decay_type	brown_rot	22	1676	0.013	64
 FungalTraits	Decay_type	other	6	188	0.001	26
 FungalTraits	Decay_type	blue-staining	1	3	0	1
-FungalTraits	Plant_pathogenic_capacity	unassigned	18113	9673982	74.662	467
-FungalTraits	Plant_pathogenic_capacity	root-associated	1858	1653854	12.764	467
-FungalTraits	Plant_pathogenic_capacity	leaf/fruit/seed_pathogen	2217	1372667	10.594	467
-FungalTraits	Plant_pathogenic_capacity	wood_pathogen,leaf/fruit/seed_pathogen	41	92825	0.716	289
-FungalTraits	Plant_pathogenic_capacity	other_plant_pathogen	36	62053	0.479	438
-FungalTraits	Plant_pathogenic_capacity	wood_pathogen	188	52147	0.402	407
-FungalTraits	Plant_pathogenic_capacity	root_pathogen	93	33441	0.258	378
-FungalTraits	Plant_pathogenic_capacity	leaf/fruit/seed_pathogen,algal_parasite	27	9707	0.075	309
+FungalTraits	Plant_pathogenic_capacity	unassigned	18113	9697171	74.592	479
+FungalTraits	Plant_pathogenic_capacity	root-associated	1858	1666437	12.818	479
+FungalTraits	Plant_pathogenic_capacity	leaf/fruit/seed_pathogen	2217	1379152	10.609	479
+FungalTraits	Plant_pathogenic_capacity	wood_pathogen,leaf/fruit/seed_pathogen	41	92844	0.714	295
+FungalTraits	Plant_pathogenic_capacity	other_plant_pathogen	36	62477	0.481	449
+FungalTraits	Plant_pathogenic_capacity	wood_pathogen	188	52631	0.405	417
+FungalTraits	Plant_pathogenic_capacity	root_pathogen	93	33582	0.258	390
+FungalTraits	Plant_pathogenic_capacity	leaf/fruit/seed_pathogen,algal_parasite	27	9764	0.075	314
 FungalTraits	Plant_pathogenic_capacity	moss-associated	5	4723	0.036	20
-FungalTraits	Plant_pathogenic_capacity	algal_parasite	35	1499	0.012	83
+FungalTraits	Plant_pathogenic_capacity	algal_parasite	35	1502	0.012	84
 FungalTraits	Plant_pathogenic_capacity	unspecified_plant_pathogen	3	55	0	4
-FUNGuild	match	genus	13841	9790224	75.56	467
-FUNGuild	match	family	1611	1149099	8.869	467
-FUNGuild	match	no FUNGuild record	5768	1123191	8.669	467
-FUNGuild	match	species	790	805608	6.218	467
-FUNGuild	match	order	478	82614	0.638	439
-FUNGuild	match	phylum	128	6217	0.048	296
-FUNGuild	confidence	Probable	10464	6824842	52.673	467
-FUNGuild	confidence	Highly Probable	4314	3264118	25.192	467
-FUNGuild	confidence	Possible	2070	1744802	13.466	467
-FUNGuild	confidence	unassigned	5768	1123191	8.669	467
-FUNGuild	trophicMode	Saprotroph-Symbiotroph	2469	3041168	23.471	467
-FUNGuild	trophicMode	Saprotroph	5477	2782973	21.479	467
-FUNGuild	trophicMode	Symbiotroph	3100	2722829	21.014	467
-FUNGuild	trophicMode	Pathotroph-Saprotroph-Symbiotroph	2243	1179583	9.104	467
-FUNGuild	trophicMode	unassigned	5768	1123191	8.669	467
-FUNGuild	trophicMode	Pathotroph	1115	938323	7.242	467
-FUNGuild	trophicMode	Pathotroph-Saprotroph	2126	892613	6.889	467
-FUNGuild	trophicMode	Pathotroph-Symbiotroph	204	168142	1.298	453
-FUNGuild	trophicMode	Saprotroph-Saprotroph-Symbiotroph	77	94947	0.733	169
-FUNGuild	trophicMode	Pathotroph-Pathotroph-Saprotroph	36	13179	0.102	198
+FUNGuild	match	genus	13841	9820763	75.542	479
+FUNGuild	match	family	1611	1154196	8.878	479
+FUNGuild	match	no FUNGuild record	5768	1125512	8.658	479
+FUNGuild	match	species	790	809669	6.228	479
+FUNGuild	match	order	478	83855	0.645	450
+FUNGuild	match	phylum	128	6343	0.049	307
+FUNGuild	confidence	Probable	10464	6852956	52.714	479
+FUNGuild	confidence	Highly Probable	4314	3272343	25.171	479
+FUNGuild	confidence	Possible	2070	1749527	13.458	479
+FUNGuild	confidence	unassigned	5768	1125512	8.658	479
+FUNGuild	trophicMode	Saprotroph-Symbiotroph	2469	3059124	23.531	479
+FUNGuild	trophicMode	Saprotroph	5477	2793232	21.486	479
+FUNGuild	trophicMode	Symbiotroph	3100	2724191	20.955	479
+FUNGuild	trophicMode	Pathotroph-Saprotroph-Symbiotroph	2243	1181752	9.09	479
+FUNGuild	trophicMode	unassigned	5768	1125512	8.658	479
+FUNGuild	trophicMode	Pathotroph	1115	943094	7.254	479
+FUNGuild	trophicMode	Pathotroph-Saprotroph	2126	896788	6.898	479
+FUNGuild	trophicMode	Pathotroph-Symbiotroph	204	168471	1.296	466
+FUNGuild	trophicMode	Saprotroph-Saprotroph-Symbiotroph	77	94990	0.731	174
+FUNGuild	trophicMode	Pathotroph-Pathotroph-Saprotroph	36	13179	0.101	198
 FUNGuild	trophicMode	Symbiotroph-Saprotroph-Symbiotroph	1	5	0	1
-FUNGuild	trophicMode (Probable or better)	unassigned	7838	2867993	22.135	467
-FUNGuild	trophicMode (Probable or better)	Saprotroph	5193	2726465	21.042	467
-FUNGuild	trophicMode (Probable or better)	Symbiotroph	2940	2421075	18.686	467
-FUNGuild	trophicMode (Probable or better)	Saprotroph-Symbiotroph	1994	2211292	17.066	467
-FUNGuild	trophicMode (Probable or better)	Pathotroph	1113	938311	7.242	467
-FUNGuild	trophicMode (Probable or better)	Pathotroph-Saprotroph	1947	801119	6.183	467
-FUNGuild	trophicMode (Probable or better)	Pathotroph-Saprotroph-Symbiotroph	1334	761095	5.874	467
-FUNGuild	trophicMode (Probable or better)	Pathotroph-Symbiotroph	143	121472	0.938	336
-FUNGuild	trophicMode (Probable or better)	Saprotroph-Saprotroph-Symbiotroph	77	94947	0.733	169
-FUNGuild	trophicMode (Probable or better)	Pathotroph-Pathotroph-Saprotroph	36	13179	0.102	198
+FUNGuild	trophicMode (Probable or better)	unassigned	7838	2875039	22.115	479
+FUNGuild	trophicMode (Probable or better)	Saprotroph	5193	2735803	21.044	479
+FUNGuild	trophicMode (Probable or better)	Symbiotroph	2940	2423825	18.644	479
+FUNGuild	trophicMode (Probable or better)	Saprotroph-Symbiotroph	1994	2225619	17.12	479
+FUNGuild	trophicMode (Probable or better)	Pathotroph	1113	943082	7.254	479
+FUNGuild	trophicMode (Probable or better)	Pathotroph-Saprotroph	1947	804820	6.191	479
+FUNGuild	trophicMode (Probable or better)	Pathotroph-Saprotroph-Symbiotroph	1334	762399	5.864	479
+FUNGuild	trophicMode (Probable or better)	Pathotroph-Symbiotroph	143	121577	0.935	342
+FUNGuild	trophicMode (Probable or better)	Saprotroph-Saprotroph-Symbiotroph	77	94990	0.731	174
+FUNGuild	trophicMode (Probable or better)	Pathotroph-Pathotroph-Saprotroph	36	13179	0.101	198
 FUNGuild	trophicMode (Probable or better)	Symbiotroph-Saprotroph-Symbiotroph	1	5	0	1
-FUNGuild	guild	Ectomycorrhizal	1825	2409501	18.596	466
-FUNGuild	guild	Undefined Saprotroph	2039	1145616	8.842	467
-FUNGuild	guild	unassigned	5768	1123191	8.669	467
-FUNGuild	guild	Epiphyte-Undefined Saprotroph	138	900254	6.948	467
-FUNGuild	guild	Undefined Saprotroph-Undefined Symbiotroph	791	719665	5.554	455
-FUNGuild	guild	Endophyte-Litter Saprotroph-Soil Saprotroph-Undefined Saprotroph	162	683225	5.273	467
-FUNGuild	guild	Plant Pathogen	576	588858	4.545	466
-FUNGuild	guild	Plant Saprotroph-Undefined Saprotroph	761	463219	3.575	466
-FUNGuild	guild	Animal Parasite-Dung Saprotroph-Endophyte-Fungal Parasite-Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	145	318419	2.458	449
-FUNGuild	guild	Endophyte-Plant Saprotroph-Undefined Saprotroph	289	303432	2.342	467
-FUNGuild	guild	Plant Pathogen-Plant Saprotroph	245	274376	2.118	442
-FUNGuild	guild	Undefined Saprotroph-Wood Saprotroph	687	247114	1.907	465
-FUNGuild	guild	Plant Saprotroph	359	223102	1.722	453
-FUNGuild	guild	Dung Saprotroph-Undefined Saprotroph	215	195868	1.512	434
-FUNGuild	guild	Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	116	151738	1.171	429
-FUNGuild	guild	Ectomycorrhizal-Undefined Saprotroph	130	138631	1.07	295
-FUNGuild	guild	Wood Saprotroph	490	124319	0.959	460
-FUNGuild	guild	Lichen Parasite	124	122151	0.943	444
-FUNGuild	guild	Endophyte	103	116506	0.899	448
-FUNGuild	guild	Fungal Parasite	227	112459	0.868	442
-FUNGuild	guild	Soil Saprotroph	21	106424	0.821	415
-FUNGuild	guild	Ectomycorrhizal-Fungal Parasite	64	102208	0.789	152
-FUNGuild	guild	Dung Saprotroph	267	98843	0.763	411
-FUNGuild	guild	Endophyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	66	95381	0.736	300
-FUNGuild	guild	Animal Pathogen-Plant Pathogen-Undefined Saprotroph	154	92726	0.716	429
-FUNGuild	guild	Animal Pathogen	57	90427	0.698	433
-FUNGuild	guild	Plant Pathogen-Wood Saprotroph	135	89686	0.692	439
-FUNGuild	guild	Animal Pathogen-Undefined Saprotroph	76	85750	0.662	363
-FUNGuild	guild	Arbuscular Mycorrhizal-Endophyte	671	80353	0.62	436
-FUNGuild	guild	Endophyte-Plant Pathogen-Undefined Saprotroph	143	70187	0.542	456
-FUNGuild	guild	Animal Pathogen-Endophyte-Plant Pathogen-Undefined Saprotroph	17	69610	0.537	221
-FUNGuild	guild	Endophyte-Ericoid Mycorrhizal-Undefined Saprotroph	150	63067	0.487	401
-FUNGuild	guild	Animal Parasite-Undefined Saprotroph	97	62854	0.485	415
-FUNGuild	guild	Dung Saprotroph-Endophyte-Plant Saprotroph-Undefined Saprotroph	50	62271	0.481	370
-FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Undefined Saprotroph	9	59494	0.459	381
-FUNGuild	guild	Dung Saprotroph-Undefined Saprotroph-Wood Saprotroph	3	48756	0.376	101
-FUNGuild	guild	Ectomycorrhizal-Orchid Mycorrhizal-Root Associated Biotroph	50	47673	0.368	123
-FUNGuild	guild	Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	107	47280	0.365	326
-FUNGuild	guild	Plant Saprotroph-Wood Saprotroph	159	45848	0.354	355
-FUNGuild	guild	Ectomycorrhizal-Endophyte-Ericoid Mycorrhizal-Orchid Mycorrhizal-Undefined Saprotroph	193	41794	0.323	335
-FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Lichen Parasite-Plant Pathogen-Undefined Saprotroph	158	38564	0.298	374
-FUNGuild	guild	Dung Saprotroph-Ectomycorrhizal-Endophyte-Plant Saprotroph-Undefined Saprotroph	43	36439	0.281	158
-FUNGuild	guild	Animal Pathogen-Endophyte-Fungal Parasite-Undefined Saprotroph	227	36367	0.281	411
-FUNGuild	guild	Lichenized	109	31564	0.244	339
-FUNGuild	guild	Animal Pathogen-Endophyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	20	31432	0.243	199
-FUNGuild	guild	Endophyte-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	120	30747	0.237	401
-FUNGuild	guild	Ectomycorrhizal-Plant Saprotroph-Wood Saprotroph	62	29207	0.225	163
-FUNGuild	guild	Lichenized-Undefined Saprotroph	82	29166	0.225	295
-FUNGuild	guild	Endophyte-Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	59	28012	0.216	404
-FUNGuild	guild	Dung Saprotroph-Ectomycorrhizal-Soil Saprotroph-Wood Saprotroph	29	27991	0.216	235
-FUNGuild	guild	Arbuscular Mycorrhizal	335	25654	0.198	384
-FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Fungal Parasite-Plant Pathogen-Wood Saprotroph	39	25145	0.194	296
-FUNGuild	guild	Ectomycorrhizal-Fungal Parasite-Undefined Saprotroph-Undefined Symbiotroph	125	24881	0.192	268
-FUNGuild	guild	Dung Saprotroph-Plant Saprotroph	49	23682	0.183	237
-FUNGuild	guild	Ectomycorrhizal-Ericoid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	86	20785	0.16	297
-FUNGuild	guild	Endophyte-Plant Pathogen-Plant Saprotroph	76	20490	0.158	312
-FUNGuild	guild	Endophyte-Soil Saprotroph-Undefined Saprotroph	65	20287	0.157	262
-FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Epiphyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	22	18547	0.143	260
-FUNGuild	guild	Litter Saprotroph	34	17947	0.139	186
-FUNGuild	guild	Endophyte-Plant Pathogen	24	17670	0.136	322
-FUNGuild	guild	Animal Parasite-Animal Pathogen-Plant Saprotroph-Undefined Saprotroph	27	17563	0.136	303
-FUNGuild	guild	Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	127	16894	0.13	298
-FUNGuild	guild	Ectomycorrhizal-Endophyte-Plant Pathogen-Plant Saprotroph	97	16587	0.128	342
-FUNGuild	guild	Animal Parasite-Plant Pathogen-Undefined Saprotroph	186	16331	0.126	276
-FUNGuild	guild	Animal Parasite-Animal Pathogen-Endophyte-Plant Saprotroph-Undefined Saprotroph	56	15861	0.122	254
-FUNGuild	guild	Dung Saprotroph-Plant Saprotroph-Undefined Saprotroph	138	15610	0.12	297
-FUNGuild	guild	Animal Parasite-Animal Pathogen-Undefined Saprotroph	93	15449	0.119	335
-FUNGuild	guild	Animal Pathogen-Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	6	15389	0.119	262
-FUNGuild	guild	Fungal Parasite-Plant Saprotroph-Undefined Saprotroph	67	15150	0.117	227
-FUNGuild	guild	Animal Parasite-Fungal Parasite-Undefined Saprotroph	18	14883	0.115	107
-FUNGuild	guild	Ectomycorrhizal-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	13	14674	0.113	26
-FUNGuild	guild	Ericoid Mycorrhizal	31	13538	0.104	217
-FUNGuild	guild	Ectomycorrhizal-Endomycorrhizal-Orchid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	100	13416	0.104	274
-FUNGuild	guild	Ectomycorrhizal-Plant Saprotroph	30	13032	0.101	83
-FUNGuild	guild	Algal Parasite-Plant Pathogen	46	12417	0.096	328
-FUNGuild	guild	Epiphyte	6	11568	0.089	125
-FUNGuild	guild	Ectomycorrhizal-Endophyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	7	11138	0.086	182
-FUNGuild	guild	Ectomycorrhizal-Undefined Saprotroph-Wood Saprotroph	20	10881	0.084	80
-FUNGuild	guild	Animal Parasite-Animal Pathogen-Endophyte-Undefined Saprotroph	27	10127	0.078	210
+FUNGuild	guild	Ectomycorrhizal	1825	2408202	18.524	478
+FUNGuild	guild	Undefined Saprotroph	2039	1150561	8.85	479
+FUNGuild	guild	unassigned	5768	1125512	8.658	479
+FUNGuild	guild	Epiphyte-Undefined Saprotroph	138	903000	6.946	479
+FUNGuild	guild	Undefined Saprotroph-Undefined Symbiotroph	791	727390	5.595	466
+FUNGuild	guild	Endophyte-Litter Saprotroph-Soil Saprotroph-Undefined Saprotroph	162	686496	5.281	479
+FUNGuild	guild	Plant Pathogen	576	591495	4.55	478
+FUNGuild	guild	Plant Saprotroph-Undefined Saprotroph	761	465079	3.577	478
+FUNGuild	guild	Animal Parasite-Dung Saprotroph-Endophyte-Fungal Parasite-Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	145	318553	2.45	458
+FUNGuild	guild	Endophyte-Plant Saprotroph-Undefined Saprotroph	289	305650	2.351	479
+FUNGuild	guild	Plant Pathogen-Plant Saprotroph	245	275697	2.121	455
+FUNGuild	guild	Undefined Saprotroph-Wood Saprotroph	687	247749	1.906	477
+FUNGuild	guild	Plant Saprotroph	359	224418	1.726	465
+FUNGuild	guild	Dung Saprotroph-Undefined Saprotroph	215	196105	1.508	447
+FUNGuild	guild	Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	116	152143	1.17	441
+FUNGuild	guild	Ectomycorrhizal-Undefined Saprotroph	130	138712	1.067	301
+FUNGuild	guild	Wood Saprotroph	490	124727	0.959	472
+FUNGuild	guild	Lichen Parasite	124	123393	0.949	456
+FUNGuild	guild	Endophyte	103	117000	0.9	460
+FUNGuild	guild	Fungal Parasite	227	112879	0.868	453
+FUNGuild	guild	Soil Saprotroph	21	106534	0.819	425
+FUNGuild	guild	Ectomycorrhizal-Fungal Parasite	64	102209	0.786	153
+FUNGuild	guild	Dung Saprotroph	267	99203	0.763	424
+FUNGuild	guild	Endophyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	66	95400	0.734	306
+FUNGuild	guild	Animal Pathogen-Plant Pathogen-Undefined Saprotroph	154	93170	0.717	440
+FUNGuild	guild	Animal Pathogen	57	90798	0.698	444
+FUNGuild	guild	Plant Pathogen-Wood Saprotroph	135	90248	0.694	451
+FUNGuild	guild	Animal Pathogen-Undefined Saprotroph	76	85783	0.66	369
+FUNGuild	guild	Arbuscular Mycorrhizal-Endophyte	671	81569	0.627	448
+FUNGuild	guild	Endophyte-Plant Pathogen-Undefined Saprotroph	143	70239	0.54	468
+FUNGuild	guild	Animal Pathogen-Endophyte-Plant Pathogen-Undefined Saprotroph	17	69638	0.536	223
+FUNGuild	guild	Endophyte-Ericoid Mycorrhizal-Undefined Saprotroph	150	63170	0.486	411
+FUNGuild	guild	Animal Parasite-Undefined Saprotroph	97	62962	0.484	425
+FUNGuild	guild	Dung Saprotroph-Endophyte-Plant Saprotroph-Undefined Saprotroph	50	62343	0.48	381
+FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Undefined Saprotroph	9	59598	0.458	390
+FUNGuild	guild	Dung Saprotroph-Undefined Saprotroph-Wood Saprotroph	3	48762	0.375	104
+FUNGuild	guild	Ectomycorrhizal-Orchid Mycorrhizal-Root Associated Biotroph	50	47673	0.367	123
+FUNGuild	guild	Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	107	47383	0.364	334
+FUNGuild	guild	Plant Saprotroph-Wood Saprotroph	159	45916	0.353	362
+FUNGuild	guild	Ectomycorrhizal-Endophyte-Ericoid Mycorrhizal-Orchid Mycorrhizal-Undefined Saprotroph	193	41834	0.322	340
+FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Lichen Parasite-Plant Pathogen-Undefined Saprotroph	158	38746	0.298	384
+FUNGuild	guild	Animal Pathogen-Endophyte-Fungal Parasite-Undefined Saprotroph	227	36613	0.282	422
+FUNGuild	guild	Dung Saprotroph-Ectomycorrhizal-Endophyte-Plant Saprotroph-Undefined Saprotroph	43	36440	0.28	159
+FUNGuild	guild	Lichenized	109	32031	0.246	347
+FUNGuild	guild	Animal Pathogen-Endophyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	20	31441	0.242	202
+FUNGuild	guild	Endophyte-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	120	30890	0.238	412
+FUNGuild	guild	Lichenized-Undefined Saprotroph	82	29415	0.226	303
+FUNGuild	guild	Ectomycorrhizal-Plant Saprotroph-Wood Saprotroph	62	29374	0.226	167
+FUNGuild	guild	Endophyte-Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	59	28153	0.217	415
+FUNGuild	guild	Dung Saprotroph-Ectomycorrhizal-Soil Saprotroph-Wood Saprotroph	29	28011	0.215	240
+FUNGuild	guild	Arbuscular Mycorrhizal	335	26137	0.201	395
+FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Fungal Parasite-Plant Pathogen-Wood Saprotroph	39	25171	0.194	301
+FUNGuild	guild	Ectomycorrhizal-Fungal Parasite-Undefined Saprotroph-Undefined Symbiotroph	125	24918	0.192	277
+FUNGuild	guild	Dung Saprotroph-Plant Saprotroph	49	23703	0.182	241
+FUNGuild	guild	Ectomycorrhizal-Ericoid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	86	20788	0.16	299
+FUNGuild	guild	Endophyte-Plant Pathogen-Plant Saprotroph	76	20678	0.159	323
+FUNGuild	guild	Endophyte-Soil Saprotroph-Undefined Saprotroph	65	20333	0.156	269
+FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Epiphyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	22	18619	0.143	266
+FUNGuild	guild	Litter Saprotroph	34	17947	0.138	186
+FUNGuild	guild	Endophyte-Plant Pathogen	24	17791	0.137	332
+FUNGuild	guild	Animal Parasite-Animal Pathogen-Plant Saprotroph-Undefined Saprotroph	27	17644	0.136	310
+FUNGuild	guild	Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	127	17200	0.132	307
+FUNGuild	guild	Ectomycorrhizal-Endophyte-Plant Pathogen-Plant Saprotroph	97	16647	0.128	349
+FUNGuild	guild	Animal Parasite-Plant Pathogen-Undefined Saprotroph	186	16393	0.126	285
+FUNGuild	guild	Animal Parasite-Animal Pathogen-Endophyte-Plant Saprotroph-Undefined Saprotroph	56	15870	0.122	256
+FUNGuild	guild	Dung Saprotroph-Plant Saprotroph-Undefined Saprotroph	138	15760	0.121	306
+FUNGuild	guild	Ectomycorrhizal-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	13	15670	0.121	28
+FUNGuild	guild	Animal Parasite-Animal Pathogen-Undefined Saprotroph	93	15485	0.119	346
+FUNGuild	guild	Animal Pathogen-Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	6	15453	0.119	270
+FUNGuild	guild	Fungal Parasite-Plant Saprotroph-Undefined Saprotroph	67	15426	0.119	236
+FUNGuild	guild	Animal Parasite-Fungal Parasite-Undefined Saprotroph	18	14956	0.115	111
+FUNGuild	guild	Ectomycorrhizal-Endomycorrhizal-Orchid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	100	13596	0.105	281
+FUNGuild	guild	Ericoid Mycorrhizal	31	13550	0.104	221
+FUNGuild	guild	Ectomycorrhizal-Plant Saprotroph	30	13032	0.1	83
+FUNGuild	guild	Algal Parasite-Plant Pathogen	46	12485	0.096	335
+FUNGuild	guild	Epiphyte	6	11569	0.089	126
+FUNGuild	guild	Ectomycorrhizal-Endophyte-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	7	11160	0.086	186
+FUNGuild	guild	Ectomycorrhizal-Undefined Saprotroph-Wood Saprotroph	20	10905	0.084	81
+FUNGuild	guild	Animal Parasite-Animal Pathogen-Endophyte-Undefined Saprotroph	27	10145	0.078	214
+FUNGuild	guild	Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	118	10035	0.077	263
 FUNGuild	guild	Dung Saprotroph-Endophyte-Plant Pathogen-Undefined Saprotroph	12	10016	0.077	113
-FUNGuild	guild	Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	118	9996	0.077	256
 FUNGuild	guild	Dung Saprotroph-Ectomycorrhizal-Undefined Saprotroph	14	9858	0.076	74
-FUNGuild	guild	Endophyte-Epiphyte-Plant Pathogen	6	9629	0.074	249
-FUNGuild	guild	Endophyte-Epiphyte-Fungal Parasite-Insect Parasite	17	9574	0.074	270
-FUNGuild	guild	Fungal Parasite-Undefined Saprotroph	92	9435	0.073	194
-FUNGuild	guild	Dung Saprotroph-Plant Saprotroph-Wood Saprotroph	68	9164	0.071	256
-FUNGuild	guild	Bryophyte Parasite-Plant Saprotroph-Undefined Saprotroph	56	9070	0.07	270
-FUNGuild	guild	Lichen Parasite-Undefined Saprotroph	80	9057	0.07	280
-FUNGuild	guild	Endophyte-Undefined Saprotroph	59	8904	0.069	231
-FUNGuild	guild	Animal Pathogen-Endophyte-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	23	8895	0.069	213
-FUNGuild	guild	Animal Pathogen-Fungal Parasite-Undefined Saprotroph	65	8068	0.062	280
-FUNGuild	guild	Endophyte-Ericoid Mycorrhizal-Plant Saprotroph	16	7742	0.06	130
-FUNGuild	guild	Animal Parasite-Animal Pathogen-Clavicipitaceous Endophyte-Fungal Parasite	16	7727	0.06	191
-FUNGuild	guild	Dung Saprotroph-Endophyte-Lichen Parasite-Plant Saprotroph	15	7676	0.059	163
-FUNGuild	guild	Animal Parasite-Undefined Saprotroph-Wood Saprotroph	152	7422	0.057	274
+FUNGuild	guild	Endophyte-Epiphyte-Plant Pathogen	6	9658	0.074	256
+FUNGuild	guild	Endophyte-Epiphyte-Fungal Parasite-Insect Parasite	17	9619	0.074	276
+FUNGuild	guild	Fungal Parasite-Undefined Saprotroph	92	9441	0.073	196
+FUNGuild	guild	Dung Saprotroph-Plant Saprotroph-Wood Saprotroph	68	9223	0.071	262
+FUNGuild	guild	Bryophyte Parasite-Plant Saprotroph-Undefined Saprotroph	56	9158	0.07	279
+FUNGuild	guild	Lichen Parasite-Undefined Saprotroph	80	9073	0.07	286
+FUNGuild	guild	Endophyte-Undefined Saprotroph	59	8946	0.069	239
+FUNGuild	guild	Animal Pathogen-Endophyte-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	23	8931	0.069	219
+FUNGuild	guild	Animal Pathogen-Fungal Parasite-Undefined Saprotroph	65	8109	0.062	287
+FUNGuild	guild	Endophyte-Ericoid Mycorrhizal-Plant Saprotroph	16	7749	0.06	132
+FUNGuild	guild	Animal Parasite-Animal Pathogen-Clavicipitaceous Endophyte-Fungal Parasite	16	7731	0.059	194
+FUNGuild	guild	Dung Saprotroph-Endophyte-Lichen Parasite-Plant Saprotroph	15	7695	0.059	167
+FUNGuild	guild	Animal Parasite-Undefined Saprotroph-Wood Saprotroph	152	7464	0.057	277
 FUNGuild	guild	Fungal Parasite-Plant Saprotroph	33	7367	0.057	179
+FUNGuild	guild	Endophyte-Fungal Parasite-Plant Pathogen-Plant Saprotroph	9	6988	0.054	152
 FUNGuild	guild	Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	12	6893	0.053	95
-FUNGuild	guild	Endophyte-Fungal Parasite-Plant Pathogen-Plant Saprotroph	9	6721	0.052	149
-FUNGuild	guild	Fungal Parasite-Plant Pathogen-Plant Saprotroph	39	6634	0.051	154
-FUNGuild	guild	Animal Pathogen-Animal Symbiotroph-Endophyte-Plant Pathogen-Undefined Saprotroph	25	6386	0.049	256
-FUNGuild	guild	Bryophyte Parasite-Dung Saprotroph-Ectomycorrhizal-Fungal Parasite-Leaf Saprotroph-Plant Parasite-Undefined Saprotroph-Wood Saprotroph	64	6292	0.049	129
-FUNGuild	guild	Animal Pathogen-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	11	6260	0.048	164
-FUNGuild	guild	Algal Parasite-Bryophyte Parasite-Fungal Parasite-Undefined Saprotroph	16	5934	0.046	112
-FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Endophyte-Ericoid Mycorrhizal-Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	18	5619	0.043	57
-FUNGuild	guild	Ectomycorrhizal-Fungal Parasite-Plant Pathogen-Wood Saprotroph	31	5323	0.041	237
-FUNGuild	guild	Dung Saprotroph-Endophyte-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	7	5023	0.039	220
-FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Ericoid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	28	4936	0.038	110
+FUNGuild	guild	Fungal Parasite-Plant Pathogen-Plant Saprotroph	39	6680	0.051	157
+FUNGuild	guild	Animal Pathogen-Animal Symbiotroph-Endophyte-Plant Pathogen-Undefined Saprotroph	25	6396	0.049	262
+FUNGuild	guild	Bryophyte Parasite-Dung Saprotroph-Ectomycorrhizal-Fungal Parasite-Leaf Saprotroph-Plant Parasite-Undefined Saprotroph-Wood Saprotroph	64	6302	0.048	132
+FUNGuild	guild	Animal Pathogen-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	11	6293	0.048	169
+FUNGuild	guild	Algal Parasite-Bryophyte Parasite-Fungal Parasite-Undefined Saprotroph	16	5936	0.046	114
+FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Endophyte-Ericoid Mycorrhizal-Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	18	5629	0.043	59
+FUNGuild	guild	Ectomycorrhizal-Fungal Parasite-Plant Pathogen-Wood Saprotroph	31	5346	0.041	241
+FUNGuild	guild	Dung Saprotroph-Endophyte-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	7	5039	0.039	222
+FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Ericoid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	28	4940	0.038	111
+FUNGuild	guild	Endomycorrhizal-Plant Pathogen-Undefined Saprotroph	63	4782	0.037	149
 FUNGuild	guild	Animal Pathogen-Endophyte-Fungal Parasite-Lichen Parasite-Plant Pathogen-Wood Saprotroph	16	4779	0.037	129
-FUNGuild	guild	Endomycorrhizal-Plant Pathogen-Undefined Saprotroph	63	4699	0.036	144
 FUNGuild	guild	Fungal Parasite-Lichen Parasite-Protist Parasite-Protistan Parasite	12	4541	0.035	88
-FUNGuild	guild	Lichen Parasite-Lichenized-Undefined Saprotroph	20	3751	0.029	210
-FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Ericoid Mycorrhizal	27	3742	0.029	84
+FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Ericoid Mycorrhizal	27	3824	0.029	86
+FUNGuild	guild	Lichen Parasite-Lichenized-Undefined Saprotroph	20	3766	0.029	216
 FUNGuild	guild	Animal Pathogen-Endophyte-Fungal Parasite-Plant Pathogen-Wood Saprotroph	3	3710	0.029	39
-FUNGuild	guild	Epiphyte-Plant Saprotroph-Undefined Saprotroph	22	3510	0.027	177
-FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Endophyte-Ericoid Mycorrhizal-Lichen Parasite-Plant Pathogen-Undefined Saprotroph	11	3447	0.027	138
-FUNGuild	guild	Endophyte-Fungal Parasite-Wood Saprotroph	31	3314	0.026	191
-FUNGuild	guild	Leaf Saprotroph-Wood Saprotroph	9	3194	0.025	88
-FUNGuild	guild	Fungal Parasite-Lichen Parasite	30	3178	0.025	115
+FUNGuild	guild	Epiphyte-Plant Saprotroph-Undefined Saprotroph	22	3533	0.027	182
+FUNGuild	guild	Bryophyte Parasite-Ectomycorrhizal-Endophyte-Ericoid Mycorrhizal-Lichen Parasite-Plant Pathogen-Undefined Saprotroph	11	3452	0.027	141
+FUNGuild	guild	Endophyte-Fungal Parasite-Wood Saprotroph	31	3317	0.026	193
+FUNGuild	guild	Leaf Saprotroph-Wood Saprotroph	9	3203	0.025	89
+FUNGuild	guild	Fungal Parasite-Lichen Parasite	30	3185	0.024	118
 FUNGuild	guild	Animal Parasite-Dung Saprotroph-Undefined Saprotroph	30	3160	0.024	72
 FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	7	3064	0.024	48
-FUNGuild	guild	Animal Pathogen-Endophyte-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	13	2975	0.023	100
+FUNGuild	guild	Animal Pathogen-Endophyte-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	13	3002	0.023	104
 FUNGuild	guild	Endophyte-Epiphyte-Undefined Saprotroph	11	2854	0.022	33
-FUNGuild	guild	Animal Parasite-Endophyte-Undefined Saprotroph-Wood Saprotroph	22	2721	0.021	167
+FUNGuild	guild	Animal Parasite-Endophyte-Undefined Saprotroph-Wood Saprotroph	22	2735	0.021	170
 FUNGuild	guild	Endophyte-Plant Saprotroph-Wood Saprotroph	10	2606	0.02	47
-FUNGuild	guild	Fungal Parasite-Wood Saprotroph	23	2506	0.019	138
+FUNGuild	guild	Fungal Parasite-Wood Saprotroph	23	2558	0.02	144
 FUNGuild	guild	Pollen Saprotroph	13	2366	0.018	49
-FUNGuild	guild	Endophyte-Fungal Parasite-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	11	2138	0.017	75
+FUNGuild	guild	Endophyte-Fungal Parasite-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	11	2147	0.017	78
 FUNGuild	guild	Lichen Parasite-Lichenized	8	2134	0.016	24
 FUNGuild	guild	Ectomycorrhizal-Endophyte-Ericoid Mycorrhizal-Orchid Mycorrhizal-Plant Saprotroph-Undefined Saprotroph	24	2099	0.016	45
-FUNGuild	guild	Plant Pathogen-Undefined Saprotroph	27	2074	0.016	82
+FUNGuild	guild	Plant Pathogen-Undefined Saprotroph	27	2079	0.016	83
+FUNGuild	guild	Bryophyte Parasite-Lichen Parasite-Wood Saprotroph	6	1918	0.015	134
 FUNGuild	guild	Animal Pathogen-Endophyte-Plant Pathogen-Wood Saprotroph	2	1897	0.015	10
-FUNGuild	guild	Bryophyte Parasite-Lichen Parasite-Wood Saprotroph	6	1895	0.015	131
 FUNGuild	guild	Endophyte-Undefined Saprotroph-Wood Saprotroph	12	1870	0.014	42
-FUNGuild	guild	Animal Parasite-Fungal Parasite	14	1816	0.014	78
-FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	4	1706	0.013	72
+FUNGuild	guild	Animal Parasite-Fungal Parasite	14	1819	0.014	80
+FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph	4	1708	0.013	73
 FUNGuild	guild	Dung Saprotroph-Soil Saprotroph	11	1691	0.013	46
-FUNGuild	guild	Pollen Saprotroph-Wood Saprotroph	19	1616	0.012	71
-FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Epiphyte-Plant Saprotroph-Wood Saprotroph	16	1552	0.012	52
+FUNGuild	guild	Pollen Saprotroph-Wood Saprotroph	19	1622	0.012	72
+FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Epiphyte-Plant Saprotroph-Wood Saprotroph	16	1553	0.012	53
 FUNGuild	guild	Clavicipitaceous Endophyte-Fungal Parasite-Insect Pathogen	2	1541	0.012	28
-FUNGuild	guild	Lichen Parasite-Wood Saprotroph	17	1389	0.011	128
-FUNGuild	guild	Ectomycorrhizal-Fungal Pathogen-Undefined Saprotroph	4	1361	0.011	9
-FUNGuild	guild	Dung Saprotroph-Plant Pathogen-Plant Saprotroph	19	1330	0.01	68
-FUNGuild	guild	Endophyte-Insect Pathogen-Undefined Saprotroph	6	1270	0.01	102
-FUNGuild	guild	Fungal Parasite-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	8	1269	0.01	82
-FUNGuild	guild	Ectomycorrhizal-Orchid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	22	1207	0.009	70
+FUNGuild	guild	Lichen Parasite-Wood Saprotroph	17	1412	0.011	134
+FUNGuild	guild	Ectomycorrhizal-Fungal Pathogen-Undefined Saprotroph	4	1361	0.01	9
+FUNGuild	guild	Dung Saprotroph-Plant Pathogen-Plant Saprotroph	19	1347	0.01	70
+FUNGuild	guild	Endophyte-Insect Pathogen-Undefined Saprotroph	6	1280	0.01	105
+FUNGuild	guild	Fungal Parasite-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	8	1271	0.01	83
+FUNGuild	guild	Ectomycorrhizal-Orchid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	22	1210	0.009	71
 FUNGuild	guild	Endophyte-Plant Saprotroph	28	984	0.008	78
-FUNGuild	guild	Dung Saprotroph-Plant Parasite-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	4	912	0.007	21
+FUNGuild	guild	Dung Saprotroph-Plant Parasite-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	4	914	0.007	22
 FUNGuild	guild	Endophyte-Wood Saprotroph	4	899	0.007	44
 FUNGuild	guild	Animal Parasite-Wood Saprotroph	35	857	0.007	86
-FUNGuild	guild	Lichen Parasite-Plant Pathogen	4	846	0.007	51
-FUNGuild	guild	Fungal Parasite-Plant Pathogen	10	687	0.005	87
+FUNGuild	guild	Lichen Parasite-Plant Pathogen	4	847	0.007	52
+FUNGuild	guild	Fungal Parasite-Plant Pathogen	10	689	0.005	88
 FUNGuild	guild	Dung Saprotroph-Endophyte-Ericoid Mycorrhizal-Lichenized-Undefined Saprotroph	4	671	0.005	37
 FUNGuild	guild	Animal Pathogen-Endophyte-Fungal Parasite-Plant Pathogen-Undefined Saprotroph-Wood Saprotroph	5	621	0.005	36
 FUNGuild	guild	Ectomycorrhizal-Lichenized-Wood Saprotroph	4	620	0.005	23
+FUNGuild	guild	Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	2	603	0.005	33
 FUNGuild	guild	Dung Saprotroph-Endophyte	5	600	0.005	53
-FUNGuild	guild	Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	2	600	0.005	32
 FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Lichen Parasite-Plant Pathogen-Undefined Pathogen-Undefined Saprotroph	6	586	0.005	25
 FUNGuild	guild	Algal Parasite-Plant Saprotroph-Undefined Saprotroph	4	581	0.004	24
 FUNGuild	guild	Bryophyte Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	15	572	0.004	31
-FUNGuild	guild	Animal Parasite-Endophyte-Plant Pathogen-Undefined Saprotroph	7	524	0.004	55
+FUNGuild	guild	Animal Parasite-Endophyte-Plant Pathogen-Undefined Saprotroph	7	529	0.004	56
 FUNGuild	guild	Animal Pathogen-Endophyte-Endosymbiont-Epiphyte-Undefined Saprotroph	8	499	0.004	13
 FUNGuild	guild	Bryophyte Parasite-Endophyte-Plant Saprotroph-Undefined Saprotroph	2	425	0.003	20
 FUNGuild	guild	Dung Saprotroph-Soil Saprotroph-Wood Saprotroph	3	402	0.003	13
-FUNGuild	guild	Endophyte-Plant Pathogen-Wood Saprotroph	8	398	0.003	27
+FUNGuild	guild	Endophyte-Plant Pathogen-Wood Saprotroph	8	399	0.003	28
+FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Plant Pathogen	4	397	0.003	27
 FUNGuild	guild	Ectomycorrhizal-Fungal Parasite-Soil Saprotroph-Undefined Saprotroph	10	390	0.003	13
-FUNGuild	guild	Animal Pathogen-Endophyte-Epiphyte-Plant Pathogen	4	362	0.003	25
 FUNGuild	guild	Plant Pathogen-Plant Saprotroph-Wood Saprotroph	8	355	0.003	27
-FUNGuild	guild	Animal Pathogen-Endophyte-Ericoid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	3	295	0.002	30
+FUNGuild	guild	Animal Pathogen-Endophyte-Ericoid Mycorrhizal-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	3	296	0.002	31
 FUNGuild	guild	Dung Saprotroph-Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	1	228	0.002	4
 FUNGuild	guild	Nematophagous-Undefined Saprotroph-Wood Saprotroph	9	216	0.002	7
 FUNGuild	guild	Algal Parasite	6	214	0.002	52
 FUNGuild	guild	Dung Saprotroph-Ectomycorrhizal-Litter Saprotroph-Undefined Saprotroph	10	206	0.002	21
 FUNGuild	guild	Epiphyte-Plant Saprotroph	7	198	0.002	29
 FUNGuild	guild	Litter Saprotroph-Wood Saprotroph	1	185	0.001	5
+FUNGuild	guild	Litter Saprotroph-Plant Pathogen	5	184	0.001	19
 FUNGuild	guild	Fungal Parasite-Undefined Saprotroph-Wood Saprotroph	2	179	0.001	9
 FUNGuild	guild	Animal Pathogen-Animal Symbiotroph-Undefined Saprotroph	6	173	0.001	10
 FUNGuild	guild	Animal Parasite-Animal Pathogen-Fungal Parasite-Undefined Saprotroph	2	172	0.001	14
-FUNGuild	guild	Litter Saprotroph-Plant Pathogen	5	170	0.001	18
 FUNGuild	guild	Soil Saprotroph-Undefined Saprotroph	1	170	0.001	8
 FUNGuild	guild	Epiphyte-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	4	158	0.001	41
 FUNGuild	guild	Plant Parasite-Wood Saprotroph	3	156	0.001	3
 FUNGuild	guild	Plant Pathogen-Pollen Saprotroph-Undefined Parasite-Undefined Saprotroph	5	155	0.001	10
 FUNGuild	guild	Insect Pathogen-Undefined Saprotroph	4	154	0.001	31
 FUNGuild	guild	Animal Pathogen-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	1	116	0.001	1
-FUNGuild	guild	Algal Parasite-Epiphyte-Lichen Parasite-Lichenized-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	4	92	0.001	5
+FUNGuild	guild	Algal Parasite-Epiphyte-Lichen Parasite-Lichenized-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	4	95	0.001	6
 FUNGuild	guild	Endophyte-Foliar Endophyte-Plant Saprotroph	1	92	0.001	2
 FUNGuild	guild	Epiphyte-Leaf Saprotroph-Lichen Parasite-Plant Pathogen-Wood Saprotroph	5	91	0.001	9
-FUNGuild	guild	Fish Parasite-Undefined Saprotroph	5	81	0.001	3
+FUNGuild	guild	Fish Parasite-Undefined Saprotroph	5	88	0.001	4
 FUNGuild	guild	Pollen Saprotroph-Undefined Saprotroph	5	77	0.001	7
 FUNGuild	guild	Animal Pathogen-Dung Saprotroph-Endophyte-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	6	74	0.001	9
 FUNGuild	guild	Leaf Saprotroph	3	69	0.001	8
-FUNGuild	guild	Animal Endosymbiont-Animal Pathogen-Undefined Saprotroph	2	65	0.001	6
+FUNGuild	guild	Animal Endosymbiont-Animal Pathogen-Undefined Saprotroph	2	65	0	6
 FUNGuild	guild	Lichenized-Wood Saprotroph	2	64	0	2
 FUNGuild	guild	Algal Parasite-Plant Pathogen-Pollen Saprotroph	6	62	0	15
 FUNGuild	guild	Lichen Parasite-Plant Saprotroph	1	62	0	3
 FUNGuild	guild	Animal Parasite-Endophyte-Undefined Saprotroph	4	58	0	6
+FUNGuild	guild	Dung Saprotroph-Wood Saprotroph	3	55	0	6
 FUNGuild	guild	Endophyte-Lichen Parasite-Plant Pathogen-Undefined Saprotroph	2	54	0	5
 FUNGuild	guild	Ectomycorrhizal-Endophyte-Undefined Saprotroph	4	47	0	10
 FUNGuild	guild	Bryophyte Parasite-Plant Saprotroph-Wood Saprotroph	7	46	0	12
-FUNGuild	guild	Dung Saprotroph-Wood Saprotroph	3	46	0	5
+FUNGuild	guild	Animal Parasite-Animal Pathogen-Plant Pathogen-Undefined Saprotroph	3	42	0	4
 FUNGuild	guild	Fungal Parasite-Plant Saprotroph-Soil Saprotroph	8	41	0	8
 FUNGuild	guild	Lichen Parasite-Undefined Saprotroph-Wood Saprotroph	4	39	0	8
-FUNGuild	guild	Animal Parasite-Animal Pathogen-Plant Pathogen-Undefined Saprotroph	3	37	0	3
 FUNGuild	guild	Plant Pathogen-Undefined Parasite-Undefined Saprotroph	7	37	0	8
 FUNGuild	guild	Dung Saprotroph-Endophyte-Undefined Saprotroph	3	33	0	4
 FUNGuild	guild	Animal Parasite-Fungal Parasite-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	3	32	0	8
@@ -347,4 +347,4 @@ FUNGuild	guild	Fungal Parasite-Plant Pathogen-Undefined Saprotroph	1	3	0	1
 FUNGuild	guild	Animal Pathogen-Endophyte-Fungal Parasite-Lichen Parasite-Plant Pathogen-Plant Saprotroph-Wood Saprotroph	1	2	0	1
 FUNGuild	guild	Dung Saprotroph-Fungal Parasite-Undefined Saprotroph	1	2	0	1
 FUNGuild	guild	Ectomycorrhizal-Fungal Parasite-Plant Saprotroph-Wood Saprotroph	1	2	0	1
-FUNGuild	guild	Fungal Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	1	0	0	0
+FUNGuild	guild	Fungal Parasite-Plant Pathogen-Plant Saprotroph-Undefined Saprotroph-Wood Saprotroph	1	2	0	1
