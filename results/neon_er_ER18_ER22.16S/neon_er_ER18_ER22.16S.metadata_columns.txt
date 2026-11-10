@@ -1,0 +1,94 @@
+column	source	action
+sample	NEON_ER_amplicon_metadata_soil.tsv	metadata
+SampleSiteCode	NEON_ER_amplicon_metadata_soil.tsv	metadata
+SamplingCode	NEON_ER_amplicon_metadata_soil.tsv	metadata
+year	NEON_ER_amplicon_metadata_soil.tsv	metadata
+replicate	NEON_ER_amplicon_metadata_soil.tsv	metadata
+run_16S	NEON_ER_amplicon_metadata_soil.tsv	metadata
+run_ITS	NEON_ER_amplicon_metadata_soil.tsv	metadata
+IGSN	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Sampling Area	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Site Name	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Latitude	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Longitude	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Bulk Density	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Volumetric Water Content	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Microbial Biomass C	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Microbial Biomass N	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Microbial Biomass C:N	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil DNA Yield	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Total Extractable Organic C	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Total Extractable N	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Extractable Nitrate	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Extractable Ammonium	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Dissolved Inorganic N	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil Dissolved Organic N	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil pH	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil TOC400	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil ROC	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil TIC	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil TOC	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil TC	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil N	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Soil OM loss on ignition	NEON_ER_amplicon_metadata_soil.tsv	metadata
+Sampling Area	NEON_LeafTraits_master_11.28.2023.csv	same values as Sampling Area; filled 0 empty
+Site_Name	NEON_LeafTraits_master_11.28.2023.csv	added; same values as Site Name
+Collection.Date	NEON_LeafTraits_master_11.28.2023.csv	added
+Vegetation.Type	NEON_LeafTraits_master_11.28.2023.csv	added
+Latitude	NEON_LeafTraits_master_11.28.2023.csv	same values as Latitude; filled 0 empty
+Longitude	NEON_LeafTraits_master_11.28.2023.csv	same values as Longitude; filled 0 empty
+Elevation	NEON_LeafTraits_master_11.28.2023.csv	added
+Easting	NEON_LeafTraits_master_11.28.2023.csv	added
+Northing	NEON_LeafTraits_master_11.28.2023.csv	added
+d15N	NEON_LeafTraits_master_11.28.2023.csv	added
+d13C	NEON_LeafTraits_master_11.28.2023.csv	added
+Leaf_N_weight_percent	NEON_LeafTraits_master_11.28.2023.csv	added
+Leaf_C_weight_percent	NEON_LeafTraits_master_11.28.2023.csv	added
+CN	NEON_LeafTraits_master_11.28.2023.csv	added
+Bare	NEON_LeafTraits_master_11.28.2023.csv	added
+NPV	NEON_LeafTraits_master_11.28.2023.csv	added
+PV	NEON_LeafTraits_master_11.28.2023.csv	added
+Leaf_LMA_gm2	NEON_LeafTraits_master_11.28.2023.csv	added
+Leaf_LWC_per	NEON_LeafTraits_master_11.28.2023.csv	added
+PlantCode	NEON_LeafTraits_master_11.28.2023.csv	added
+FractionalCover	NEON_LeafTraits_master_11.28.2023.csv	added
+Family	NEON_LeafTraits_master_11.28.2023.csv	added
+Genus	NEON_LeafTraits_master_11.28.2023.csv	added
+Species	NEON_LeafTraits_master_11.28.2023.csv	added
+PlantGenusSpecies	NEON_LeafTraits_master_11.28.2023.csv	added
+Sampling Area	NEON_RS_master_updated_11.28.2023.csv	same values as Sampling Area; filled 0 empty
+Site_Name	NEON_RS_master_updated_11.28.2023.csv	same values as Site_Name; filled 0 empty
+Collection.Date	NEON_RS_master_updated_11.28.2023.csv	same values as Collection.Date; filled 0 empty
+Vegetation.Type	NEON_RS_master_updated_11.28.2023.csv	same values as Vegetation.Type; filled 0 empty
+Latitude	NEON_RS_master_updated_11.28.2023.csv	same values as Latitude; filled 0 empty
+Longitude	NEON_RS_master_updated_11.28.2023.csv	same values as Longitude; filled 0 empty
+Elevation	NEON_RS_master_updated_11.28.2023.csv	same values as Elevation; filled 0 empty
+Easting	NEON_RS_master_updated_11.28.2023.csv	same values as Easting; filled 0 empty
+Northing	NEON_RS_master_updated_11.28.2023.csv	same values as Northing; filled 0 empty
+Lidar_Aspect_x5	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_Aspect_x9	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_Curv_x5	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_Curv_x9	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_Elevation	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_FlowAcc_x5	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_FlowAcc_x9	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_SlopeDeg_x5	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_SlopeDeg_x9	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_Srad	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_TPI_x5	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_TPI_x9	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_TWI_x5	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_TWI_x9	NEON_RS_master_updated_11.28.2023.csv	added
+Lidar_UPslope_x5	NEON_RS_master_updated_11.28.2023.csv	added; same values as Lidar_FlowAcc_x5
+Lidar_UPslope_x9	NEON_RS_master_updated_11.28.2023.csv	added; same values as Lidar_FlowAcc_x9
+Lidar_chm_mosaic	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_C	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_CN	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_LC_map	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_LMA	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_LWC	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_NDNI	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_NDVI	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_NDWI	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_N_leaf	NEON_RS_master_updated_11.28.2023.csv	added
+Spectr_RENDVI	NEON_RS_master_updated_11.28.2023.csv	added

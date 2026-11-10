@@ -6,15 +6,24 @@
   "key": "neon_er_ER18_ER22.16S",
   "profile": "nersc",
   "paths": {
-    "metadata": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_amplicon_metadata_soil.tsv",
+    "metadata": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/config/neon_er_ER18_ER22/metadata/NEON_ER_amplicon_metadata_soil.tsv",
+    "site_tables": [
+      "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/config/neon_er_ER18_ER22/metadata/NEON_LeafTraits_master_11.28.2023.csv",
+      "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/config/neon_er_ER18_ER22/metadata/NEON_RS_master_updated_11.28.2023.csv"
+    ],
     "work": "/pscratch/sd/u/ukaraoz/neon_itag/16S/work/ER18_ER22",
     "results": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.16S",
     "analysis": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/results/neon_er_ER18_ER22.16S/analysis"
   },
   "samples": {
     "id_column": "sample",
-    "manifest": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/data/neon_itag/NEON_ER_16S_manifest.tsv",
+    "manifest": "/global/cfs/cdirs/m3523/ertraits/ersynthesis/amplicon-seq-workflow/config/neon_er_ER18_ER22/metadata/NEON_ER_16S_manifest.tsv",
     "run_column": "run_folder",
+    "site_key": {
+      "metadata": "SamplingCode",
+      "tables": "SampleSiteCode",
+      "pattern": "^([0-9]{3})"
+    },
     "label_strip": null
   },
   "params": {
