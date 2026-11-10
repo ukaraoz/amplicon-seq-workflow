@@ -13,6 +13,7 @@ YAML config per project/run, locally or as SLURM jobs (NERSC Perlmutter).
 | `tree` | `scripts/align-asv-v4.sh` | 16S: mothur alignment to the SILVA V4 reference (MiSeq SOP), screen/filter, FastTree GTR |
 | `phyloseq` | `scripts/dada2-asv.R --resume=outputs` | rebuild the phyloseq objects with the tree |
 | `guilds` | `scripts/fungal-guilds.R` | ITS: FungalTraits lifestyles and traits (genus) and FUNGuild guilds (most specific rank, with confidence) per ASV; summaries over the filtered fungal reads; per-sample guild abundances; skipped without `guilds` in the config |
+| `figures` | `scripts/plot-readtracking.R` | read tracking per sample by sequencing run (one panel per `readtracking.txt` metric, processing parameters from the config in the subtitle) → `figures/<key>.readtracking_by_run.png` / `.pdf` |
 | `analyze` | `scripts/analyze-phyloseq.R` | taxa bar plots, alpha diversity, Venn, NMDS + PERMANOVA (UniFrac or Bray-Curtis/Jaccard), pairwise PERMANOVA, source sharing, distances to a reference treatment, betapart turnover/nestedness |
 
 Main outputs (in `paths.results`, by default `results/<key>/` in this repository, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,

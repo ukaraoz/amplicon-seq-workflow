@@ -11,6 +11,7 @@ locus settings) into <results>/<key>.config.json, which the R and shell steps re
   tree       16S: align-asv-v4.sh (mothur V4 alignment + FastTree); skipped when tree.method is none
   phyloseq   dada2-asv.R --resume=outputs: rebuild the phyloseq objects with the tree
   guilds     ITS: fungal-guilds.R: FungalTraits lifestyles and FUNGuild guilds per ASV; skipped without `guilds`
+  figures    plot-readtracking.R: read tracking per sample by run -> <results>/figures/
   analyze    analyze-phyloseq.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, distances, betapart
 
 \b
@@ -34,7 +35,7 @@ import click
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.join(HERE, "scripts")
-STEPS = ["reference", "dada2", "tree", "phyloseq", "guilds", "analyze"]
+STEPS = ["reference", "dada2", "tree", "phyloseq", "guilds", "figures", "analyze"]
 PLACEHOLDER = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 
@@ -259,6 +260,8 @@ def commands(res, conf_json, steps, args):
         elif step == "guilds":
             if prm.get("guilds"):
                 cmds.append((step, rscript + [os.path.join(SCRIPTS, "fungal-guilds.R"), "--config=" + conf_json], {}))
+        elif step == "figures":
+            cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-readtracking.R"), "--config=" + conf_json], {}))
         elif step == "analyze":
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "analyze-phyloseq.R"), "--config=" + conf_json]
                          + (["--pdf"] if args.pdf else []), {}))
@@ -388,7 +391,7 @@ def run_cmd(config, locus, profile, merge, steps, threads, nsamples, pdf, slurm,
 # (see .gitignore), and checkpoints (*.RData), the full alignment and earlier-run subfolders stay on the remote.
 PULL_INCLUDE = ["{key}.phyloseq.rds", "{key}.phyloseq.filtered.rds", "{key}.ASVtable.txt", "{key}.ASV.fa",
                 "{key}.taxonomy.txt", "{key}.guilds.txt", "{key}.guild_abundance.txt",
-                "{key}.phyloseq.filtered.guilds.rds", "*.pdf", "v4align/", "v4align/*.ASV.tree", "analysis/", "analysis/**"]
+                "{key}.phyloseq.filtered.guilds.rds", "*.pdf", "v4align/", "v4align/*.ASV.tree", "figures/", "figures/**", "analysis/", "analysis/**"]
 
 
 def ssh_out(host, command):
