@@ -74,7 +74,8 @@ samples:
 # ---- DADA2 (dada2-asv.R); per-locus settings override `dada2` ----
 dada2:
   mincount: 1000      # samples with fewer filtered reads are dropped before denoising
-  minfinal: 5000      # samples with fewer reads in the final table are reported as failed
+  minfinal: 5000      # samples with fewer reads after the taxa filter (keep_taxa / remove_taxa / require_ranks) fail
+  min_taxa_kept_fraction: 0   # samples keeping a smaller fraction of their reads after that filter fail (0 = no check)
   minLen: 50
   minOverlap: 12
   threads: 8          # dada2-asv.R threads (also the tree step's); --threads overrides; null: SLURM CPUs, else 4
@@ -140,8 +141,9 @@ locus_settings:
     # plants, animals, other protists and kingdom-unassigned ASVs, ~5.9% of reads in total. The full set stays in
     # phyloseq.rds / ASVtable / taxonomy; what was removed is listed in <key>.taxa_filter.txt
     keep_taxa: {Kingdom: [Fungi]}
-    # failed samples (removed from phyloseq.filtered.rds, listed in failed_samples.txt): fewer than 1,000 Fungi reads,
-    # or less than 50% of the sample's reads Fungi (ITS only; 16S keeps the dada2-section minfinal of 5,000)
+    # failed samples (removed from phyloseq.filtered.rds, listed in failed_samples.txt): fewer than 1,000 Fungi reads
+    # (minfinal counts the reads after keep_taxa), or less than 50% of the sample's reads Fungi (ITS only; 16S keeps
+    # the dada2-section minfinal 5,000 and min_taxa_kept_fraction 0)
     minfinal: 1000
     min_taxa_kept_fraction: 0.5
     # guilds step: FungalTraits 1.2 (genus lifestyles and traits) and FUNGuild (guilds with confidence), matched to
