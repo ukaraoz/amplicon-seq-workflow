@@ -13,7 +13,7 @@ locus settings) into <results>/<key>.config.json, which the R and shell steps re
   guilds     ITS: fungal-guilds.R: FungalTraits lifestyles and FUNGuild guilds per ASV; skipped without `guilds`
   figures    plot-readtracking.R, plot-taxonomy.R: read tracking per sample by run, taxonomic composition per
              sample for each rank -> <results>/<key>.readtracking_*.png, <key>.taxonomy_<Rank>.png (--pdf: also PDF)
-  analyze    analyze-phyloseq.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, distances, betapart
+  analyze    analyze-phyloseq-biochar.R: barplots, alpha diversity, Venn, NMDS/PERMANOVA, source sharing, distances, betapart
 
 \b
 usage:
@@ -268,7 +268,7 @@ def commands(res, conf_json, steps, args):
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-readtracking.R"), "--config=" + conf_json] + pdf, {}))
             cmds.append((step, rscript + [os.path.join(SCRIPTS, "plot-taxonomy.R"), "--config=" + conf_json] + pdf, {}))
         elif step == "analyze":
-            cmds.append((step, rscript + [os.path.join(SCRIPTS, "analyze-phyloseq.R"), "--config=" + conf_json]
+            cmds.append((step, rscript + [os.path.join(SCRIPTS, "analyze-phyloseq-biochar.R"), "--config=" + conf_json]
                          + (["--pdf"] if args.pdf else []), {}))
     return cmds
 

@@ -2,7 +2,7 @@
 #
 # version 2.0
 #
-# usage: Rscript analyze-phyloseq.R --config=<key>.config.json [--pdf]
+# usage: Rscript analyze-phyloseq-biochar.R --config=<key>.config.json [--pdf]
 #   normally run by workflow.py (analyze step), which writes the resolved config
 #   --pdf  also write PDFs of the figures (default: PNG only)
 # input : paths.results/<key>.phyloseq.filtered.rds (remove_taxa / require_ranks ASVs and failed samples removed;
@@ -35,7 +35,7 @@ pdf(NULL)   # null graphics device: functions that open one (vegan::ordiellipse)
 allargs = commandArgs(trailingOnly = TRUE)
 write_pdf = "--pdf" %in% allargs
 config_file = sub("^--config=", "", allargs[grepl("^--config=", allargs)])
-if(length(config_file) != 1) stop("usage: Rscript analyze-phyloseq.R --config=<key>.config.json [--pdf] (see workflow.py)")
+if(length(config_file) != 1) stop("usage: Rscript analyze-phyloseq-biochar.R --config=<key>.config.json [--pdf] (see workflow.py)")
 cfg = jsonlite::read_json(config_file, simplifyVector = TRUE)
 acfg = cfg$analysis
 locus = cfg$locus

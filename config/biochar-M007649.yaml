@@ -36,7 +36,7 @@ paths:
   raw: "{base}/{locus}/raw/{run}"         # demultiplexed fastq.gz
   work: "{base}/{locus}/work/{run}"       # cutadapt + filtered reads
   results: "{results}"                    # DADA2 outputs (tables, fasta, phyloseq)
-  analysis: "{results}/analysis"          # analyze-phyloseq.R outputs
+  analysis: "{results}/analysis"          # analyze-phyloseq-biochar.R outputs
 
 # ---- samples ----
 samples:
@@ -100,7 +100,7 @@ locus_settings:
     require_ranks: []
     tree: {method: none}
 
-# ---- community analysis (analyze-phyloseq.R) ----
+# ---- community analysis (analyze-phyloseq-biochar.R) ----
 analysis:
   # metadata columns, mapped to the names used in the analysis and its tables
   columns: {habitat: habitat, treatment: treatment, replicate: pot, baseline: is_T0, source: is_pellet}
