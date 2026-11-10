@@ -103,9 +103,18 @@
   },
   "analysis": {
     "script": "analyze-phyloseq.R",
-    "groups": "year",
+    "sample_order": {
+      "by": [
+        "Site Name",
+        "SamplingCode",
+        "year",
+        "replicate"
+      ]
+    },
+    "groups": "Site Name",
     "taxonomic_composition": {
-      "ntop": 15
+      "ntop": 15,
+      "band": "year"
     }
   }
 }
