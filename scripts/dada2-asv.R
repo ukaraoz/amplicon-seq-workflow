@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.14
+# version 2.15
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]] [--pdf]
@@ -12,7 +12,7 @@
 #   --resume           load the seqtab checkpoint (<key>.dada2.seqtab.RData) and run only taxonomy + outputs
 #   --resume=outputs   load the final <key>.dada2.RData (with taxonomy) and only rewrite the outputs
 #                      (tables, fasta, phyloseq, failed samples), e.g. after building the tree
-#   --pdf              also write the raw read quality profiles as PDF (default: PNG only)
+#   --pdf              also write the raw read quality profiles and error-model plots as PDF (default: PNG only)
 #   R1 only or merged pairs: config params.merge (workflow.py --merge / --no-merge); R1-only keys end in ".R1"
 #
 # failed samples (<key>.failed_samples.txt, with the reason): < mincount reads after quality filtering (dropped
@@ -65,7 +65,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.14"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.15"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -420,9 +420,13 @@ if(resume) {
   errR = if(params$merge) setNames(lapply(keepruns, function(r) errs[[paste(r, "R2", sep = "\t")]]), keepruns) else NULL
   for(r in keepruns) {
     tag = if(length(runnames) > 1) paste0(".", r) else ""
-    ggsave(file.path(outdir, paste0(key, tag, ".errors.R1.pdf")), plotErrors(errF[[r]], nominalQ = TRUE), width = 10, height = 8)
-    if(params$merge) ggsave(file.path(outdir, paste0(key, tag, ".errors.R2.pdf")), plotErrors(errR[[r]], nominalQ = TRUE),
-                            width = 10, height = 8)
+    # PNG (300 dpi); PDF too with --pdf
+    for(rd in if(params$merge) c("R1", "R2") else "R1") {
+      ep = plotErrors(if(rd == "R1") errF[[r]] else errR[[r]], nominalQ = TRUE)
+      f = file.path(outdir, paste0(key, tag, ".errors.", rd))
+      ggsave(paste0(f, ".png"), ep, width = 10, height = 8, dpi = 300)
+      if(write_pdf) ggsave(paste0(f, ".pdf"), ep, width = 10, height = 8)
+    }
   }
   save(out, keep, sampleruns, errF, errR, params, file = file.path(outdir, paste0(key, ".dada2.errors.RData")))
 
