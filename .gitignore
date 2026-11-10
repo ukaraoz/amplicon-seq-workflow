@@ -13,3 +13,5 @@ Rplots.pdf
 # local symlinks to resource files outside the repository (see config/<dataset>/metadata/README.md)
 config/neon_er_ER18_ER22/metadata/NEON_LeafTraits_master_11.28.2023.csv
 config/neon_er_ER18_ER22/metadata/NEON_RS_master_updated_11.28.2023.csv
+# FungalTraits guild outputs are not tracked
+results/**/*FungalTraits*

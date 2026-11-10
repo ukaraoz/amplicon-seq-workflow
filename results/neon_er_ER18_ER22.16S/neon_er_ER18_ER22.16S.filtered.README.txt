@@ -1,0 +1,24 @@
+neon_er_ER18_ER22.16S.filtered: the filtered phyloseq object as text files
+written 2026-11-10 10:56 PST by dada2-asv.R 2.16 (amplicon-seq-workflow)
+
+Content of neon_er_ER18_ER22.16S.phyloseq.filtered.rds: 488 samples, 33555 ASVs, 18,033,254 reads, with a tree
+Taxa filter: remove_taxa Order Chloroplast; Family Mitochondria; require_ranks Phylum (neon_er_ER18_ER22.16S.taxa_filter.txt)
+Failed samples removed: fewer than 5000 reads after the taxa filter (neon_er_ER18_ER22.16S.failed_samples.txt; 2 samples)
+Taxonomy: silva_nr99_v144_toGenus_trainset.fa.gz
+
+Files
+  neon_er_ER18_ER22.16S.filtered.otu_table.txt     read counts: one row per ASV (asv_id), one column per sample
+  neon_er_ER18_ER22.16S.filtered.tax_table.txt     taxonomy: asv_id, Domain, Kingdom, Phylum, Class, Order, Family, Genus, Species, asv_seq (the ASV sequence)
+  neon_er_ER18_ER22.16S.filtered.sample_data.txt   one row per sample: sample metadata (88 columns; reads_* = read tracking)
+  neon_er_ER18_ER22.16S.filtered.refseq.fa         ASV sequences, named by asv_id
+  neon_er_ER18_ER22.16S.filtered.tree              phylogenetic tree (Newick), tips named by asv_id
+  provenance: 
+    neon_er_ER18_ER22.16S.metadata_columns.txt
+    neon_er_ER18_ER22.16S.taxa_filter.txt
+    neon_er_ER18_ER22.16S.failed_samples.txt
+
+IDs: asv_id (ASV1, ASV2, ...) are the taxa names of the phyloseq object, numbered by decreasing total abundance
+before filtering; asv_seq in the tax table maps them to the sequences used as IDs in the unfiltered ASVtable.txt,
+taxonomy.txt and ASV.fa. Missing values are empty cells.
+
+In R:  library(phyloseq); ps = readRDS("<key>.phyloseq.filtered.rds")   (the same data)

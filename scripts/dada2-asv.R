@@ -1,6 +1,6 @@
 # DADA2 workflow: paired-end amplicon reads -> ASV table + taxonomy
 #
-# version 2.16
+# version 2.17
 #
 # usage: Rscript dada2-asv.R --config=<key>.config.json [--threads=N] [--nsamples=N] [--no-taxonomy]
 #                            [--resume[=outputs]] [--pdf]
@@ -24,7 +24,8 @@
 # inputs  : paths.metadata (tab-separated; samples.id_column = sample id); fastq from samples.manifest (R1, R2
 #           columns) or paths.raw/<samples.r1|r2>
 # outputs : paths.results (QC plots, read tracking, ASV table/fasta, taxonomy, RData, phyloseq rds; the filtered phyloseq
-#           also as text files per slot, <key>.filtered.*, and as <key>.filtered.tar.gz with a README)
+#           also as text files per slot, <key>.filtered.*, with <key>.filtered.README.txt; the package step bundles them
+#           into <key>.filtered.tar.gz)
 #           paths.work    (cutadapt + filtered reads)
 
 packages = c("dada2", "ShortRead", "Biostrings", "ggplot2", "parallel", "phyloseq")
@@ -66,7 +67,7 @@ mcrun = function(X, FUN) {
   if(any(failed)) stop("parallel job failed for: ", paste(names(X)[failed], collapse = ", "), "\n", res[failed][[1]])
   res
 }
-script_version = "2.16"   # bump on every modification (2.0, 2.1, ...)
+script_version = "2.17"   # bump on every modification (2.0, 2.1, ...)
 cat("dada2-asv.R version", script_version, "\n")
 
 # ---- locus settings (config params) ----
@@ -639,11 +640,12 @@ psf = with_metadata_names(prune_samples(pass, psf))
 saveRDS(psf, file.path(outdir, paste0(key, ".phyloseq.filtered.rds")))
 print(psf)
 
-# ---- text exports of the filtered phyloseq object, and a tarball with a README ----
+# ---- text exports of the filtered phyloseq object, and the README of their tarball ----
 # <key>.filtered.otu_table.txt (ASVs x samples, asv_id = the object's taxa names), .tax_table.txt (asv_id, ranks,
 # asv_seq), .sample_data.txt (one row per sample, original column names), .refseq.fa (names = asv_id), .tree (when the
-# object has one); <key>.filtered.tar.gz holds them in a folder <key>.filtered/ with README.txt,
-# <key>.metadata_columns.txt (source of each sample-data column), taxa_filter.txt and failed_samples.txt
+# object has one), and <key>.filtered.README.txt describing them. The package step (package-filtered.py) bundles
+# them with <key>.metadata_columns.txt, taxa_filter.txt, failed_samples.txt and, for ITS, the guild files into
+# <key>.filtered.tar.gz (README.txt = this README plus a guild section)
 ex = file.path(outdir, paste0(key, ".filtered"))
 otu_x = as(otu_table(psf), "matrix"); if(!taxa_are_rows(psf)) otu_x = t(otu_x)          # ASVs x samples
 write.table(data.frame(asv_id = rownames(otu_x), otu_x, check.names = FALSE), paste0(ex, ".otu_table.txt"),
@@ -688,11 +690,7 @@ readme = c(
   "taxonomy.txt and ASV.fa. Missing values are empty cells.",
   "",
   "In R:  library(phyloseq); ps = readRDS(\"<key>.phyloseq.filtered.rds\")   (the same data)")
-td = tempfile(); dir.create(file.path(td, basename(ex)), recursive = TRUE)
-writeLines(readme, file.path(td, basename(ex), "README.txt"))
-file.copy(file.path(outdir, c(exports, extra)), file.path(td, basename(ex)))
-tarfile = paste0(ex, ".tar.gz")
-old_wd = setwd(td); utils::tar(tarfile, files = basename(ex), compression = "gzip", tar = "internal"); setwd(old_wd)
-unlink(td, recursive = TRUE)
-cat("filtered exports:", paste(exports, collapse = ", "), "->", basename(tarfile), "(with README.txt)\n")
+writeLines(readme, paste0(ex, ".README.txt"))
+cat("filtered exports:", paste(c(exports, paste0(basename(ex), ".README.txt")), collapse = ", "),
+    "(bundled into", paste0(basename(ex), ".tar.gz"), "by the package step)\n")
 cat("done:", ncol(seqtab.nochim), "ASVs in", nrow(seqtab.nochim), "samples ->", outdir, "\n")

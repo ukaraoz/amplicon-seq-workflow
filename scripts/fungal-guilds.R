@@ -1,6 +1,6 @@
 # Fungal guilds / lifestyles for ITS ASVs from their UNITE taxonomy: FungalTraits and FUNGuild
 #
-# version 1.1
+# version 1.2
 #
 # usage: Rscript fungal-guilds.R --config=<key>.config.json     (workflow.py `guilds` step, after `phyloseq`)
 #   reads   <results>/<key>.phyloseq.rds (all ASVs) and <key>.phyloseq.filtered.rds
@@ -14,7 +14,7 @@
 #           <key>.guild_abundance_FungalTraits.txt   wide: one row per sample (filtered phyloseq), fungal_reads,
 #                                         then the relative abundance (share of the sample's fungal reads) of each
 #                                         FungalTraits primary lifestyle; columns sum to 1 per sample
-#           <key>.guild_abundance_FUNGuild.txt       wide: one row per sample, fungal_reads, then the relative
+#           <key>.guild_abundance.txt                FUNGuild, wide: one row per sample, fungal_reads, then the relative
 #                                         abundance of each FUNGuild trophic mode ("trophicMode: ...") and each guild
 #                                         ("guild: ..."); each of the two sets sums to 1 per sample
 #           ("unassigned": fungal reads without a match in that database)
@@ -35,7 +35,7 @@ if(length(cfgfile) != 1) stop("usage: Rscript fungal-guilds.R --config=<key>.con
 cfg = fromJSON(cfgfile, simplifyVector = TRUE)
 key = cfg$key; outdir = cfg$paths$results; g = cfg$params$guilds
 if(is.null(g$fungaltraits) || is.null(g$funguild)) stop("params.guilds needs fungaltraits and funguild (get-guild-dbs.py tables)")
-cat("fungal-guilds.R version 1.0 :", key, "\n")
+cat("fungal-guilds.R version 1.2 :", key, "\n")
 
 ps = readRDS(file.path(outdir, paste0(key, ".phyloseq.rds")))
 psf = readRDS(file.path(outdir, paste0(key, ".phyloseq.filtered.rds")))
@@ -122,15 +122,15 @@ wide = function(value, prefix = "") {
   colnames(m) = paste0(prefix, colnames(m))
   m
 }
-write_wide = function(m, db) {
+write_wide = function(m, db, suffix) {
   w = data.frame(sample = rownames(otu), fungal_reads = as.integer(rowSums(otu)), m, check.names = FALSE)
-  f = file.path(outdir, paste0(key, ".guild_abundance_", db, ".txt"))
+  f = file.path(outdir, paste0(key, ".guild_abundance", suffix, ".txt"))
   write.table(w, f, sep = "\t", quote = F, row.names = F)
   cat(sprintf("%s: %d samples x %d categories -> %s\n", db, nrow(w), ncol(m), basename(f)))
 }
-write_wide(wide(a$FT_primary_lifestyle), "FungalTraits")
-write_wide(cbind(wide(a$FG_trophicMode, "trophicMode: "), wide(a$FG_guild, "guild: ")), "FUNGuild")
-unlink(file.path(outdir, paste0(key, ".guild_abundance.txt")))   # long format of version 1.0
+write_wide(wide(a$FT_primary_lifestyle), "FungalTraits", "_FungalTraits")
+write_wide(cbind(wide(a$FG_trophicMode, "trophicMode: "), wide(a$FG_guild, "guild: ")), "FUNGuild", "")
+unlink(file.path(outdir, paste0(key, ".guild_abundance_FUNGuild.txt")))   # name in version 1.1
 
 # ---- filtered phyloseq with guild columns ----
 add = c("FT_match", "FT_primary_lifestyle", "FT_Secondary_lifestyle", "FT_Ectomycorrhiza_exploration_type",

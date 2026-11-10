@@ -37,7 +37,7 @@ import click
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.join(HERE, "scripts")
-STEPS = ["reference", "dada2", "tree", "phyloseq", "guilds", "figures", "analyze"]
+STEPS = ["reference", "dada2", "tree", "phyloseq", "guilds", "figures", "analyze", "package"]
 PLACEHOLDER = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 
@@ -273,6 +273,9 @@ def commands(res, conf_json, steps, args):
             script = (res.get("analysis") or {}).get("script") or f"analyze-phyloseq-{res['project']}_{res['run_id']}.R"
             cmds.append((step, rscript + [os.path.join(SCRIPTS, script), "--config=" + conf_json]
                          + (["--pdf"] if args.pdf else []), {}))
+        elif step == "package":
+            # <key>.filtered.tar.gz: filtered exports, README, provenance and (ITS) guild files; last, after analyze
+            cmds.append((step, [sys.executable, os.path.join(SCRIPTS, "package-filtered.py"), "--config=" + conf_json], {}))
     return cmds
 
 
@@ -398,7 +401,7 @@ def run_cmd(config, locus, profile, merge, steps, threads, nsamples, pdf, slurm,
 # text outputs (<key>.config.json, readtracking, failed_samples, run.log) are committed in the remote clone instead
 # (see .gitignore), and checkpoints (*.RData), the full alignment and earlier-run subfolders stay on the remote.
 PULL_INCLUDE = ["{key}.phyloseq.rds", "{key}.phyloseq.filtered.rds", "{key}.ASVtable.txt", "{key}.ASV.fa",
-                "{key}.taxonomy.txt", "{key}.guilds.txt", "{key}.guild_abundance_FungalTraits.txt", "{key}.guild_abundance_FUNGuild.txt",
+                "{key}.taxonomy.txt", "{key}.guilds.txt", "{key}.guild_abundance_FungalTraits.txt", "{key}.guild_abundance.txt",
                 "{key}.phyloseq.filtered.guilds.rds", "{key}.filtered.*", "*.pdf", "*.png", "v4align/", "v4align/*.ASV.tree", "analysis/", "analysis/**"]
 
 

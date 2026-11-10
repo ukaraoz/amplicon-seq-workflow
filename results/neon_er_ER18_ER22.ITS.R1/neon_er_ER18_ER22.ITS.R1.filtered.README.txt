@@ -1,0 +1,23 @@
+neon_er_ER18_ER22.ITS.R1.filtered: the filtered phyloseq object as text files
+written 2026-11-10 10:58 PST by dada2-asv.R 2.16 (amplicon-seq-workflow)
+
+Content of neon_er_ER18_ER22.ITS.R1.phyloseq.filtered.rds: 481 samples, 22616 ASVs, 13,011,583 reads
+Taxa filter: keep_taxa Kingdom Fungi (neon_er_ER18_ER22.ITS.R1.taxa_filter.txt)
+Failed samples removed: fewer than 1000 reads after the taxa filter (neon_er_ER18_ER22.ITS.R1.failed_samples.txt; 0 samples)
+Taxonomy: sh_general_release_dynamic_all_19.02.2025_dev.fasta
+
+Files
+  neon_er_ER18_ER22.ITS.R1.filtered.otu_table.txt     read counts: one row per ASV (asv_id), one column per sample
+  neon_er_ER18_ER22.ITS.R1.filtered.tax_table.txt     taxonomy: asv_id, Kingdom, Phylum, Class, Order, Family, Genus, Species, asv_seq (the ASV sequence)
+  neon_er_ER18_ER22.ITS.R1.filtered.sample_data.txt   one row per sample: sample metadata (89 columns; reads_* = read tracking)
+  neon_er_ER18_ER22.ITS.R1.filtered.refseq.fa         ASV sequences, named by asv_id
+  provenance: 
+    neon_er_ER18_ER22.ITS.R1.metadata_columns.txt
+    neon_er_ER18_ER22.ITS.R1.taxa_filter.txt
+    neon_er_ER18_ER22.ITS.R1.failed_samples.txt
+
+IDs: asv_id (ASV1, ASV2, ...) are the taxa names of the phyloseq object, numbered by decreasing total abundance
+before filtering; asv_seq in the tax table maps them to the sequences used as IDs in the unfiltered ASVtable.txt,
+taxonomy.txt and ASV.fa. Missing values are empty cells.
+
+In R:  library(phyloseq); ps = readRDS("<key>.phyloseq.filtered.rds")   (the same data)

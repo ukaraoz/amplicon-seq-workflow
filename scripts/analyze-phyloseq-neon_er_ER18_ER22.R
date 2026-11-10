@@ -1,7 +1,7 @@
 # Community analysis of the DADA2 phyloseq objects (output of dada2-asv.R) for the neon_er_ER18_ER22 dataset
 # (NEON East River 2018 + 2022 survey; dataset key {project}_{run_id} of config/neon-ER18-ER22.yaml)
 #
-# version 1.6
+# version 1.7
 #
 # usage: Rscript analyze-phyloseq-neon_er_ER18_ER22.R --config=<key>.config.json [--pdf]
 #   normally run by workflow.py (analyze step, analysis.script), which writes the resolved config
@@ -29,13 +29,13 @@
 #      names without UNITE's rank prefixes, species as "Genus species"
 #   2. FUNGuild composition (funguild_composition): the same bar plots with ASVs grouped by FUNGuild trophic mode and
 #      guild (fields) from <key>.phyloseq.filtered.guilds.rds (guilds step); confidence: count only matches with
-#      these rankings; display options as in the section, else as in taxonomic_composition
+#      these rankings; display options as in the section, else as in taxonomic_composition; writes <key>.<field>.png
 #
 # All analyses of the phyloseq objects go in this script, as further numbered sections.
 
 packages = c("phyloseq", "ggplot2")
 invisible(lapply(packages, function(p) suppressPackageStartupMessages(library(p, character.only = TRUE))))
-script_version = "1.6"
+script_version = "1.7"
 
 allargs = commandArgs(trailingOnly = TRUE)
 write_pdf = "--pdf" %in% allargs
@@ -225,9 +225,9 @@ if(!is.null(acfg$funguild_composition)) {
     col = paste0("FG_", fl)
     if(!col %in% names(gtt)) stop("no column ", col, " in the guilds object")
     lab = ifelse(ok, gtt[[col]], NA)
-    r = composition_plot(lab, paste("FUNGuild", fl), paste0(cfg$locus, " FUNGuild composition per sample: ", fl),
+    r = composition_plot(lab, paste("FUNGuild", fl), paste0(cfg$locus, " composition per sample: ", fl),
                          paste("FUNGuild", if(fl == "guild") "guilds" else "trophic modes"),
-                         if(length(conf)) "no FUNGuild record, or below the confidence set" else "no FUNGuild record", paste0("funguild_", fl), opt,
+                         if(length(conf)) "no FUNGuild record, or below the confidence set" else "no FUNGuild record", fl, opt,
                          ntop = if(is.null(fc$ntop)) 15 else as.integer(fc$ntop), note = conf_note)
     report("2. FUNGuild composition", fl, r)
   }
