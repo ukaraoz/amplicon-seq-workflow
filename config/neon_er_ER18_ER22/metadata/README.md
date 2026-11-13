@@ -30,9 +30,17 @@ The manifests were made from `NEON_ER_amplicon_fastq_lookup.tsv` (site -> fastq 
 `map_site_fastqs.py`), which stay in the Perlmutter data folder.
 
 `neon_er_ER18_ER22.sample_map.png` maps every sampling location of the filtered 16S and ITS objects on Esri World
-Imagery (fill: vegetation type; shape: years sampled; labels: site and sample count; samples without coordinates
-listed in the subtitle), and `neon_er_ER18_ER22.sample_locations.txt` lists those samples (site, vegetation type,
+Imagery (fill: vegetation type; shape: years sampled; labels: site and sample count), and `neon_er_ER18_ER22.sample_locations.txt` lists those samples (site, vegetation type,
 year, coordinates, loci). Made from the results with
 
     Rscript scripts/sample-map.R --out=config/neon_er_ER18_ER22/metadata --name=neon_er_ER18_ER22 \
       results/neon_er_ER18_ER22.16S results/neon_er_ER18_ER22.ITS.R1
+
+`neon_er_ER18_ER22.Snodgrass.slope_map.png`: the Snodgrass site only, each location labelled with its sampling code,
+over terrain slope (USGS 3DEP elevation, slope computed in UTM, 10-degree classes) with 20 m contours (add
+`--site=Snodgrass --slope` to the command above). Both maps have a scale bar.
+
+The map images carry only a title. Elevation for the slope map: USGS 3D Elevation Program (3DEP). Base-map credit, to cite with the figures: Tiles © Esri - Source: Esri, i-cubed,
+USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community. Samples without
+coordinates (10, all ER18: 049, 159, 175, 209, 210, 230, 231, 339, 350, 380) are not shown; they are the rows
+without Latitude / Longitude in `neon_er_ER18_ER22.sample_locations.txt`.

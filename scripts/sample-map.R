@@ -1,9 +1,9 @@
 # Map of all sampling locations of a dataset (all loci together) on a base map
 #
-# version 1.0
+# version 1.4
 #
-# usage: Rscript sample-map.R --out=<dir> [--name=<prefix>] [--basemap=Esri.WorldImagery] [--zoom=14]
-#                             [--cache=<dir>] [--pdf] <results dir> [<results dir> ...]
+# usage: Rscript sample-map.R --out=<dir> [--name=<prefix>] [--site=<Site Name>] [--basemap=Esri.WorldImagery]
+#                             [--zoom=<level>] [--cache=<dir>] [--pdf] <results dir> [<results dir> ...]
 #   e.g. Rscript scripts/sample-map.R --out=config/neon_er_ER18_ER22/metadata --name=neon_er_ER18_ER22 \
 #          results/neon_er_ER18_ER22.16S results/neon_er_ER18_ER22.ITS.R1
 # input : <results dir>/<key>.filtered.sample_data.txt of each locus (filtered phyloseq objects; failed samples
@@ -13,11 +13,18 @@
 #           there, white outline; one label per site (Site Name) with its number of samples
 #         <out>/<name>.sample_locations.txt: one row per sample: site, vegetation type, year, coordinates, and the
 #           loci it is in
-# Base map: map tiles from --basemap (a maptiles provider; default Esri.WorldImagery) at --zoom (default 14,
-# ~10 m per pixel), downloaded into --cache (default: a temporary folder, deleted after the run); none = no base
-# map. Web Mercator, axes in degrees. Samples without coordinates are listed in the subtitle.
+#   --site=<Site Name>: only that site's samples -> <out>/<name>.<site>.sample_map.png, each location labelled
+#           with its sampling code (the NNN of NNN-ER18), no locations table
+#   every map has a scale bar (bottom left)
+#   --slope: terrain slope over the base map, from the USGS 3DEP elevation service (1-10 m DEM, slope computed in
+#           UTM), in 10-degree classes, semi-transparent, with contour lines (--contour=<m>, default 20; 0 = none);
+#           writes <out>/<name>[.<site>].slope_map.png instead of .sample_map.png
+# Base map: map tiles from --basemap (a maptiles provider; default Esri.WorldImagery) at --zoom (default: from the
+# extent, ~2700 pixels across, at most 18; all sites: 14, ~10 m per pixel; one site: 18), downloaded into --cache (default: a temporary folder, deleted after the run); none = no base
+# map. Web Mercator, axes in degrees. Title only (no subtitle or caption): samples without coordinates are the rows
+# without Latitude / Longitude in sample_locations.txt; the base-map credit is printed (cite it with the figure).
 suppressPackageStartupMessages({library(ggplot2)})
-script_version = "1.0"
+script_version = "1.4"
 
 args = commandArgs(TRUE)
 opt = function(name, default = NULL) { a = args[grepl(paste0("^--", name, "="), args)]
@@ -26,7 +33,7 @@ dirs = args[!grepl("^--", args)]
 outdir = opt("out"); if(is.null(outdir) || !length(dirs)) stop("usage: Rscript sample-map.R --out=<dir> [--name=] <results dir> ...")
 name = opt("name", basename(outdir))
 provider = opt("basemap", "Esri.WorldImagery")
-zoom = as.integer(opt("zoom", "14"))
+zoom = opt("zoom"); site = opt("site")
 cachedir = opt("cache", file.path(tempdir(), "tiles"))
 write_pdf = "--pdf" %in% args
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
@@ -45,7 +52,12 @@ loci = unique(sd$locus)
 smp = do.call(rbind, lapply(split(sd, sd$sample), function(z) cbind(z[1, c("sample", "site", "veg", "year", "lat", "lon")],
   loci = paste(intersect(loci, z$locus), collapse = "+"))))
 smp = smp[order(smp$site, smp$sample), ]
-write.table(smp, file.path(outdir, paste0(name, ".sample_locations.txt")), sep = "\t", quote = FALSE, row.names = FALSE, na = "")
+if(is.null(site)) {
+  write.table(smp, file.path(outdir, paste0(name, ".sample_locations.txt")), sep = "\t", quote = FALSE, row.names = FALSE, na = "")
+} else {
+  if(!(site %in% smp$site)) stop("no samples of site '", site, "'; sites: ", paste(sort(unique(smp$site)), collapse = ", "))
+  smp = smp[smp$site == site, ]
+}
 nocoord = smp$sample[is.na(smp$lat) | is.na(smp$lon)]
 m = smp[!(smp$sample %in% nocoord), ]
 cat("sample-map.R", script_version, ":", nrow(smp), "samples (", paste(names(table(smp$loci)), table(smp$loci), collapse = ", "),
@@ -56,12 +68,20 @@ merc = function(lon, lat) data.frame(x = 6378137 * lon * pi / 180, y = 6378137 *
 m = cbind(m, merc(m$lon, m$lat))
 years = sort(unique(m$year))
 loc = do.call(rbind, lapply(split(m, paste(m$lat, m$lon)), function(z) data.frame(x = z$x[1], y = z$y[1], veg = z$veg[1],
+  code = paste(unique(sub("-.*", "", z$sample)), collapse = "/"),
   sampled = if(length(unique(z$year)) > 1) paste(sort(unique(z$year)), collapse = " + ") else paste(z$year[1], "only"))))
 loc$sampled = factor(loc$sampled, levels = intersect(c(paste(years, "only"), paste(years, collapse = " + ")), unique(loc$sampled)))
 sites = do.call(rbind, lapply(split(m, m$site), function(z) data.frame(x = mean(range(z$x)), y = mean(range(z$y)),
   text = paste0(z$site[1], " (", nrow(z), ")"))))
-pad = function(r, f) r + c(-1, 1) * diff(r) * f
+# labels: one per site, or (one site) one per location with its sampling code
+labs_df = if(is.null(site)) sites else data.frame(x = loc$x, y = loc$y, text = loc$code)
+pad = function(r, f) { w = max(diff(r), 200); mean(r) + c(-1, 1) * w * (0.5 + f) }   # at least 200 m wide
 xr = pad(range(m$x), 0.08); yr = pad(range(m$y), 0.08)
+# frame at least 1:2 (height:width) and at most 2:1, widening the shorter side around the centre
+if(diff(yr) < 0.5 * diff(xr)) yr = mean(yr) + c(-1, 1) * 0.25 * diff(xr)
+if(diff(xr) < 0.5 * diff(yr)) xr = mean(xr) + c(-1, 1) * 0.25 * diff(yr)
+# tile zoom: ~2700 pixels across the map (256-pixel tiles; 156543 m per pixel at zoom 0), at most 18
+zoom = if(is.null(zoom)) min(18L, as.integer(floor(log2(2700 * 156543.03 / diff(xr))))) else as.integer(zoom)
 
 # ---- base map ----
 bm = NULL
@@ -73,40 +93,95 @@ if(!identical(provider, "none")) {
     tl = maptiles::get_tiles(box, provider = provider, zoom = zoom, crop = TRUE, cachedir = cachedir)
     df = terra::as.data.frame(tl, xy = TRUE)
     df$fill = grDevices::rgb(df[[3]], df[[4]], df[[5]], maxColorValue = 255)
+    cat("base map credit:", maptiles::get_credit(provider), "\n")
     list(df = df[, c("x", "y", "fill")], credit = maptiles::get_credit(provider))
   }, error = function(e) { cat("no base map (", conditionMessage(e), ")\n"); NULL })
   if(is.null(opt("cache"))) unlink(cachedir, recursive = TRUE)   # temporary tile folder
 }
+
+# ---- scale bar: bottom left, a round length near 1/5 of the map width ----
+# Web Mercator stretches distances by 1/cos(latitude): ground metres = map units * cos(lat)
+scalebar = NULL
+if(TRUE) {
+  k = cos(mean(m$lat) * pi / 180)
+  target = diff(xr) * k / 5
+  nice = as.vector(outer(c(1, 2, 5), 10^(0:5))); len = max(nice[nice <= target])
+  seg = len / 2 / k                                                    # map units of one half
+  x0 = xr[1] + 0.04 * diff(xr); y0 = yr[1] + 0.05 * diff(yr); bh = 0.012 * diff(yr)
+  unit_lab = function(v) if(len >= 1000) paste(v / 1000) else paste(v)
+  scalebar = list(
+    annotate("rect", xmin = x0 - 0.015 * diff(xr), xmax = x0 + 2 * seg + 0.045 * diff(xr), ymin = y0 - 0.025 * diff(yr),
+             ymax = y0 + bh + 0.07 * diff(yr), fill = "white", alpha = 0.85),
+    annotate("rect", xmin = x0 + c(0, seg), xmax = x0 + c(seg, 2 * seg), ymin = y0, ymax = y0 + bh,
+             fill = c("black", "white"), colour = "black", linewidth = 0.3),
+    annotate("text", x = x0 + c(0, seg, 2 * seg), y = y0 + bh + 0.02 * diff(yr), vjust = 0, size = 3,
+             label = c("0", unit_lab(len / 2), paste(unit_lab(len), if(len >= 1000) "km" else "m"))))
+}
+
+# ---- slope and contours from USGS 3DEP (--slope) ----
+want_slope = "--slope" %in% args
+contour_m = as.numeric(opt("contour", "20"))
+slope_df = NULL; contour_df = NULL
+if(want_slope) slope_df = tryCatch({
+  zone = floor((mean(m$lon) + 180) / 6) + 1; utm = paste0("EPSG:", 32600 + zone)
+  ext_utm = terra::ext(terra::project(terra::vect(cbind(rep(xr, each = 2), c(yr, rev(yr))), type = "polygons", crs = "EPSG:3857"), utm))
+  ext_utm = ext_utm + 50                                                # margin: slope needs neighbours at the edges
+  px = 2                                                                # metres per pixel requested
+  nx = min(4000, ceiling((ext_utm$xmax - ext_utm$xmin) / px)); ny = min(4000, ceiling((ext_utm$ymax - ext_utm$ymin) / px))
+  url = paste0("https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?bbox=",
+               paste(c(ext_utm$xmin, ext_utm$ymin, ext_utm$xmax, ext_utm$ymax), collapse = ","), "&bboxSR=", 32600 + zone,
+               "&imageSR=", 32600 + zone, "&size=", nx, ",", ny, "&format=tiff&pixelType=F32",
+               "&interpolation=RSP_BilinearInterpolation&f=image")
+  tf = tempfile(fileext = ".tif"); utils::download.file(url, tf, mode = "wb", quiet = TRUE)
+  dem = terra::rast(tf); terra::crs(dem) = utm
+  slp = terra::terrain(dem, v = "slope", unit = "degrees")
+  # back to Web Mercator, only the map frame
+  slp_m = terra::project(slp, "EPSG:3857", method = "bilinear"); dem_m = terra::project(dem, "EPSG:3857", method = "bilinear")
+  fr = terra::ext(xr[1], xr[2], yr[1], yr[2]); slp_m = terra::crop(slp_m, fr); dem_m = terra::crop(dem_m, fr)
+  sdf = terra::as.data.frame(slp_m, xy = TRUE, na.rm = TRUE); names(sdf)[3] = "slope"
+  if(contour_m > 0) contour_df <<- { d = terra::as.data.frame(dem_m, xy = TRUE, na.rm = TRUE); names(d)[3] = "z"; d }
+  # check: slope at the sample locations vs the lidar slope in the sample data, if present
+  at = terra::extract(slp, terra::project(terra::vect(cbind(loc$x, loc$y), crs = "EPSG:3857"), utm))[, 2]
+  cat(sprintf("slope (3DEP): %.1f-%.1f degrees in the frame; at the %d locations median %.1f\n",
+              min(sdf$slope), max(sdf$slope), nrow(loc), median(at, na.rm = TRUE)))
+  sdf
+}, error = function(e) { cat("no slope (", conditionMessage(e), ")\n"); NULL })
 
 # ---- plot ----
 veg_lv = sort(unique(loc$veg))
 veg_cols = setNames(c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02")[seq_along(veg_lv)], veg_lv)  # as in the composition plots
 shapes = setNames(c(21, 24, 22, 23)[seq_along(levels(loc$sampled))], levels(loc$sampled))
 lonb = pretty(range(m$lon), 5); latb = pretty(range(m$lat), 5)
+deg = function(v) format(v, nsmall = max(0, -floor(log10(diff(range(v)))) + 1), trim = TRUE)   # enough decimals
 g = ggplot() +
   (if(!is.null(bm)) geom_raster(data = bm$df, aes(x, y, fill = I(fill)), show.legend = FALSE) else NULL) +
+  (if(!is.null(slope_df)) list(
+     ggnewscale::new_scale_fill(),
+     geom_raster(data = slope_df, aes(x, y, fill = cut(slope, c(0, 10, 20, 30, 90), right = FALSE,
+                                                            labels = c("0-10", "10-20", "20-30", "30+"))), alpha = 0.5),
+     scale_fill_manual(values = c("#f7fbff", "#9ecae1", "#3182bd", "#08306b"), name = "Slope (degrees)", drop = FALSE,
+                       guide = guide_legend(order = 3, override.aes = list(alpha = 0.8))),
+     ggnewscale::new_scale_fill()) else NULL) +
+  (if(!is.null(contour_df)) geom_contour(data = contour_df, aes(x, y, z = z), breaks = seq(0, 9000, contour_m),
+                                          colour = "white", linewidth = 0.25, alpha = 0.8) else NULL) +
   geom_point(data = loc[order(loc$sampled), ], aes(x, y, fill = veg, shape = sampled), colour = "white", size = 2.6, stroke = 0.5) +
   scale_fill_manual(values = veg_cols, name = "Vegetation type", guide = guide_legend(override.aes = list(shape = 21, size = 3.5))) +
   scale_shape_manual(values = shapes, name = "Sampled", guide = guide_legend(override.aes = list(fill = "grey50", size = 3.5))) +
-  ggrepel::geom_label_repel(data = sites, aes(x, y, label = text), size = 3.2, label.size = 0, fill = "white", alpha = 0.9,
+  ggrepel::geom_label_repel(data = labs_df, aes(x, y, label = text), size = if(is.null(site)) 3.2 else 2.4, label.size = 0, fill = "white", alpha = 0.9,
                             label.padding = unit(2.5, "pt"), min.segment.length = 0, segment.colour = "white",
-                            segment.size = 0.5, box.padding = 1, seed = 1, max.overlaps = Inf) +
-  scale_x_continuous(breaks = merc(lonb, 0)$x, labels = paste0(abs(lonb), "°W"), expand = c(0, 0)) +
-  scale_y_continuous(breaks = merc(0, latb)$y, labels = paste0(latb, "°N"), expand = c(0, 0)) +
+                            segment.size = if(is.null(site)) 0.5 else 0.3, box.padding = if(is.null(site)) 1 else 0.35, seed = 1, max.overlaps = Inf) +
+  scale_x_continuous(breaks = merc(lonb, 0)$x, labels = paste0(deg(abs(lonb)), "°W"), expand = c(0, 0)) +
+  scale_y_continuous(breaks = merc(0, latb)$y, labels = paste0(deg(latb), "°N"), expand = c(0, 0)) +
+  scalebar +
   coord_fixed(xlim = xr, ylim = yr) +
   labs(x = NULL, y = NULL,
-       title = paste0(name, ": ", nrow(m), " samples at ", nrow(loc), " locations, ", nrow(sites), " sites"),
-       subtitle = paste(strwrap(paste0("samples in ", paste(loci, collapse = " or "), " (filtered objects; ",
-                                       paste(names(table(smp$loci)), table(smp$loci), collapse = ", "), "); labels: site (samples)",
-                                       if(length(nocoord)) paste0("; no coordinates (not shown): ", paste(sort(nocoord), collapse = ", ")) else ""),
-                                130), collapse = "\n"),
-       caption = if(!is.null(bm)) paste(strwrap(paste0("Base map: ", provider, " - ", bm$credit), 160), collapse = "\n") else NULL) +
+       title = paste(if(is.null(site)) name else site, if(!is.null(slope_df)) "sampling locations and slope" else "sampling locations")) +
   theme_bw(base_size = 10) +
-  theme(plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 6.5, colour = "grey30"),
-        panel.grid = element_blank(), legend.key = element_rect(fill = NA))
+  theme(panel.grid = element_blank(), legend.key = element_rect(fill = NA))
 asp = diff(yr) / diff(xr)
-f = file.path(outdir, paste0(name, ".sample_map"))
-h = min(14, 7.2 * asp + 1.3)
+f = file.path(outdir, paste0(name, if(!is.null(site)) paste0(".", gsub("[^A-Za-z0-9]+", "_", site)) else "",
+                              if(!is.null(slope_df)) ".slope_map" else ".sample_map"))
+h = min(14, 7.2 * asp + 0.8)
 ggsave(paste0(f, ".png"), g, width = 9, height = h, dpi = 300)
 if(write_pdf) ggsave(paste0(f, ".pdf"), g, width = 9, height = h)
 cat("sample map:", nrow(m), "samples,", nrow(loc), "locations,", nrow(sites), "sites ->", paste0(f, if(write_pdf) ".png / .pdf" else ".png"), "\n")
