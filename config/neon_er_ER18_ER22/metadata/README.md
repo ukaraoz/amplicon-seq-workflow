@@ -28,3 +28,11 @@ share the row); their names are as in the soil table. To rebuild the merged file
 
 The manifests were made from `NEON_ER_amplicon_fastq_lookup.tsv` (site -> fastq paths per year and locus, built by
 `map_site_fastqs.py`), which stay in the Perlmutter data folder.
+
+`neon_er_ER18_ER22.sample_map.png` maps every sampling location of the filtered 16S and ITS objects on Esri World
+Imagery (fill: vegetation type; shape: years sampled; labels: site and sample count; samples without coordinates
+listed in the subtitle), and `neon_er_ER18_ER22.sample_locations.txt` lists those samples (site, vegetation type,
+year, coordinates, loci). Made from the results with
+
+    Rscript scripts/sample-map.R --out=config/neon_er_ER18_ER22/metadata --name=neon_er_ER18_ER22 \
+      results/neon_er_ER18_ER22.16S results/neon_er_ER18_ER22.ITS.R1

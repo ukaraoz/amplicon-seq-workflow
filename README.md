@@ -17,6 +17,10 @@ YAML config per project/run, locally or as SLURM jobs (NERSC Perlmutter).
 | `analyze` | `analysis.script` (default `scripts/analyze-phyloseq-<dataset>.R`, `<dataset>` = `{project}_{run_id}`): `scripts/analyze-phyloseq-neon_er_ER18_ER22.R` (NEON) or `scripts/analyze-phyloseq-biochar.R` | all analyses of the phyloseq objects. `analyze-phyloseq-neon_er_ER18_ER22.R`: sample order (`analysis.sample_order`, `<key>.sample_order.txt`), FUNGuild composition per sample by trophic mode and guild (`<key>.<field>`, ITS, from the guilds step), taxonomic composition per sample for each rank (`<key>.taxonomy_<Rank>`: top taxa, Other, unassigned; panels by `analysis.groups`), further sections to come. `analyze-phyloseq-biochar.R`: taxa bar plots, alpha diversity, Venn, NMDS + PERMANOVA (UniFrac or Bray-Curtis/Jaccard), pairwise PERMANOVA, source sharing, distances to a reference treatment, betapart turnover/nestedness |
 | `package` | `scripts/package-filtered.py` | `<key>.filtered.tar.gz`: the filtered exports, `README.txt`, the read-tracking / filter / failed-sample / metadata-column tables and, for ITS, `guilds.txt`, `guild_summary.txt` and `guild_abundance.txt` (no figures) |
 
+Dataset map (all loci together, run by hand): `Rscript scripts/sample-map.R --out=config/<dataset>/metadata --name=<dataset>
+results/<key 16S> results/<key ITS>` writes `<dataset>.sample_map.png` (every sampling location of the filtered objects
+on Esri World Imagery, by vegetation type and years sampled, labelled by site) and `<dataset>.sample_locations.txt`.
+
 Main outputs (in `paths.results`, by default `results/<key>/` in this repository, prefix `<key>`): `ASVtable.txt`, `taxonomy.txt`, `ASV.fa`, `readtracking.txt`,
 `failed_samples.txt`, `phyloseq.rds` (all ASVs and samples), `phyloseq.filtered.rds` (`remove_taxa` /
 `require_ranks` ASVs and failed samples removed; input of the analysis), `taxa_filter.txt` (what the filter removed).
