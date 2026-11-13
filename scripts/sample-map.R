@@ -1,6 +1,6 @@
 # Map of all sampling locations of a dataset (all loci together) on a base map
 #
-# version 1.8
+# version 1.9
 #
 # usage: Rscript sample-map.R --out=<dir> [--name=<prefix>] [--site=<Site Name>] [--basemap=Esri.WorldImagery]
 #                             [--zoom=<level>] [--cache=<dir>] [--pdf] <results dir> [<results dir> ...]
@@ -33,7 +33,7 @@
 # map. Web Mercator, axes in degrees. Title only (no subtitle or caption): samples without coordinates are the rows
 # without Latitude / Longitude in sample_locations.txt; the base-map credit is printed (cite it with the figure).
 suppressPackageStartupMessages({library(ggplot2)})
-script_version = "1.8"
+script_version = "1.9"
 
 args = commandArgs(TRUE)
 opt = function(name, default = NULL) { a = args[grepl(paste0("^--", name, "="), args)]
@@ -246,7 +246,7 @@ g = ggplot() +
   scalebar +
   coord_fixed(xlim = xr, ylim = yr) +
   labs(x = NULL, y = NULL,
-       title = paste(if(is.null(site)) name else site, if(!is.null(slope_df)) "sampling locations and slope" else "sampling locations")) +
+       title = paste0(if(is.null(site)) name else site, " sampling locations (", nrow(loc), ")")) +
   theme_bw(base_size = 10) +
   theme(panel.grid = element_blank(), legend.key = element_rect(fill = NA)) +
   (if(identical(colour_by, "family")) theme(legend.position = "bottom", legend.box = "horizontal",
