@@ -1,6 +1,6 @@
 # Map of all sampling locations of a dataset (all loci together) on a base map
 #
-# version 1.4
+# version 1.5
 #
 # usage: Rscript sample-map.R --out=<dir> [--name=<prefix>] [--site=<Site Name>] [--basemap=Esri.WorldImagery]
 #                             [--zoom=<level>] [--cache=<dir>] [--pdf] <results dir> [<results dir> ...]
@@ -19,12 +19,19 @@
 #   --slope: terrain slope over the base map, from the USGS 3DEP elevation service (1-10 m DEM, slope computed in
 #           UTM), in 10-degree classes, semi-transparent, with contour lines (--contour=<m>, default 20; 0 = none);
 #           writes <out>/<name>[.<site>].slope_map.png instead of .sample_map.png
+#   --colour=family: points coloured by the plant family of the location (column Family) within its vegetation type:
+#           each vegetation type keeps its hue (Meadow greens, Shrubs oranges, Trees purples, in alphabetical order of
+#           the types) and its most common families (counted over all samples given, so the colours are the same on
+#           every map) get shades of it: as many as the hue has shades (4, 3, 2), the last shade for "other <type>"
+#           when there are more families; no family (litter) grey. Shape = vegetation type (circle, triangle, square),
+#           outline = years sampled (black: both years, white: one year). Default (--colour=vegetation): fill =
+#           vegetation type, shape = years sampled
 # Base map: map tiles from --basemap (a maptiles provider; default Esri.WorldImagery) at --zoom (default: from the
 # extent, ~2700 pixels across, at most 18; all sites: 14, ~10 m per pixel; one site: 18), downloaded into --cache (default: a temporary folder, deleted after the run); none = no base
 # map. Web Mercator, axes in degrees. Title only (no subtitle or caption): samples without coordinates are the rows
 # without Latitude / Longitude in sample_locations.txt; the base-map credit is printed (cite it with the figure).
 suppressPackageStartupMessages({library(ggplot2)})
-script_version = "1.4"
+script_version = "1.5"
 
 args = commandArgs(TRUE)
 opt = function(name, default = NULL) { a = args[grepl(paste0("^--", name, "="), args)]
@@ -37,7 +44,8 @@ zoom = opt("zoom"); site = opt("site")
 cachedir = opt("cache", file.path(tempdir(), "tiles"))
 write_pdf = "--pdf" %in% args
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
-col_site = "Site Name"; col_veg = "Vegetation.Type"; col_year = "year"
+col_site = "Site Name"; col_veg = "Vegetation.Type"; col_year = "year"; col_family = "Family"
+colour_by = opt("colour", "vegetation")
 
 # ---- samples of all loci ----
 sd = do.call(rbind, lapply(dirs, function(d) {
@@ -46,12 +54,29 @@ sd = do.call(rbind, lapply(dirs, function(d) {
   x = read.delim(f, check.names = FALSE, colClasses = "character")
   locus = sub("^[^.]+\\.([^.]+).*$", "\\1", basename(dirname(f[1])))   # neon_er_ER18_ER22.ITS.R1 -> ITS
   data.frame(sample = x[[1]], site = x[[col_site]], veg = x[[col_veg]], year = x[[col_year]],
+             family = if(col_family %in% names(x)) x[[col_family]] else NA,
              lat = as.numeric(x$Latitude), lon = as.numeric(x$Longitude), locus = locus, stringsAsFactors = FALSE)
 }))
 loci = unique(sd$locus)
-smp = do.call(rbind, lapply(split(sd, sd$sample), function(z) cbind(z[1, c("sample", "site", "veg", "year", "lat", "lon")],
+smp = do.call(rbind, lapply(split(sd, sd$sample), function(z) cbind(z[1, c("sample", "site", "veg", "year", "family", "lat", "lon")],
   loci = paste(intersect(loci, z$locus), collapse = "+"))))
 smp = smp[order(smp$site, smp$sample), ]
+# plant-family classes (--colour=family), from all samples so that every map uses the same colours
+ramps = list(c("#00441b", "#2b9348", "#80c95b", "#d9f0a3"), c("#7f2704", "#d94801", "#fdae6b"), c("#3f007d", "#b4a7e0"))
+fam_none = "#8c8c8c"
+smp$family[is.na(smp$family) | smp$family == ""] = NA
+fam_class = rep(NA_character_, nrow(smp)); fam_cols = c()
+for(i in seq_along(vt <- sort(unique(smp$veg)))) {
+  sel = smp$veg == vt[i]; r = ramps[[(i - 1) %% length(ramps) + 1]]
+  cnt = sort(table(smp$family[sel & !is.na(smp$family)]), decreasing = TRUE)
+  named = if(length(cnt) <= length(r)) names(cnt) else names(cnt)[seq_len(length(r) - 1)]
+  lab = ifelse(smp$family[sel] %in% named, paste0(vt[i], ": ", smp$family[sel]), paste0(vt[i], ": other"))
+  lab[is.na(smp$family[sel])] = paste0(vt[i], ": no plant (litter)")
+  fam_class[sel] = lab
+  lv = c(paste0(vt[i], ": ", named), if(length(cnt) > length(named)) paste0(vt[i], ": other"))
+  fam_cols = c(fam_cols, setNames(r[seq_along(lv)], lv), if(any(is.na(smp$family[sel]))) setNames(fam_none, paste0(vt[i], ": no plant (litter)")))
+}
+smp$fam_class = fam_class
 if(is.null(site)) {
   write.table(smp, file.path(outdir, paste0(name, ".sample_locations.txt")), sep = "\t", quote = FALSE, row.names = FALSE, na = "")
 } else {
@@ -68,6 +93,7 @@ merc = function(lon, lat) data.frame(x = 6378137 * lon * pi / 180, y = 6378137 *
 m = cbind(m, merc(m$lon, m$lat))
 years = sort(unique(m$year))
 loc = do.call(rbind, lapply(split(m, paste(m$lat, m$lon)), function(z) data.frame(x = z$x[1], y = z$y[1], veg = z$veg[1],
+  fam_class = z$fam_class[1],
   code = paste(unique(sub("-.*", "", z$sample)), collapse = "/"),
   sampled = if(length(unique(z$year)) > 1) paste(sort(unique(z$year)), collapse = " + ") else paste(z$year[1], "only"))))
 loc$sampled = factor(loc$sampled, levels = intersect(c(paste(years, "only"), paste(years, collapse = " + ")), unique(loc$sampled)))
@@ -151,6 +177,28 @@ if(want_slope) slope_df = tryCatch({
 veg_lv = sort(unique(loc$veg))
 veg_cols = setNames(c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02")[seq_along(veg_lv)], veg_lv)  # as in the composition plots
 shapes = setNames(c(21, 24, 22, 23)[seq_along(levels(loc$sampled))], levels(loc$sampled))
+if(identical(colour_by, "family")) {
+  # fill = family class (shade of the vegetation hue), shape = vegetation type, outline = years sampled
+  fc = fam_cols[names(fam_cols) %in% loc$fam_class]
+  veg_shape = setNames(c(21, 24, 22, 23, 25)[seq_along(veg_lv)], veg_lv)
+  both = levels(loc$sampled)[grepl("\\+", levels(loc$sampled))]
+  loc$outline = ifelse(loc$sampled %in% both, "both years", "one year")
+  points_layer = list(
+    geom_point(data = loc[order(loc$outline == "both years"), ], aes(x, y, fill = fam_class, shape = veg, colour = outline),
+               size = 2.8, stroke = 0.8),
+    scale_fill_manual(values = fc, breaks = names(fc), name = "Vegetation type: plant family",
+                      guide = guide_legend(order = 1, ncol = 2, override.aes = list(shape = unname(veg_shape[sub(":.*", "", names(fc))]),
+                                                                           colour = "white", size = 3.5))),
+    scale_shape_manual(values = veg_shape, guide = "none"),
+    scale_colour_manual(values = c("both years" = "black", "one year" = "white"), name = "Sampled",
+                        labels = c("both years" = paste(years, collapse = " + "), "one year" = "one year"),
+                        guide = guide_legend(order = 2, ncol = 1, override.aes = list(shape = 21, fill = "grey60", size = 3.5))))
+} else {
+  points_layer = list(
+    geom_point(data = loc[order(loc$sampled), ], aes(x, y, fill = veg, shape = sampled), colour = "white", size = 2.6, stroke = 0.5),
+    scale_fill_manual(values = veg_cols, name = "Vegetation type", guide = guide_legend(override.aes = list(shape = 21, size = 3.5))),
+    scale_shape_manual(values = shapes, name = "Sampled", guide = guide_legend(override.aes = list(fill = "grey50", size = 3.5))))
+}
 lonb = pretty(range(m$lon), 5); latb = pretty(range(m$lat), 5)
 deg = function(v) format(v, nsmall = max(0, -floor(log10(diff(range(v)))) + 1), trim = TRUE)   # enough decimals
 g = ggplot() +
@@ -160,13 +208,11 @@ g = ggplot() +
      geom_raster(data = slope_df, aes(x, y, fill = cut(slope, c(0, 10, 20, 30, 90), right = FALSE,
                                                             labels = c("0-10", "10-20", "20-30", "30+"))), alpha = 0.5),
      scale_fill_manual(values = c("#f7fbff", "#9ecae1", "#3182bd", "#08306b"), name = "Slope (degrees)", drop = FALSE,
-                       guide = guide_legend(order = 3, override.aes = list(alpha = 0.8))),
+                       guide = guide_legend(order = 3, ncol = 1, override.aes = list(alpha = 0.8))),
      ggnewscale::new_scale_fill()) else NULL) +
   (if(!is.null(contour_df)) geom_contour(data = contour_df, aes(x, y, z = z), breaks = seq(0, 9000, contour_m),
                                           colour = "white", linewidth = 0.25, alpha = 0.8) else NULL) +
-  geom_point(data = loc[order(loc$sampled), ], aes(x, y, fill = veg, shape = sampled), colour = "white", size = 2.6, stroke = 0.5) +
-  scale_fill_manual(values = veg_cols, name = "Vegetation type", guide = guide_legend(override.aes = list(shape = 21, size = 3.5))) +
-  scale_shape_manual(values = shapes, name = "Sampled", guide = guide_legend(override.aes = list(fill = "grey50", size = 3.5))) +
+  points_layer +
   ggrepel::geom_label_repel(data = labs_df, aes(x, y, label = text), size = if(is.null(site)) 3.2 else 2.4, label.size = 0, fill = "white", alpha = 0.9,
                             label.padding = unit(2.5, "pt"), min.segment.length = 0, segment.colour = "white",
                             segment.size = if(is.null(site)) 0.5 else 0.3, box.padding = if(is.null(site)) 1 else 0.35, seed = 1, max.overlaps = Inf) +
@@ -177,11 +223,18 @@ g = ggplot() +
   labs(x = NULL, y = NULL,
        title = paste(if(is.null(site)) name else site, if(!is.null(slope_df)) "sampling locations and slope" else "sampling locations")) +
   theme_bw(base_size = 10) +
-  theme(panel.grid = element_blank(), legend.key = element_rect(fill = NA))
+  theme(panel.grid = element_blank(), legend.key = element_rect(fill = NA)) +
+  (if(identical(colour_by, "family")) theme(legend.position = "bottom", legend.box = "horizontal",
+                                            legend.box.just = "top", legend.justification = "left",
+                                            legend.title.position = "top", legend.title = element_text(size = 9),
+                                            legend.text = element_text(size = 8), legend.key.size = unit(11, "pt"),
+                                            legend.key.spacing.y = unit(1, "pt"), legend.spacing.x = unit(18, "pt"),
+                                            legend.margin = margin(0, 0, 0, 0)) else NULL)
 asp = diff(yr) / diff(xr)
 f = file.path(outdir, paste0(name, if(!is.null(site)) paste0(".", gsub("[^A-Za-z0-9]+", "_", site)) else "",
                               if(!is.null(slope_df)) ".slope_map" else ".sample_map"))
 h = min(14, 7.2 * asp + 0.8)
+if(identical(colour_by, "family")) h = min(14, 9 * asp + 0.8 + 1.3)   # map full width, legends below
 ggsave(paste0(f, ".png"), g, width = 9, height = h, dpi = 300)
 if(write_pdf) ggsave(paste0(f, ".pdf"), g, width = 9, height = h)
 cat("sample map:", nrow(m), "samples,", nrow(loc), "locations,", nrow(sites), "sites ->", paste0(f, if(write_pdf) ".png / .pdf" else ".png"), "\n")

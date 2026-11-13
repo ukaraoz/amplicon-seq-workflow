@@ -38,7 +38,9 @@ year, coordinates, loci). Made from the results with
 
 `neon_er_ER18_ER22.Snodgrass.slope_map.png`: the Snodgrass site only, each location labelled with its sampling code,
 over terrain slope (USGS 3DEP elevation, slope computed in UTM, 10-degree classes) with 20 m contours (add
-`--site=Snodgrass --slope` to the command above). Both maps have a scale bar.
+`--site=Snodgrass --slope --colour=family` to the command above); points are coloured by plant family within
+vegetation type (Meadow greens, Shrubs oranges, Trees purples; the most common families over all samples get their own
+shade, the rest "other"), shape = vegetation type, black outline = sampled in 2018 and 2022. Both maps have a scale bar.
 
 The map images carry only a title. Elevation for the slope map: USGS 3D Elevation Program (3DEP). Base-map credit, to cite with the figures: Tiles © Esri - Source: Esri, i-cubed,
 USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community. Samples without
